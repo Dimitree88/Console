@@ -167,18 +167,23 @@ future Claude can immediately see where things stand.)
 
 **As of 2026-04-26:**
 
-- Mono channel: Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED.
-- Mono channel: Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
-- Mono channel: Block 3 (meter buffer + PFL switch + MUTE) FINALIZED.
-- Mono channel: Block 4+ (fader, post-fader amp, pan, post-pan
-  distribution) still conceptual.
+- Mono channel: signal flow conceptually complete. Implementation:
+  - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED.
+  - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
+  - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED.
+  - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
+    AUX/CUE pre & post sends) FINALIZED.
+  - Block 5 (active pan, Self-style) FINALIZED — with attention
+    point on R_FB value vs Self canonical (see `10-open-tbd.md`).
+  - Block 6 (post-pan 2-gang × 4-pos routing rotary) topology
+    defined; bus summing resistor values TBD together with §04 / §07.
+  - AFL switch and Post-Fader Output stages: conceptual flow fixed,
+    implementation deferred (see `10-open-tbd.md`).
 - AUX returns: 4 channels, all identical, conceptual stage.
 - All other sections (groups, AUX/CUE/Main masters, monitor): still
   conceptual.
 - Global conventions: established (power, grounds, packages, EMI
   filter, sleeve termination, impedance-balanced output topology,
   front-panel switches with LEDs).
-- New since 2026-04-25: PFL switch on mono channel relocated from
-  §2.9 (post-mute) to §2.5 (pre-mute) with explicit topology
-  (22 kΩ + DPDT, click-free, wired-OR LED + PFL DETECT diode);
-  meter bridge PCB confirmed as a separate sub-assembly.
+- Fader PCB partitioning: settled at **2 channels per fader PCB**
+  (12 fader PCBs total). Input PCB partitioning still TBD.

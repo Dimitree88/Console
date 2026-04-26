@@ -146,10 +146,11 @@ post-mute pre-fader taps (CUE, AUX gang 1) and of the fader itself.
 
 ## 2.8 Active pan
 
-**Active pan** circuit driven by a **stereo pot** (two ganged sections,
-wired for constant-power pan). The channel **becomes stereo from this
-point on**: two lines (L and R) travel together for the rest of the
-channel.
+**Active pan** circuit driven by a **dual-gang pot** (two gangs on
+one shaft, reverse-wired with respect to each other so that opposite
+ends of the two pot tracks see the input signal). The channel
+**becomes stereo from this point on**: two lines (L and R) travel
+together for the rest of the channel.
 
 ---
 
@@ -157,16 +158,18 @@ channel.
 
 From the post-pan stereo signal, several destinations tap in parallel:
 
-### (a) 4-position rotary switch — main destination
+### (a) 2-gang × 4-position rotary switch — main destination
 
-Routes the stereo signal to exactly one of:
+Routes the post-pan stereo signal to exactly one of:
 
 - Main Mix
 - Group 1
 - Group 2
 - Group 3
 
-Only one destination at a time. Mechanical rotary.
+Mechanical rotary, 2 gangs (one for L, one for R), 4 positions. The
+inactive positions are open (not back-grounded — see Block 6 for
+rationale). Only one destination at a time.
 
 ### (b) AFL electronic switch
 
@@ -174,26 +177,26 @@ Parallel tap, stereo. An electronic switch (digital control) connects
 the channel's stereo post-pan signal to the AFL bus when the AFL logic
 calls for it.
 
+*Implementation TBD — see `10-open-tbd.md`.*
+
 ### (c) 4 × AUX dual-gang pots (mono sends)
 
 Four knobs, each a dual-gang pot:
 
-- **Gang 1** is fed by the **pre-fader** tap (taken from before the
-  fader, i.e. mono, after the ACTIVE/SOLO switch but before the fader
-  and post-fader amp — effectively at the pre-fader point of the
-  channel). Its wiper feeds **AUX n PRE** bus.
-- **Gang 2** is fed by the **post-fader** tap (after post-fader amp,
-  but whether before or after pan is not critical here — the AUX bus
-  is mono anyway; if taken post-pan, one of L/R or their sum is used;
-  by default treat as mono post-fader signal). Its wiper feeds
-  **AUX n POST** bus.
+- **Gang 1** is fed by the **PRE-FADER node** (mono, after the
+  ACTIVE/SOLO switch but before the fader). Its wiper feeds
+  **AUX n PRE** bus via a bus summing resistor.
+- **Gang 2** is fed by the **POST-FADER node** (mono, after the
+  post-fader amp, before the pan). Its wiper feeds **AUX n POST**
+  bus via a bus summing resistor.
 
 Result: each AUX knob simultaneously drives a pre-fader and a
 post-fader mono bus. 4 knobs × 2 gangs = 8 mono AUX buses.
 
-**Important**: on the mono channel, both gangs receive a mono source.
-AUX routing is always mono on this channel — the post-pan stereo
-split is irrelevant to the AUX sends.
+**Note on channel-as-source vs. mono AUX bus**: the AUX sends are
+taken before the pan stage. The pan would split L/R at constant
+power, but since AUX buses are mono, splitting and re-summing would
+just give the source back; tapping pre-pan saves the operation.
 
 ### (d) CUE dual-gang pot (stereo send)
 
@@ -207,9 +210,11 @@ Similar to an AUX send, but:
 
 ### (e) Post-Fader Output
 
-Dedicated jack. The post-fader mono signal (taken after the post-fader
-amp, before pan — so still mono) is sent to an impedance-balanced TRS
-jack at the rear.
+Dedicated jack. The post-fader mono signal (taken from the POST-FADER
+node, after the post-fader amp, before pan) is sent to an
+impedance-balanced TRS jack at the rear.
+
+*Implementation TBD — see `10-open-tbd.md`.*
 
 *(Note: the PFL switch was previously listed here as item (e). It
 has been moved to §2.5.2 because the design now taps PFL pre-mute,
@@ -220,10 +225,12 @@ not post-mute.)*
 ## 2.10 Implementation details
 
 Status: **in-progress** — Block 1 (input stage to CHANNEL SOURCE
-switch), Block 2 (HPF + Insert Send/Return + jack PCB), and Block 3
-(meter buffer + PFL switch + MUTE) finalized. Remaining stages
-(fader, post-fader amp, active pan, post-pan distribution) still
-conceptual.
+switch), Block 2 (HPF + Insert Send/Return + jack PCB), Block 3
+(meter buffer + PFL switch + MUTE), Block 4 (pre-fader node + fader
+PCB + post-fader amp + AUX/CUE sends), and Block 5 (active pan)
+finalized. Block 6 (post-pan routing rotary) topology defined,
+values TBD. AFL switch and Post-Fader Output stages still
+conceptual — see `10-open-tbd.md`.
 
 ### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
@@ -657,3 +664,336 @@ Op Amp Applications Handbook):
   source-select? — TBD. See `10-open-tbd.md`.
 - **PFL LED current-limit resistor value** — depends on chosen LED.
 - **PFL signal diode** — 1N4148-class, exact part TBD.
+
+---
+
+### Block 4 — Pre-fader node + fader PCB + post-fader amp + AUX/CUE sends (FINALIZED)
+
+**Status:** finalized
+**Last updated:** 2026-04-26
+**Conversation ref:** "mono channel — pre-fader node through post-fader sends"
+
+#### Topology chosen
+
+*Pre-fader node:*
+
+The output (D pin) of the ADG419 in Block 3 is the PRE-FADER node.
+This node is loaded by three parallel paths:
+
+- **4 × AUX dual-gang pots, pre-fader gangs (gang 1 of each).** Top
+  of each pre gang to PRE-FADER, bottom to AGND, wiper drives a
+  bus summing resistor toward AUX n PRE bus.
+- **1 × CUE dual-gang pot, both gangs identically fed.** Top of
+  both gangs to PRE-FADER, bottom of both gangs to AGND. The two
+  wipers drive bus summing resistors toward CUE L bus and CUE R
+  bus respectively. Topologically identical to an AUX-pre send,
+  duplicated across L and R because the channel is mono and the
+  CUE bus is stereo — produces a center-panned contribution on
+  the stereo CUE bus, with one knob controlling level.
+- **Pin 1 of a 3-pin connector** to the fader PCB (see below).
+
+*3-pin connector — channel PCB ↔ fader PCB:*
+
+| Pin | Direction | Signal |
+|-----|-----------|--------|
+| 1   | channel → fader | PRE-FADER |
+| 2   | shared          | AGND (interposed as guard) |
+| 3   | fader → channel | POST-FADER |
+
+The AGND between Pin 1 and Pin 3 is intentional: Pin 1 carries the
+pre-fader signal and Pin 3 carries the same signal attenuated by
+the fader. Although correlated, interposing AGND prevents inter-PCB
+ground potential differences from showing up at the wiper.
+
+*Fader PCB:*
+
+Hosts **2 channels per PCB** (12 fader PCBs total for the 24 mono
+channels). Each channel uses one half of an OPA1642 dual.
+
+Per channel on the fader PCB:
+
+1. **Fader** (mono, taper TBD): top lug = pin 1 (PRE-FADER), bottom
+   lug = AGND (pin 2), wiper continues onward.
+2. **Wiper DC block + bias**: wiper → C_bp (bipolar electrolytic,
+   value TBD) in series → R_bias to AGND (value TBD) → +input of
+   one half of an OPA1642.
+3. **Post-fader amp** (non-inverting, +10 dB nominal):
+   - Inverting input: connected to a feedback node, plus R_G to
+     AGND.
+   - Feedback: from the FB node back to the inverting input through
+     R_FB ‖ C_FB.
+   - The opamp output pin drives a 680 Ω in series; the FB node is
+     taken on the **far side** of the 680 Ω. R_FB ‖ C_FB closes
+     back to the FB node.
+4. **Output DC block**: 220 µF polarized electrolytic in series →
+   pin 3 of the connector.
+
+*Post-fader return on channel PCB:*
+
+Pin 3 of the connector returns the POST-FADER signal to the channel
+PCB. This signal feeds in parallel:
+
+- **4 × AUX dual-gang pots, post-fader gangs (gang 2 of each).**
+  Top of each post gang to POST-FADER, bottom to AGND, wiper drives
+  bus summing resistor toward AUX n POST bus.
+- **Top of the pan dual-gang pot** (both gangs — see Block 5).
+- (later) Post-Fader Output tap — to be designed (see open issues).
+
+#### Active devices
+
+- **OPA1642 × 1 per fader PCB** (dual SOIC; one half per channel,
+  used as post-fader amp).
+
+#### Key passive values
+
+- R_FB (post-fader amp): **4.7 kΩ** (0603 1 %).
+- R_G (post-fader amp): **2.2 kΩ** (0603 1 %).
+- Series resistor inside loop: **680 Ω** (0603 1 %).
+- Output DC block: **220 µF** polarized electrolytic.
+- C_bp (wiper DC block, bipolar): TBD.
+- R_bias (wiper to AGND after C_bp): TBD.
+- C_FB (HF pole on R_FB): TBD.
+- 4 × AUX dual-gang pots: value TBD.
+- 1 × CUE dual-gang pot: value TBD.
+- 8 × AUX bus summing resistors per channel (4 pre + 4 post): TBD.
+- 2 × CUE bus summing resistors per channel (L + R): TBD.
+
+#### Design targets / expected performance
+
+- Post-fader amp gain: **+9.93 dB** (1 + 4.7/2.2 = 3.136), nominal
+  +10 dB.
+- Post-fader amp output impedance at audio: ≈ 0 Ω at the FB node
+  (pulled there by feedback through R_FB; 680 Ω is inside the
+  loop). At HF, where loop gain falls, the 680 Ω becomes effective
+  output impedance and isolates the opamp from capacitive load /
+  short-circuit conditions on the connector and 220 µF.
+- Pre-fader node source impedance: ADG419 R_on (≈17 Ω) + bias paths
+  from the upstream stage (Block 3).
+
+#### Decisions and tradeoffs
+
+- **Fader on a separate PCB hosting 2 channels.** Partitions the
+  console into modular sub-assemblies aligned with the mechanical
+  layout (fader bank in front of the channel strips). The 3-pin
+  connector keeps the fader PCB minimal and standard across all
+  channels.
+- **3-pin connector with AGND interposed** between PRE-FADER and
+  POST-FADER lines: prevents inter-PCB ground potential differences
+  from appearing as offsets at the wiper.
+- **OPA1642 for the post-fader amp.** JFET input ⇒ negligible bias
+  current — important because the +input sees the wiper through C_bp
+  and any bias current would create a position-dependent DC offset
+  (manifesting as a thump on fader movement). Coherent with prior
+  OPA1642 use in Block 2.
+- **680 Ω inside the loop** (Self's "zero-impedance output" pattern,
+  c.f. Fig. 22.5c): R_FB closes back to the FB node, not to the
+  opamp output pin. At audio frequencies, feedback pulls the FB-node
+  impedance to near zero; at HF, where loop gain falls, the 680 Ω
+  isolates the opamp output pin from capacitive loading on the
+  connector / 220 µF and limits short-circuit current. Single
+  resistor, two functions.
+- **Single dual-gang pot per AUX (one knob = one pre + one post
+  send)** rather than 4+4 separate pots. Halves AUX knob count, at
+  the cost of forcing the same level shape on pre and post — usually
+  what one wants anyway.
+- **CUE pot wired with both gangs receiving the pre-fader signal
+  identically**: makes a one-knob send to a stereo CUE bus from a
+  mono channel, coherent with the "send centered on the stereo
+  bus" semantics. Topologically just a duplicated AUX-pre.
+
+#### Open issues for Block 4
+
+- **C_bp** (wiper DC block, bipolar): value TBD.
+- **R_bias** (wiper to AGND after C_bp): value TBD. Together with
+  C_bp these set the LF rolloff into the post-fader amp's +input
+  and define the bias condition of the wiper at startup.
+- **C_FB** (HF pole on R_FB): value TBD.
+- **Polarity of the 220 µF output DC block**: depends on DC at the
+  next stage on the channel PCB (the AUX-post gang tops and the
+  pan top). To be set when measured on rev 1.
+- **AUX dual-gang pot value** (× 4) and **AUX bus summing resistor
+  values** (× 8: 4 pre + 4 post). To be calculated together with
+  AUX master summing topology (§05).
+- **CUE dual-gang pot value** (× 1) and **CUE bus summing resistor
+  values** (× 2: L, R). To be calculated together with CUE master
+  summing topology (§06).
+- **Fader part / taper / law** — not specified.
+- **3-pin connector type / cable** (twisted pair shielded vs flat):
+  TBD.
+
+---
+
+### Block 5 — Active pan (FINALIZED)
+
+**Status:** finalized
+**Last updated:** 2026-04-26
+**Conversation ref:** "mono channel — active pan"
+
+#### Topology chosen
+
+*Pan pot:*
+
+- **Dual-gang 10 kΩ LIN, center-detent preferred.** Reverse-wired
+  between the two gangs so that at one extreme of rotation, one
+  wiper sees the input signal while the other sees AGND.
+- Top / bottom of each gang to POST-FADER signal / AGND
+  (orientations opposite between L gang and R gang).
+- Wiper of each gang feeds the +input of one half of an OPA1642.
+
+*Active pan stage* (per side, one half-OPA1642 per side, both halves
+of one OPA1642 used for L and R):
+
+Self's active panpot (Fig. 22.12, *Small Signal Audio Design*):
+the law-bend resistor is driven from the opamp output rather than
+from a fixed voltage, forming a negative-impedance-converter that
+shapes the law toward sin/sin² compromise and improves offness
+from ≈ 65 dB (passive) to ≈ 90 dB (active).
+
+Per opamp half, three resistors and one capacitor:
+
+- **R_LAW = 3.3 kΩ** — opamp output → non-inverting input. The wiper
+  also connects to this same node (i.e. R_LAW and the wiper meet at
+  the +input).
+- **R_FB = 4.7 kΩ** — opamp output → inverting input.
+- **R_G = 10 kΩ** — inverting input → AGND.
+- **C_FB** in parallel with R_FB (HF pole, value TBD).
+
+The "non-inverting amp gain" alone (ignoring the law-bend loop) is
+1 + R_FB/R_G = 1.47 → **+3.35 dB**.
+
+*Becomes-stereo point:*
+
+The two opamp output pins are the post-pan L and R signals. **The
+channel becomes stereo at these two pins** — this is the canonical
+"becomes stereo" point for the mono channel.
+
+*Output:*
+
+Post-pan L and R feed Block 6 (rotary routing) + AFL switch +
+Post-Fader Output. No DC block at the pan output (OPA1642 has
+negligible bias / offset; downstream is either AC-coupled or
+DC-tolerant).
+
+#### Active devices
+
+- **OPA1642 × 1 per channel** (dual SOIC; both halves used, one for
+  L, one for R).
+
+#### Key passive values
+
+- R_LAW = 3.3 kΩ × 2 (one per side) = 2 per channel.
+- R_FB = 4.7 kΩ × 2 = 2 per channel.
+- R_G = 10 kΩ × 2 = 2 per channel.
+- C_FB × 2 per channel: TBD.
+- Pan pot: dual-gang 10 kΩ LIN, center-detent preferred.
+
+#### Design targets / expected performance
+
+(With current values: pot = 10 kΩ, R_LAW = 3.3 kΩ, R_FB = 4.7 kΩ,
+R_G = 10 kΩ.)
+
+- Hard-pan output level: +3.35 dB (relative to POST-FADER).
+- Center output level: +1.13 dB (relative to POST-FADER, each side).
+- **Center dip: ≈ 2.2 dB** (vs Self's canonical ≈ 4.5 dB compromise
+  with R_FB = 2.2 kΩ). See attention point below.
+- Offness when panned hard one side: limited by pot end-of-track
+  resistance, ≈ 90 dB on the inactive side.
+
+#### Decisions and tradeoffs
+
+- **Active pan over passive law-bending.** Self's pattern: cleaner
+  pan law and significantly better offness at the cost of one dual
+  opamp per channel.
+- **OPA1642**: JFET input ⇒ negligible bias / offset. Critical
+  because R_LAW is a positive-feedback path; any DC drift would be
+  amplified by the loop. Also coherent with OPA1642 use in Blocks 2
+  and 4.
+- **Center-detent pot preferred**: gives the engineer a tactile
+  reference for "hard center" without looking. Optional.
+- **No DC block at pan output**: OPA1642 has negligible output DC
+  offset, downstream is tolerant. Saves capacitors and avoids
+  inserting LF poles.
+- **R_FB = 4.7 kΩ chosen** (vs Self's canonical 2.2 kΩ). Open issue
+  — see below.
+
+#### Open issues for Block 5
+
+- **⚠️ ATTENTION POINT: R_FB value vs Self's canonical values.**
+  The current choice (R_FB = 4.7 kΩ, gain = +3.35 dB) yields a
+  center dip of ≈ 2.2 dB instead of Self's canonical ≈ 4.5 dB.
+  Self's exact values from Fig. 22.12 (R_FB ≈ 2.2 kΩ, R_G = 10 kΩ,
+  R_LAW = 3.3 kΩ, pot = 10 kΩ LIN) are tuned together to land on
+  the sin/sin² compromise law with −4.5 dB at center.
+  With R_FB = 4.7 kΩ:
+  - The opamp non-inverting gain doubles (from +1.73 dB to +3.35 dB).
+  - R_LAW pulls the wiper voltage up too aggressively at center.
+  - Center dip flattens to ≈ 2.2 dB → the pan feels "soft" around
+    center, with ≈ 2 dB level jump from hard-panned to center.
+  To revisit: confirm intentional voicing (deliberate "soft center"
+  law) or align to Self canonical (R_FB → 2.2 kΩ). See
+  `10-open-tbd.md`.
+- **C_FB** (HF pole on R_FB): value TBD.
+- **Pan pot exact part** — dual-gang 10 kΩ LIN center-detent, model
+  TBD.
+
+---
+
+### Block 6 — Post-pan routing rotary (PARTIAL — values TBD)
+
+**Status:** in-progress — topology defined, bus summing resistor
+values to be calculated together with §07 (Main) and §04 (Groups).
+**Last updated:** 2026-04-26
+**Conversation ref:** "mono channel — post-pan routing rotary"
+
+#### Topology chosen
+
+*Rotary switch (§2.9 (a)):*
+
+- **2-gang × 4-position rotary**, mechanical, front-panel.
+- Centrals (poles) of gang L and gang R are fed by the post-pan L
+  and R signals from Block 5.
+- Each of the 4 positions on each gang connects through a bus
+  summing resistor to one of the four destination buses
+  (Main / G1 / G2 / G3), respectively L or R sub-bus.
+- 4 positions × 2 gangs = **8 bus summing resistors per channel**
+  for this stage.
+- One destination active at a time per channel; the inactive
+  positions leave the corresponding bus summing resistor floating
+  on the channel side (no back-grounding).
+
+#### Active devices
+
+None on this stage.
+
+#### Key passive values
+
+- 8 × bus summing resistors per channel: TBD. To be calculated
+  together with §07 (Main summer) and §04 (group summers).
+- Rotary switch: 2-gang, 4-position, mechanical, front-panel; part
+  TBD.
+
+#### Decisions and tradeoffs
+
+- **Rotary over individual mechanical push-switches per
+  destination**: simpler front panel, only one position active by
+  construction, saves panel space at the cost of being unable to
+  send a single channel to multiple stereo destinations
+  simultaneously. Acceptable given the modest group count (3) and
+  the operator's ability to use AUX sends and groups together for
+  multi-destination workflows.
+- **Open inactive positions, not back-grounded**: with the post-pan
+  L/R OPA1642 outputs sourcing each destination through its own
+  bus summing resistor, the load presented to the pan stage varies
+  with rotary position by ≈ 0 (one resistor at a time, all
+  approximately the same value). No need for back-grounding;
+  saves 8 resistor positions per channel on the rotary.
+
+#### Open issues for Block 6
+
+- **Bus summing resistor values** (8 per channel × 24 channels =
+  192 resistors total, plus contributions from AUX returns and
+  groups). To be solved together with §04 and §07.
+- **Rotary switch part selection** (2-gang, 4-position, mechanical,
+  make-before-break vs break-before-make): TBD. Probably
+  break-before-make to avoid momentary cross-routing during
+  position change.
