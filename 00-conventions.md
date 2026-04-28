@@ -69,12 +69,52 @@ bead, direct bond, etc.) is a global decision — see `10-open-tbd.md`.
 
 - Default: **SOIC** for all opamps and analog switches.
 
+### Default audio opamp
+
+- Default audio-stage opamp throughout CONSOLE: **NE5532** (dual SOIC).
+  Used in active stages of the channel strip, group strip, AUX returns,
+  master sections, and monitor section unless a specific Block
+  explicitly motivates a different choice.
+- Rationale: the NE5532 is the historical workhorse of professional
+  mixing consoles (SSL, Neve, Soundcraft, Trident lineage) and remains
+  the best price/performance compromise for noise (5 nV/√Hz),
+  drive capability (rated for 600 Ω loads at low distortion), distortion
+  characteristics (no crossover), and cost. Its bipolar input bias
+  current (~200 nA) is handled in each Block by sizing bias-return
+  resistors and DC-block capacitors appropriately.
+- Documented exceptions in the current design:
+  - **OPA1679** (quad SOIC, CMOS input) in Block 1 of the mono channel
+    (input buffers + All-Inverting balanced receivers). Chosen for low
+    bias current at the high-impedance input nodes and for the 4-opamp-
+    in-one-package density required by buffer + receiver count.
+  - **OPA1632** for the differential output stage of any future
+    fully-differential ADC drive (not currently in CONSOLE; reserved
+    for ADAT project).
+- **Budget-review item**: at the prototype/measurement stage, evaluate
+  whether selected positions warrant an upgrade from NE5532 to
+  **OPA1642** (JFET, lower CM-distortion, negligible bias current) or
+  **OPA1656** (CMOS, significantly lower noise at 1.6 nV/√Hz). Strongest
+  candidates are positions where input-stage impedance is high and
+  varies (Block 5 active pan: wiper Z varies with pan position) or
+  where common-mode swing is largest (Block 2 HPF Sallen-Key, Block 5
+  active pan +input). See `10-open-tbd.md`.
+
 ### Opamp supply bypassing
 
-- Every opamp gets **100 nF** from +15V → AGND and **100 nF** from
+- Every opamp IC gets **100 nF** from +15V → AGND and **100 nF** from
   −15V → AGND, placed as close as possible to the supply pins. This
   is a default that is not repeated in individual section
   descriptions.
+- **Local bulk on each PCB power rail:** in addition to the per-IC
+  100 nF above, every PCB that receives the ±15V (or +5V) rails
+  carries a bulk capacitor on each rail to its respective ground
+  (AGND for ±15V, DGND for +5V), placed near the local IC group.
+  Typical value **4.7–10 µF**; exact value and dielectric (tantalum,
+  polymer, ceramic X7R, low-ESR electrolytic) chosen per PCB at
+  layout time, based on density of active devices and signal-path
+  sensitivity. The per-IC 100 nF handles HF decoupling; the local
+  bulk improves transient response and low-frequency PSRR. This
+  default is not repeated in individual section descriptions.
 
 ### Signal-path coupling capacitors
 
@@ -160,5 +200,6 @@ See `10-open-tbd.md` for the open issue and possible mitigations.
   implementation conversation. Blocks accumulate as the design
   progresses.
 - References to global conventions (power, grounds, EMI filter,
-  impedance-balanced output, switch+LED pattern, etc.) point to this
-  file and do not repeat the values at the point of use.
+  impedance-balanced output, default audio opamp, switch+LED pattern,
+  etc.) point to this file and do not repeat the values at the point
+  of use.

@@ -235,8 +235,6 @@ conceptual — see `10-open-tbd.md`.
 ### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
 **Status:** finalized
-**Last updated:** 2026-04-24
-**Conversation ref:** "mono channel — input stage to CHANNEL SOURCE switch"
 
 #### Topology chosen
 
@@ -245,6 +243,20 @@ cold):
 
 - T-balanced double-pi filter per global standard
   (see `00-conventions.md`).
+
+*Input jack idle-noise scheme:*
+
+- The TRS jacks for Input A and Input B are *stereo with switch*
+  type (5 contacts: TIP, RING, SLEEVE, TIP-SW, RING-SW). TIP-SW and
+  RING-SW are tied together but otherwise unconnected. When no plug
+  is inserted, the jack's mechanical normalling closes TIP-SW onto
+  TIP and RING-SW onto RING — therefore TIP↔RING are shorted at the
+  jack itself in idle. The All-Inverting receiver downstream sees
+  zero differential signal at idle, eliminating differential pickup
+  on open inputs. SLEEVE remains permanently to chassis (Pin 1
+  rule). With a plug inserted, the SW contacts open and balanced
+  operation is fully restored. Common-mode pickup at idle is left to
+  the receiver's CMR, deemed sufficient.
 
 *Buffer stage:*
 
@@ -258,8 +270,21 @@ cold):
 
 - Tap from the two buffer outputs of Input A (hot and cold), driven
   actively on both lines.
+- **Build-out resistors: 75 Ω 0.1 % thin-film matched pair**, one
+  per leg (hot and cold), in series between each buffer output and
+  the EMI filter. The build-out is on the Direct Out branch only;
+  the internal off-board path to the next PCB (toward the
+  All-Inverting receiver) does NOT carry build-out, since the
+  receiver wants Z_source ≈ 0 and the two opamps of the same quad
+  are intrinsically matched.
 - Same T-balanced EMI filter topology as the input
   (see `00-conventions.md`).
+- **No DC block** between buffer output and the TRS jack. OPA1679
+  V_os ≤ ±1.5 mV / section, differential offset ≤ ~3 mV — negligible
+  for any downstream balanced receiver. A series cap on each leg
+  would degrade CMR at low frequencies (electrolytic tolerance
+  produces ΔX_c that translates to ΔZ_source) exactly where mains
+  hum sits. Trade favors omitting the cap.
 - Note: the Direct Out is "fully-balanced" only if the source driving
   the TRS input is itself balanced; if the source is
   impedance-balanced or single-ended, the Direct Out preserves that
@@ -317,6 +342,9 @@ Op Amp Applications Handbook):
 - Receiver matched resistors: 1 kΩ × 4 per receiver × 2 receivers =
   **8 per channel — CMR-critical**. Target tolerance: **0.1 %
   thin-film**.
+- **Direct Out build-out: 75 Ω × 2 per channel** (hot and cold of
+  Input A only). **0.1 % thin-film matched pair**, same lot for
+  thermal tracking.
 - Gain pot: 10 kΩ log × 2 per channel (one per input, independent).
 - Pot minimum series: 100 Ω × 2 per channel.
 
@@ -336,6 +364,37 @@ Op Amp Applications Handbook):
 - **No phase-lead compensation on the receivers (first revision).**
   Footprints provided but unpopulated; populate in rev 2 if measured
   10 kHz CMR is insufficient.
+- **OPA1679 (CMOS quad) over the global NE5532 default.**
+  Documented exception per `00-conventions.md`. Three reasons combine
+  to justify the deviation here:
+  (1) buffer count: 4 buffers + 4 receiver opamps per channel = 8
+  opamps, naturally fitted by 2 quads.
+  (2) the input-side buffer sits at very high source impedance
+  (200 kΩ shunt to AGND); a bipolar opamp's bias current (~200 nA
+  for NE5532) would drop ~40 mV across the input bias resistor and
+  must be matched between hot and cold legs to preserve CMR — the
+  CMOS ~10 pA bias current sidesteps this.
+  (3) the Direct Out path runs without a DC block (see above);
+  OPA1679's low Vos keeps the cumulative offset within budget for
+  any downstream ADC differential input.
+- **Direct Out build-out: 75 Ω 0.1 % matched pair**, on hot and cold,
+  on the Direct Out branch only. Trades a small CMR floor (≈ 96 dB
+  with 0.1 % matching, well below the receiver's CMR ceiling) for
+  cable-capacitance isolation, short-circuit protection, and proper
+  source impedance for the EMI filter — the build-out becomes the
+  source impedance against which the π-stage attenuates; without it,
+  the filter loses HF attenuation due to near-zero source Z.
+  Internal off-board path to the All-Inverting receiver stays at
+  Z_source ≈ 0.
+- **No DC block on the Direct Out path.** OPA1679 V_os is small
+  enough that a series cap is not needed and would actively hurt
+  CMR at low frequencies (electrolytic tolerance ⇒ ΔX_c ⇒ ΔZ_source
+  exactly where mains hum lives). See *Direct Out* in Topology
+  chosen for the numbers.
+- **TIP-SW = RING-SW shorting on Input A and B jacks.** Exploits
+  the jack's normalling contacts to short TIP↔RING when no plug is
+  inserted, so the receiver sees zero differential signal at idle.
+  See *Input jack idle-noise scheme* in Topology chosen.
 - **LED power on +5V / DGND**, galvanically separate from audio
   ±15V / AGND.
 
@@ -344,8 +403,6 @@ Op Amp Applications Handbook):
 ### Block 2 — HPF + Insert Send/Return + jack PCB (FINALIZED)
 
 **Status:** finalized
-**Last updated:** 2026-04-25
-**Conversation ref:** "mono channel — HPF through INSERT switch"
 
 #### Topology chosen
 
@@ -362,7 +419,7 @@ Op Amp Applications Handbook):
   follower (inv pin directly connected to output).
   - f0 ≈ 80.6 Hz, **Q ≈ 3.46**.
 - Output DC block: C42 (47 µF bipolar) in series, R26 (47 kΩ) to AGND.
-- Opamp: **OPA1642 IC2B** (dual SOIC). The other half (IC2A) is used
+- Opamp: **NE5532 IC2B** (dual SOIC). The other half (IC2A) is used
   by the Insert Return receiver.
 - HPF stage is **always powered**. The DPDT switch only selects which
   signal continues downstream (unfiltered or filtered).
@@ -401,7 +458,7 @@ Op Amp Applications Handbook):
   filter only, zero impact in audio band.
 - Output DC block: C38 (47 µF bipolar) in series, R22 (47 kΩ) to AGND.
 - Gain: **unity, fixed**.
-- Opamp: **OPA1642 IC2A** (the other half of the HPF opamp).
+- Opamp: **NE5532 IC2A** (the other half of the HPF opamp).
 
 *INSERT switch:*
 
@@ -435,11 +492,12 @@ Op Amp Applications Handbook):
 
 #### Active devices
 
-**OPA1642 × 1 per channel** (dual SOIC):
+**NE5532 × 1 per channel** (dual SOIC):
 
 - IC2A: Insert Return receiver.
 - IC2B: HPF (Sallen-Key + passive 1st-order).
-- Rationale: shared between two functions, low part count.
+- Rationale: shared between two functions, low part count. Per global
+  default in `00-conventions.md`.
 
 #### Key passive values
 
@@ -474,8 +532,12 @@ Op Amp Applications Handbook):
   3.46 on the SK stage produces a ~+5 dB peak around 80 Hz. Not yet
   decided whether this is intentional voicing or should be rebalanced
   toward Butterworth (see `10-open-tbd.md`).
-- **OPA1642 dual shared between HPF and Insert Return receiver.**
-  Single chip serves both functions, reducing part count.
+- **NE5532 dual shared between HPF and Insert Return receiver.**
+  Single chip serves both functions, reducing part count. Per global
+  default in `00-conventions.md`. NE5532's CM-distortion at the SK
+  stage's high-Z +input is the most visible NE5532 limitation in
+  this Block; identified as a candidate for selective upgrade to
+  OPA1642 (JFET) at the budget-review stage — see `10-open-tbd.md`.
 - **Single-opamp differential receiver on the Insert Return** (rather
   than the All-Inverting topology used on the input). Reason: simpler,
   fixed unity gain (no need for the All-Inverting's CMR-vs-gain
@@ -527,8 +589,6 @@ Op Amp Applications Handbook):
 ### Block 3 — Meter buffer + PFL switch + MUTE (FINALIZED)
 
 **Status:** finalized
-**Last updated:** 2026-04-26
-**Conversation ref:** "mono channel — meter buffer through PRE-FADER node"
 
 #### Topology chosen
 
@@ -589,9 +649,9 @@ Op Amp Applications Handbook):
 
 #### Active devices
 
-- **Meter buffer opamp**: TBD. Candidates: another OPA1642, or an
-  audio-grade dual where the second half can be reused for a future
-  stage in Block 4.
+- **Meter buffer opamp**: **NE5532** (one half used). Per global
+  default in `00-conventions.md`. The other half on this PCB is
+  unused unless reuse can be found in a later block.
 - **ADG419** × 1 per channel, SOIC-8.
 - **Small-signal diode** for the PFL DETECT wired-OR (1N4148-class):
   exact part TBD.
@@ -626,6 +686,11 @@ Op Amp Applications Handbook):
 - **Meter PCB AGND pour, not chassis-only**: no TRS jacks present
   on the meter PCB, so no Muncy "Pin 1" rationale to keep AGND
   isolated from chassis on that board.
+- **NE5532 for the meter buffer**: per global default. Bias-current
+  noise into the high-Z tap upstream is negligible thanks to the
+  47 kΩ bias return at the post-INSERT node (R22 in Block 2). The
+  buffer's sole purpose is to drive the meter rectifier — distortion
+  and noise budget trivially met by NE5532.
 - **PFL is pre-fader and pre-mute**, achieved by tapping upstream of
   the ADG419. PFL listen continues to work even when the channel
   is muted, matching live-sound semantics. Conceptually relocated
@@ -654,7 +719,6 @@ Op Amp Applications Handbook):
 
 #### Open issues for Block 3
 
-- **Meter buffer opamp** — part TBD.
 - **Channels per input PCB** (4 or 6) and resulting **control
   connector partitioning** (one wide connector per PCB vs one
   narrow connector per channel) — TBD. See `10-open-tbd.md`.
@@ -670,8 +734,6 @@ Op Amp Applications Handbook):
 ### Block 4 — Pre-fader node + fader PCB + post-fader amp + AUX/CUE sends (FINALIZED)
 
 **Status:** finalized
-**Last updated:** 2026-04-26
-**Conversation ref:** "mono channel — pre-fader node through post-fader sends"
 
 #### Topology chosen
 
@@ -708,7 +770,7 @@ ground potential differences from showing up at the wiper.
 *Fader PCB:*
 
 Hosts **2 channels per PCB** (12 fader PCBs total for the 24 mono
-channels). Each channel uses one half of an OPA1642 dual.
+channels). Each channel uses one half of an NE5532 dual.
 
 Per channel on the fader PCB:
 
@@ -716,7 +778,7 @@ Per channel on the fader PCB:
    lug = AGND (pin 2), wiper continues onward.
 2. **Wiper DC block + bias**: wiper → C_bp (bipolar electrolytic,
    value TBD) in series → R_bias to AGND (value TBD) → +input of
-   one half of an OPA1642.
+   one half of an NE5532.
 3. **Post-fader amp** (non-inverting, +10 dB nominal):
    - Inverting input: connected to a feedback node, plus R_G to
      AGND.
@@ -741,18 +803,22 @@ PCB. This signal feeds in parallel:
 
 #### Active devices
 
-- **OPA1642 × 1 per fader PCB** (dual SOIC; one half per channel,
-  used as post-fader amp).
+- **NE5532 × 1 per fader PCB** (dual SOIC; one half per channel,
+  used as post-fader amp). Per global default in `00-conventions.md`.
 
 #### Key passive values
 
 - R_FB (post-fader amp): **4.7 kΩ** (0603 1 %).
 - R_G (post-fader amp): **2.2 kΩ** (0603 1 %).
+- **C_FB (HF pole on R_FB): 100 pF NPO/C0G** (0603). HF pole at
+  ≈ 339 kHz.
 - Series resistor inside loop: **680 Ω** (0603 1 %).
 - Output DC block: **220 µF** polarized electrolytic.
 - C_bp (wiper DC block, bipolar): TBD.
-- R_bias (wiper to AGND after C_bp): TBD.
-- C_FB (HF pole on R_FB): TBD.
+- R_bias (wiper to AGND after C_bp): TBD. With NE5532 (I_B ~ 200 nA),
+  R_bias = 47 kΩ would produce ~9 mV DC at the +input → ~30 mV at
+  the opamp output (post +10 dB), absorbed by the 220 µF output DC
+  block. Final value to be set when C_bp is sized.
 - 4 × AUX dual-gang pots: value TBD.
 - 1 × CUE dual-gang pot: value TBD.
 - 8 × AUX bus summing resistors per channel (4 pre + 4 post): TBD.
@@ -762,6 +828,8 @@ PCB. This signal feeds in parallel:
 
 - Post-fader amp gain: **+9.93 dB** (1 + 4.7/2.2 = 3.136), nominal
   +10 dB.
+- Post-fader amp HF pole: ≈ 339 kHz (R_FB ‖ C_FB). Audio-band
+  response flat to within −0.015 dB at 20 kHz.
 - Post-fader amp output impedance at audio: ≈ 0 Ω at the FB node
   (pulled there by feedback through R_FB; 680 Ω is inside the
   loop). At HF, where loop gain falls, the 680 Ω becomes effective
@@ -769,6 +837,10 @@ PCB. This signal feeds in parallel:
   short-circuit conditions on the connector and 220 µF.
 - Pre-fader node source impedance: ADG419 R_on (≈17 Ω) + bias paths
   from the upstream stage (Block 3).
+- Post-fader amp drive: NE5532 is rated for 600 Ω loads at low
+  distortion; the parallel load presented by 5 × 10 kΩ pot tops
+  (4 AUX-post + pan) is ≈ 2 kΩ, well within capability. Verify when
+  AUX/CUE/pan pot values are finalized (§05, §06).
 
 #### Decisions and tradeoffs
 
@@ -780,11 +852,16 @@ PCB. This signal feeds in parallel:
 - **3-pin connector with AGND interposed** between PRE-FADER and
   POST-FADER lines: prevents inter-PCB ground potential differences
   from appearing as offsets at the wiper.
-- **OPA1642 for the post-fader amp.** JFET input ⇒ negligible bias
-  current — important because the +input sees the wiper through C_bp
-  and any bias current would create a position-dependent DC offset
-  (manifesting as a thump on fader movement). Coherent with prior
-  OPA1642 use in Block 2.
+- **NE5532 for the post-fader amp.** Per global default in
+  `00-conventions.md`. The +input sees the wiper through C_bp:
+  C_bp blocks DC, so the bipolar input bias current of NE5532
+  (~200 nA) flows only through R_bias to AGND, producing a static
+  DC offset at the +input independent of fader position. No
+  position-dependent thump on fader movement. The 220 µF output
+  DC block absorbs the resulting offset before it reaches
+  downstream stages. Drive capability into the post-fader load
+  (4 AUX-post gangs + pan + future post-fader output) is well
+  within NE5532's specified 600 Ω rating.
 - **680 Ω inside the loop** (Self's "zero-impedance output" pattern,
   c.f. Fig. 22.5c): R_FB closes back to the FB node, not to the
   opamp output pin. At audio frequencies, feedback pulls the FB-node
@@ -792,6 +869,14 @@ PCB. This signal feeds in parallel:
   isolates the opamp output pin from capacitive loading on the
   connector / 220 µF and limits short-circuit current. Single
   resistor, two functions.
+- **C_FB = 100 pF NPO/C0G** in parallel with R_FB: defines the HF
+  pole at ≈ 339 kHz, ~one decade above audio. Three combined
+  functions: (1) limits HF gain above audio to attenuate ultrasonic
+  content; (2) provides preventive stability margin against parasitic
+  capacitance at the −input and capacitive loading on the connector;
+  (3) rejects RF residue. Coherent with C_FB = 220 pF on the active
+  pan stage in Block 5 (same target HF pole frequency, scaled by
+  R_FB).
 - **Single dual-gang pot per AUX (one knob = one pre + one post
   send)** rather than 4+4 separate pots. Halves AUX knob count, at
   the cost of forcing the same level shape on pre and post — usually
@@ -807,7 +892,6 @@ PCB. This signal feeds in parallel:
 - **R_bias** (wiper to AGND after C_bp): value TBD. Together with
   C_bp these set the LF rolloff into the post-fader amp's +input
   and define the bias condition of the wiper at startup.
-- **C_FB** (HF pole on R_FB): value TBD.
 - **Polarity of the 220 µF output DC block**: depends on DC at the
   next stage on the channel PCB (the AUX-post gang tops and the
   pan top). To be set when measured on rev 1.
@@ -826,8 +910,6 @@ PCB. This signal feeds in parallel:
 ### Block 5 — Active pan (FINALIZED)
 
 **Status:** finalized
-**Last updated:** 2026-04-26
-**Conversation ref:** "mono channel — active pan"
 
 #### Topology chosen
 
@@ -838,10 +920,10 @@ PCB. This signal feeds in parallel:
   wiper sees the input signal while the other sees AGND.
 - Top / bottom of each gang to POST-FADER signal / AGND
   (orientations opposite between L gang and R gang).
-- Wiper of each gang feeds the +input of one half of an OPA1642.
+- Wiper of each gang feeds the +input of one half of an NE5532.
 
-*Active pan stage* (per side, one half-OPA1642 per side, both halves
-of one OPA1642 used for L and R):
+*Active pan stage* (per side, one half-NE5532 per side, both halves
+of one NE5532 used for L and R):
 
 Self's active panpot (Fig. 22.12, *Small Signal Audio Design*):
 the law-bend resistor is driven from the opamp output rather than
@@ -854,12 +936,13 @@ Per opamp half, three resistors and one capacitor:
 - **R_LAW = 3.3 kΩ** — opamp output → non-inverting input. The wiper
   also connects to this same node (i.e. R_LAW and the wiper meet at
   the +input).
-- **R_FB = 4.7 kΩ** — opamp output → inverting input.
+- **R_FB = 2.2 kΩ** — opamp output → inverting input. Self canonical.
 - **R_G = 10 kΩ** — inverting input → AGND.
-- **C_FB** in parallel with R_FB (HF pole, value TBD).
+- **C_FB = 220 pF NPO/C0G** in parallel with R_FB. HF pole at
+  ≈ 329 kHz.
 
 The "non-inverting amp gain" alone (ignoring the law-bend loop) is
-1 + R_FB/R_G = 1.47 → **+3.35 dB**.
+1 + R_FB/R_G = 1.22 → **+1.73 dB**.
 
 *Becomes-stereo point:*
 
@@ -870,69 +953,85 @@ channel becomes stereo at these two pins** — this is the canonical
 *Output:*
 
 Post-pan L and R feed Block 6 (rotary routing) + AFL switch +
-Post-Fader Output. No DC block at the pan output (OPA1642 has
-negligible bias / offset; downstream is either AC-coupled or
-DC-tolerant).
+Post-Fader Output. No DC block at the pan output: NE5532 V_os ≤
+0.5 mV typical, and the bias current through R_FB / R_G produces a
+small additional DC offset that downstream summers / receivers
+either absorb (virtual-earth nodes) or block (AC-coupled inputs).
 
 #### Active devices
 
-- **OPA1642 × 1 per channel** (dual SOIC; both halves used, one for
-  L, one for R).
+- **NE5532 × 1 per channel** (dual SOIC; both halves used, one for
+  L, one for R). Per global default in `00-conventions.md`.
 
 #### Key passive values
 
 - R_LAW = 3.3 kΩ × 2 (one per side) = 2 per channel.
-- R_FB = 4.7 kΩ × 2 = 2 per channel.
+- **R_FB = 2.2 kΩ × 2** = 2 per channel. Self canonical.
 - R_G = 10 kΩ × 2 = 2 per channel.
-- C_FB × 2 per channel: TBD.
+- **C_FB = 220 pF NPO/C0G × 2** per channel. HF pole at ≈ 329 kHz.
 - Pan pot: dual-gang 10 kΩ LIN, center-detent preferred.
 
 #### Design targets / expected performance
 
-(With current values: pot = 10 kΩ, R_LAW = 3.3 kΩ, R_FB = 4.7 kΩ,
-R_G = 10 kΩ.)
+(With Self's canonical values: pot = 10 kΩ, R_LAW = 3.3 kΩ,
+R_FB = 2.2 kΩ, R_G = 10 kΩ.)
 
-- Hard-pan output level: +3.35 dB (relative to POST-FADER).
-- Center output level: +1.13 dB (relative to POST-FADER, each side).
-- **Center dip: ≈ 2.2 dB** (vs Self's canonical ≈ 4.5 dB compromise
-  with R_FB = 2.2 kΩ). See attention point below.
+- Hard-pan output level: **+1.73 dB** (relative to POST-FADER, on
+  the active side).
+- Center output level: **−2.77 dB** (relative to POST-FADER, each
+  side).
+- **Center dip: ≈ 4.5 dB** — Self's canonical sin/sin² compromise
+  law. Psychoacoustically uniform perceived level across the pan
+  travel.
+- HF pole: ≈ 329 kHz. Audio-band response flat to within −0.02 dB
+  at 20 kHz.
 - Offness when panned hard one side: limited by pot end-of-track
-  resistance, ≈ 90 dB on the inactive side.
+  resistance, ≈ 90 dB on the inactive side (active law-bending
+  improvement over the ≈ 65 dB of a passive pan).
 
 #### Decisions and tradeoffs
 
 - **Active pan over passive law-bending.** Self's pattern: cleaner
   pan law and significantly better offness at the cost of one dual
   opamp per channel.
-- **OPA1642**: JFET input ⇒ negligible bias / offset. Critical
-  because R_LAW is a positive-feedback path; any DC drift would be
-  amplified by the loop. Also coherent with OPA1642 use in Blocks 2
-  and 4.
+- **Self canonical values (R_FB = 2.2 kΩ, R_G = 10 kΩ, R_LAW = 3.3 kΩ,
+  pot = 10 kΩ LIN).** The four values are tuned together to land on
+  the sin/sin² compromise law with ≈ −4.5 dB center dip — the
+  psychoacoustic compromise between constant-amplitude (−6 dB at
+  center, hole-in-the-middle) and constant-power (−3 dB at center,
+  bump-in-the-middle). Increasing R_FB (e.g. to 4.7 kΩ) would
+  flatten the dip toward ≈ 2 dB and produce a "soft center" voicing
+  with a perceptible level jump from hard-panned to center; we
+  follow Self.
+- **C_FB = 220 pF NPO/C0G**: HF pole at ≈ 329 kHz. Three combined
+  functions: (1) limits HF gain above audio; (2) gives preventive
+  stability margin in the law-bend positive-feedback loop (R_LAW
+  closes from the opamp output back to the +input — limiting HF
+  forward gain caps the loop gain before parasitic phase shifts can
+  cause trouble); (3) rejects RF residue at the wiper, which is a
+  high-Z node with front-panel cabling. Coherent with C_FB = 100 pF
+  on the post-fader amp in Block 4 (same target HF pole frequency,
+  scaled by R_FB). NPO/C0G dielectric for low voltage coefficient
+  and low loss.
+- **NE5532**: per global default in `00-conventions.md`. The +input
+  sees the wiper (variable Z, 0 to ~2.5 kΩ depending on pan position)
+  in parallel with R_LAW = 3.3 kΩ from the output. With NE5532 I_B
+  ~ 200 nA, position-dependent DC offset at the +input is at most
+  ~500 µV across the pan travel — negligible and inaudible at any
+  practical pan-knob speed. Block 5 is identified as a candidate
+  for selective opamp upgrade (OPA1642 JFET, or OPA1656 for noise)
+  at the budget-review stage; the topology and all passive values
+  are unchanged across this upgrade — see `00-conventions.md` and
+  `10-open-tbd.md`.
 - **Center-detent pot preferred**: gives the engineer a tactile
   reference for "hard center" without looking. Optional.
-- **No DC block at pan output**: OPA1642 has negligible output DC
-  offset, downstream is tolerant. Saves capacitors and avoids
+- **No DC block at pan output**: NE5532 output offset is small, and
+  downstream destinations are either virtual-earth bus summers
+  (DC-tolerant) or AC-coupled inputs. Saves capacitors and avoids
   inserting LF poles.
-- **R_FB = 4.7 kΩ chosen** (vs Self's canonical 2.2 kΩ). Open issue
-  — see below.
 
 #### Open issues for Block 5
 
-- **⚠️ ATTENTION POINT: R_FB value vs Self's canonical values.**
-  The current choice (R_FB = 4.7 kΩ, gain = +3.35 dB) yields a
-  center dip of ≈ 2.2 dB instead of Self's canonical ≈ 4.5 dB.
-  Self's exact values from Fig. 22.12 (R_FB ≈ 2.2 kΩ, R_G = 10 kΩ,
-  R_LAW = 3.3 kΩ, pot = 10 kΩ LIN) are tuned together to land on
-  the sin/sin² compromise law with −4.5 dB at center.
-  With R_FB = 4.7 kΩ:
-  - The opamp non-inverting gain doubles (from +1.73 dB to +3.35 dB).
-  - R_LAW pulls the wiper voltage up too aggressively at center.
-  - Center dip flattens to ≈ 2.2 dB → the pan feels "soft" around
-    center, with ≈ 2 dB level jump from hard-panned to center.
-  To revisit: confirm intentional voicing (deliberate "soft center"
-  law) or align to Self canonical (R_FB → 2.2 kΩ). See
-  `10-open-tbd.md`.
-- **C_FB** (HF pole on R_FB): value TBD.
 - **Pan pot exact part** — dual-gang 10 kΩ LIN center-detent, model
   TBD.
 
@@ -942,8 +1041,6 @@ R_G = 10 kΩ.)
 
 **Status:** in-progress — topology defined, bus summing resistor
 values to be calculated together with §07 (Main) and §04 (Groups).
-**Last updated:** 2026-04-26
-**Conversation ref:** "mono channel — post-pan routing rotary"
 
 #### Topology chosen
 
@@ -982,7 +1079,7 @@ None on this stage.
   the operator's ability to use AUX sends and groups together for
   multi-destination workflows.
 - **Open inactive positions, not back-grounded**: with the post-pan
-  L/R OPA1642 outputs sourcing each destination through its own
+  L/R NE5532 outputs sourcing each destination through its own
   bus summing resistor, the load presented to the pan stage varies
   with rotary position by ≈ 0 (one resistor at a time, all
   approximately the same value). No need for back-grounding;

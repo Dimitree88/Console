@@ -45,9 +45,6 @@ section's Implementation details.
 
 ### From mono channel Block 3 (meter buffer + PFL + MUTE)
 
-- **Meter buffer opamp** — part TBD. Candidates: another OPA1642, or
-  an audio-grade dual where the second half can be reused for a
-  future stage.
 - **Channels per input PCB** (likely 4 or 6) — TBD. This decision
   drives the partitioning of the digital control connector for the
   ADG419 IN signals: one wide connector per PCB carrying all
@@ -70,9 +67,9 @@ section's Implementation details.
   value TBD.
 - **R_bias** (wiper to AGND after C_bp): value TBD. Together with
   C_bp these set the LF rolloff into the post-fader amp's +input
-  and define the wiper bias condition at startup.
-- **C_FB** (cap in parallel with R_FB = 4.7 kΩ on the post-fader
-  amp): value TBD. Sets the HF pole of the post-fader stage.
+  and define the wiper bias condition at startup. With NE5532
+  (I_B ~ 200 nA) the order-of-magnitude target is 47 kΩ → ~9 mV
+  DC at the +input, absorbed by the 220 µF output DC block.
 - **Polarity of the 220 µF output DC block** at the fader PCB
   output: depends on DC at the next stage (AUX-post gang tops and
   pan top on the channel PCB). To be set when measured on rev 1.
@@ -88,18 +85,6 @@ section's Implementation details.
 
 ### From mono channel Block 5 (active pan)
 
-- **⚠️ ATTENTION POINT: R_FB value vs Self's canonical values.**
-  Current choice: R_FB = 4.7 kΩ, R_G = 10 kΩ, R_LAW = 3.3 kΩ,
-  pot = 10 kΩ LIN. Yields gain ≈ +3.35 dB and **center dip ≈ 2.2
-  dB**. Self's canonical (Fig. 22.12) uses R_FB ≈ 2.2 kΩ giving
-  gain ≈ +1.73 dB and the canonical sin/sin² compromise law with
-  center dip ≈ 4.5 dB. With R_FB = 4.7 kΩ the law-bending is too
-  aggressive and the pan feels "soft" around center, with ≈ 2 dB
-  level jump from hard-panned to center. To revisit: confirm
-  intentional voicing (deliberate "soft center") or align to Self
-  (R_FB → 2.2 kΩ).
-- **C_FB** (cap in parallel with R_FB on the active pan stage):
-  value TBD. Sets the HF pole.
 - **Pan pot exact part** — dual-gang 10 kΩ LIN center-detent
   preferred; model TBD.
 
@@ -156,6 +141,26 @@ impedance-balanced jack). Still to be decided:
 
 ## Conceptual / design-phase open issues
 
+- **Selective opamp upgrade — budget-review stage.** Default audio
+  opamp is NE5532 per `00-conventions.md`. At the prototype /
+  measurement stage, identify positions where NE5532 limitations
+  (~200 nA bipolar input bias current, ~5 nV/√Hz noise, BJT
+  CM-distortion at high source impedance) measurably impact the
+  result. Strongest candidates within the mono channel:
+  - **Block 5 active pan** — +input sees a high-Z, position-dependent
+    source (wiper of 10 kΩ pot in parallel with R_LAW = 3.3 kΩ from
+    the output). Both bias-current offset stability and CM-distortion
+    benefit from a JFET / CMOS input.
+  - **Block 2 HPF Sallen-Key** — +input swings the full audio signal
+    at high Z (62 kΩ to AGND); CM-distortion is the most visible
+    penalty of NE5532 here.
+  - Less critical but worth review: Block 4 post-fader amp, meter
+    buffer.
+  Upgrade options: **OPA1642** (JFET, low CM-distortion, drop-in,
+  ~negligible bias current) or **OPA1656** (CMOS, lowest noise of the
+  three at 1.6 nV/√Hz, drop-in). Topology and all passive values
+  (R_FB / R_G / R_LAW / C_FB / etc.) remain unchanged across any of
+  these substitutions — only the part marking on the SOIC changes.
 - **Monitor-section output destination** — control room? headphones?
   Both? — path ends at the mono/check buttons currently.
 - **AFL vs PFL priority** when both are simultaneously active —
@@ -164,10 +169,11 @@ impedance-balanced jack). Still to be decided:
   in hardware; whether SOLO-in-place mutes non-solo channels, whether
   AFL is latching or destructive to the main mix, etc., are firmware
   choices.
-- **Op-amp choices for stages still conceptual**: meter buffer
-  opamp (Block 3 leftover), AUX/CUE/PFL summer opamps (master
-  sections `05` `06`), Main summer opamp (`07`), AFL/PFL summer
-  opamps (`08`), monitor-section switches.
+- **Op-amp choices for stages still conceptual**: AUX/CUE/PFL summer
+  opamps (master sections `05` `06`), Main summer opamp (`07`),
+  AFL/PFL summer opamps (`08`), monitor-section switches, meter-bridge
+  active stages. Default per `00-conventions.md` is NE5532 unless a
+  specific Block argues otherwise.
 - **PSU design** — TBD.
 - **Channel physical layout** (which knob sits where) — not
   specified.

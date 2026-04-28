@@ -24,7 +24,7 @@ the implementation decisions made during circuit design.
 | File | Contents |
 |------|----------|
 | `README.md` | this file — entry point, file map, working rules |
-| `00-conventions.md` | design conventions + electrical/implementation conventions (power supplies, grounds, packages, default topologies for EMI filter, impedance-balanced output, switches+LEDs, …) |
+| `00-conventions.md` | design conventions + electrical/implementation conventions (power supplies, grounds, packages, default audio opamp, default topologies for EMI filter, impedance-balanced output, switches+LEDs, …) |
 | `01-bus-inventory.md` | enumeration of every bus in the console (stereo + mono) and what feeds each one |
 | `02-mono-channel.md` | §2 — mono input channel signal flow + Implementation details (Blocks 1, 2, …) |
 | `03-aux-return.md` | §3 — stereo AUX returns (×4, identical) |
@@ -90,8 +90,6 @@ the structure consistent):
 #### Block N — [name] (FINALIZED | IN-PROGRESS)
 
 Status: [conceptual | in-progress | finalized]
-Last updated: YYYY-MM-DD
-Conversation ref: [optional — short note identifying the chat]
 
 Topology chosen:
 - brief description per stage in the block
@@ -165,16 +163,14 @@ If you are reading this in a new conversation:
 (Update this section briefly at the end of major conversations, so
 future Claude can immediately see where things stand.)
 
-**As of 2026-04-26:**
-
 - Mono channel: signal flow conceptually complete. Implementation:
   - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED.
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
   - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED.
   - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
     AUX/CUE pre & post sends) FINALIZED.
-  - Block 5 (active pan, Self-style) FINALIZED — with attention
-    point on R_FB value vs Self canonical (see `10-open-tbd.md`).
+  - Block 5 (active pan, Self-style) FINALIZED — Self canonical
+    values (R_FB = 2.2 kΩ, center dip ≈ 4.5 dB).
   - Block 6 (post-pan 2-gang × 4-pos routing rotary) topology
     defined; bus summing resistor values TBD together with §04 / §07.
   - AFL switch and Post-Fader Output stages: conceptual flow fixed,
@@ -182,8 +178,11 @@ future Claude can immediately see where things stand.)
 - AUX returns: 4 channels, all identical, conceptual stage.
 - All other sections (groups, AUX/CUE/Main masters, monitor): still
   conceptual.
-- Global conventions: established (power, grounds, packages, EMI
-  filter, sleeve termination, impedance-balanced output topology,
-  front-panel switches with LEDs).
+- Global conventions: established (power, grounds, packages, default
+  audio opamp **NE5532**, EMI filter, sleeve termination,
+  impedance-balanced output topology, front-panel switches with LEDs,
+  per-PCB local bulk decoupling on power rails). Selective upgrade
+  to OPA1642 / OPA1656 in specific positions is identified as a
+  budget-review item — see `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.
