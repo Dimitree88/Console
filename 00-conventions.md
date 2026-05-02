@@ -19,8 +19,11 @@ any of the section files (`02-mono-channel.md`, etc.).
 - "Variable gain" = potentiometer controlling the gain of an active
   stage.
 - "Fixed gain" = no user control, gain set by circuit.
-- "Electronic switch" = analog switch (e.g., JFET / CMOS) controlled
-  by digital logic. Used for SOLO, ACTIVE, AFL enable — anywhere the
+- "Electronic switch" = signal-path switching element controlled by
+  digital logic. In CONSOLE the standard implementation is a
+  **signal relay** (see "Standard signal relay" below), not a CMOS /
+  JFET analog switch IC. Used for SOLO, ACTIVE, AFL enable, CHANNEL
+  SOURCE A/B select, master monitor source-select — anywhere the
   signal path is interrupted or rerouted under firmware control.
 - "Mechanical switch" = front-panel toggle / push / rotary, direct
   user control.
@@ -122,21 +125,112 @@ bead, direct bond, etc.) is a global decision — see `10-open-tbd.md`.
   electrolytic** (e.g., Nichicon Muse ES or equivalent). Film is
   acceptable where value and size allow, but not the default.
 
+### Standard signal relay — FTR-B3GA4.5Z-B10
+
+Default electronic switching element throughout CONSOLE:
+**Fujitsu FTR-B3GA4.5Z-B10** — DPDT 2 form C signal relay, gold
+overlay silver-nickel bifurcated contacts, 4.5 V standard
+(non-latching) coil, surface mount, B10 tape & reel.
+
+Used in every position where the audio signal must be interrupted
+or rerouted under digital control:
+
+- ACTIVE / SOLO mute (mono channels, AUX returns, groups);
+- AFL enable (mono channels, AUX returns, groups);
+- CHANNEL SOURCE A/B select on mono channels (replaces the
+  mechanical DPDT — see §2.2);
+- master monitor source-select (Main vs Solo summer, §8.1) and
+  Solo summer AFL/PFL alternation (§8.2).
+
+Why a relay rather than a CMOS analog switch:
+
+- True dry-circuit signal path: contact resistance ≤ 75 mΩ (vs
+  ≈ 17 Ω R_on for an ADG419-class CMOS), no charge injection,
+  no CMOS-specific THD vs source-Z artefacts.
+- Off-isolation: open contacts are physically separated and
+  plastic-sealed; isolation > 80 dB at 1 MHz, effectively
+  unbounded at audio.
+- Min switching load 10 mV / 0.01 mA — well below any signal
+  level encountered in the path.
+- DPDT 2 form C lets one relay handle a stereo pair (L on one
+  contact set, R on the other) wherever the switched signal is
+  stereo, halving the relay count.
+- Plastic-sealed body: no flux/dust ingress during PCB assembly.
+
+Topology and drive:
+
+- Mono switching position (one signal in, one signal out): both
+  form-C contact sets are wired in parallel — COM1 ‖ COM2,
+  NO1 ‖ NO2 — to halve the contact resistance and provide
+  contact redundancy. NC contacts are wired according to the
+  fail-safe direction needed (signal-to-AGND for shunt-mute, or
+  to a default source for A/B selection — see per-block details).
+- Stereo switching position (one stereo pair in, one stereo pair
+  out): contact set 1 carries L, contact set 2 carries R; they
+  are mechanically ganged inside the relay, so a single coil
+  drives both sides perfectly synchronously.
+- **Coil drive: from the +5 V rail.** The 4.5 V coil tolerates
+  +5 V (≈ +10 % over nominal, well within the operating-voltage
+  range shown on the datasheet). Coil current ≈ 34 mA at +5 V;
+  rated power 140 mW (datasheet) is exceeded by ~25 %, accepted
+  given the temperature-rise margin. A series resistor (~ 22 Ω)
+  to drop ~ 0.7 V back to nominal 4.5 V is an option at layout
+  time if measured coil temperature rise is excessive.
+- **Flyback diode** (1N4148-class, exact part TBD) across the
+  coil for inductive kickback when the driver releases.
+- **Coil driver**: open-collector / open-drain sink capable of
+  ~ 40 mA per coil (e.g., ULN2803-class octal Darlington with
+  built-in flyback diodes, or discrete BJT/MOSFET per coil).
+  Partitioning between centralized drivers and per-PCB drivers,
+  and exact driver IC, are deferred (see `10-open-tbd.md`).
+- **Polarity**: the coil is polarized (datasheet pins 1 and 8 =
+  + and − respectively for energize). Layout must respect this.
+- **Fail-safe at power-up**: at rest (coil unpowered) the NC
+  contacts are closed and NO are open. The default position of
+  each switch is therefore chosen so that an unpowered relay
+  produces a "safe" state — channel muted, AFL off, monitor on
+  Main Mix, CHANNEL SOURCE on Input A — rather than a
+  surprising one.
+
+Power-budget note: full count is approximately 88 relays
+across the console (24 mono channels × 3 + 4 AUX returns × 2 +
+3 groups × 2 + 2 in master monitor). Worst-case all-energized
+power on the +5 V coil rail ≈ 12 W. Average is much lower
+(MUTE is normally OFF / coil not energized, AFL is rare,
+CHANNEL SOURCE picks one of two so on average ~50 %). PSU
+sizing for the +5 V coil rail is part of the global power
+design (see `10-open-tbd.md`).
+
 ### Front-panel switches with LED indicators
 
-Channel-strip mechanical switches that have an "active state"
-indication use a **DPDT** with one section commuting the audio signal
-and the other section commuting +5V to a front-panel LED on DGND
-return. LEDs are low-current standard parts.
+Two patterns coexist on the channel strip and on master sections:
+
+**Pattern A — direct mechanical DPDT.** A front-panel toggle / push
+switch has two sections: one commutes the audio signal, the other
+commutes +5 V to a front-panel LED on DGND return. Used for HPF,
+INSERT, PFL, and any mechanical switch whose state is set directly
+by the operator and held mechanically.
+
+**Pattern B — momentary pushbutton + logic latch + standard relay
+(FTR-B3GA4.5Z-B10).** A single-contact front-panel pushbutton
+(momentary) feeds a logic latch (firmware or simple flip-flop) that
+energizes the relay coil. The relay's two form-C contact sets
+commute respectively the audio signal and the +5 V LED indicator
+current. Used for CHANNEL SOURCE A/B (see §2.2) and, in general,
+for any switch whose state is also reflected in the digital control
+domain (ACTIVE, SOLO, AFL — though those have no front-panel LED on
+the channel strip itself, only in master sections).
+
+LEDs are low-current standard parts in either pattern.
 
 Color assignments per channel:
 
-| Switch | LED behavior |
-|---|---|
-| CHANNEL SOURCE | red (A selected) / green (B selected) |
-| HPF | orange (IN) |
-| INSERT | blue (IN) |
-| PFL | red (IN) |
+| Switch | LED behavior | Pattern |
+|---|---|---|
+| CHANNEL SOURCE | red (A selected) / green (B selected) | B (relay-driven) |
+| HPF | orange (IN) | A (mechanical DPDT) |
+| INSERT | blue (IN) | A (mechanical DPDT) |
+| PFL | red (IN) | A (mechanical DPDT) |
 
 (Additional switches with LEDs encountered later will be added here.)
 

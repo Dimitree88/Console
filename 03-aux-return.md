@@ -32,10 +32,15 @@ carry the same (premixed) signal in that case.
 
 One buffer per line, feeding the LED meter bridge (stereo meter).
 
-## 3.4 ACTIVE electronic switches (× 2)
+## 3.4 ACTIVE electronic switch (stereo)
 
-Two electronic switches (one per line), ganged under the same
-digital control signal, for ACTIVE/SOLO logic.
+A single relay-driven electronic switch (one **FTR-B3GA4.5Z-B10**
+per AUX return — DPDT 2 form C, standard signal relay per
+`00-conventions.md`) interrupts the stereo path for ACTIVE/SOLO
+logic. Contact set 1 carries L, contact set 2 carries R; both are
+mechanically ganged on a single coil so L and R commute
+synchronously by construction. Coil energized ⇒ active; coil
+de-energized (rest) ⇒ muted (fail-safe at power-up).
 
 ## 3.5 Stereo fader + post-fader amps
 
@@ -55,7 +60,10 @@ tap in parallel:
 
 - **4-pos rotary** → Main Mix / G1 / G2 / G3 (stereo). Selects
   exactly one of these four buses, mechanical rotary.
-- **AFL electronic switch** (stereo) → AFL bus.
+- **AFL electronic switch** (stereo) → AFL bus. One
+  **FTR-B3GA4.5Z-B10** per AUX return; contact set 1 carries L,
+  contact set 2 carries R, ganged on one coil. Per
+  `00-conventions.md` "Standard signal relay".
 - **CUE dual-gang** (pre-fader, stereo) → CUE stereo bus
   (L into CUE L, R into CUE R).
 - **PFL stereo switch** (pre-fader) → PFL stereo bus.
@@ -74,7 +82,12 @@ tap in parallel:
 
 ## 3.9 Implementation details
 
-Status: **conceptual**. No topologies, parts, or values chosen yet.
+Status: **conceptual**, with one part-level decision already
+fixed: the ACTIVE and AFL electronic switches both use the
+**FTR-B3GA4.5Z-B10** signal relay per `00-conventions.md` —
+2 relays per AUX return × 4 AUX returns = 8 relays from this
+section. No topology details for the audio summing / fader /
+balance stages chosen yet.
 
 *(Many stages mirror the mono channel — once the mono channel is
 implemented, the AUX return reuses most of its building blocks.

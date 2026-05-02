@@ -7,12 +7,20 @@ mono/check.
 
 ## 8.1 Source-select electronic switch (stereo)
 
-Main Mix L/R is the default source. A **stereo electronic switch** is
-controlled by the SOLO logic:
+Main Mix L/R is the default source. A **stereo relay-driven
+electronic switch** (one **FTR-B3GA4.5Z-B10**, DPDT 2 form C, per
+`00-conventions.md` "Standard signal relay") is controlled by the
+SOLO logic:
 
-- If **no solo is active** → pass-through Main Mix.
-- If **any AFL or PFL is active** → source switches to the **Solo
-  summer** output.
+- If **no solo is active** (coil de-energized, NC contacts) →
+  pass-through Main Mix.
+- If **any AFL or PFL is active** (coil energized, NO contacts) →
+  source switches to the **Solo summer** output.
+
+Contact set 1 carries L, contact set 2 carries R, ganged on one
+coil. The default at power-up is "Main Mix" because the coil is
+unpowered at boot — the operator hears Main Mix until firmware
+asserts a solo.
 
 (Control: firmware. Priority AFL vs PFL when both active is a
 firmware decision — to be defined later.)
@@ -21,10 +29,13 @@ firmware decision — to be defined later.)
 
 ## 8.2 Solo summer
 
-Another (stereo) electronic switch alternates between the **AFL
-summer** and the **PFL summer**, depending on which mode is active.
-The output of whichever is selected feeds the main Solo summer output
-(which in turn feeds the source-select switch above).
+Another stereo relay-driven switch (one **FTR-B3GA4.5Z-B10**,
+DPDT 2 form C) alternates between the **AFL summer** and the **PFL
+summer** depending on which mode is active. Contact set 1 carries
+L, contact set 2 carries R. The output of whichever is selected
+feeds the main Solo summer output (which in turn feeds the
+source-select switch above). Per `00-conventions.md` "Standard
+signal relay".
 
 ---
 
@@ -87,9 +98,15 @@ decided yet. For now the path "ends" here.
 
 ## 8.8 Implementation details
 
-Status: **conceptual**. No topologies, parts, or values chosen yet.
+Status: **conceptual**, with one part-level decision already
+fixed: the source-select switch (§8.1) and the Solo summer
+AFL/PFL alternation switch (§8.2) both use the
+**FTR-B3GA4.5Z-B10** signal relay per `00-conventions.md` — 2
+relays from this section. No topology details for the AFL / PFL
+summers, the "in front balance" pot, the mono/check network, or
+the monitor output stage chosen yet.
 
-*(Design topics expected here: choice of analog switch for the
-source-select and AFL/PFL alternation — THD and crosstalk matter;
-network for the mono/check buttons — simple summing resistors vs
-opamp-based matrix.)*
+*(Design topics expected here: AFL / PFL summer topology and
+opamp choice — THD and crosstalk matter; network for the
+mono/check buttons — simple summing resistors vs opamp-based
+matrix.)*

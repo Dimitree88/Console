@@ -164,25 +164,42 @@ If you are reading this in a new conversation:
 future Claude can immediately see where things stand.)
 
 - Mono channel: signal flow conceptually complete. Implementation:
-  - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED.
+  - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED —
+    CHANNEL SOURCE now relay-driven (FTR-B3GA4.5Z-B10) with
+    front-panel momentary pushbutton + logic latch, replacing
+    the earlier mechanical DPDT.
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
-  - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED.
+  - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED — MUTE
+    now uses the FTR-B3GA4.5Z-B10 signal relay (both form-C
+    contacts paralleled), replacing the earlier ADG419.
   - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
     AUX/CUE pre & post sends) FINALIZED.
   - Block 5 (active pan, Self-style) FINALIZED — Self canonical
     values (R_FB = 2.2 kΩ, center dip ≈ 4.5 dB).
   - Block 6 (post-pan 2-gang × 4-pos routing rotary) topology
     defined; bus summing resistor values TBD together with §04 / §07.
-  - AFL switch and Post-Fader Output stages: conceptual flow fixed,
+  - AFL switch: switching element fixed (FTR-B3GA4.5Z-B10, one
+    per channel handling L+R on its two form-C contact sets);
+    tap location and AFL summing-resistor values still deferred
+    to §08. Post-Fader Output stage: conceptual flow fixed,
     implementation deferred (see `10-open-tbd.md`).
-- AUX returns: 4 channels, all identical, conceptual stage.
-- All other sections (groups, AUX/CUE/Main masters, monitor): still
+- AUX returns: 4 channels, all identical, conceptual stage. ACTIVE
+  and AFL switching elements fixed as FTR-B3GA4.5Z-B10 (1 relay
+  per function, handling L+R on its two contact sets).
+- Groups: same — ACTIVE and AFL fixed as FTR-B3GA4.5Z-B10.
+- Master monitor: source-select (§8.1) and Solo summer AFL/PFL
+  alternation (§8.2) fixed as FTR-B3GA4.5Z-B10. Other stages still
   conceptual.
+- All other sections (AUX/CUE/Main masters): still conceptual.
 - Global conventions: established (power, grounds, packages, default
-  audio opamp **NE5532**, EMI filter, sleeve termination,
-  impedance-balanced output topology, front-panel switches with LEDs,
-  per-PCB local bulk decoupling on power rails). Selective upgrade
-  to OPA1642 / OPA1656 in specific positions is identified as a
-  budget-review item — see `10-open-tbd.md`.
+  audio opamp **NE5532**, **standard signal relay
+  FTR-B3GA4.5Z-B10**, EMI filter, sleeve termination,
+  impedance-balanced output topology, front-panel switches with
+  LEDs, per-PCB local bulk decoupling on power rails). Selective
+  upgrade to OPA1642 / OPA1656 in specific positions is identified
+  as a budget-review item — see `10-open-tbd.md`.
+- Relay coil driver IC, partitioning, +5 V coil-rail PSU sizing,
+  and flyback-diode part are tracked as a design-phase open issue
+  in `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.

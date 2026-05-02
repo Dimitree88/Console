@@ -20,8 +20,11 @@ section's Implementation details.
   MCT0603, etc.).
 - **Bipolar electrolytic brand / series** for signal-path coupling
   (candidates: Nichicon Muse ES, Panasonic SU, Elna Silmic bipolar).
-- **DPDT mechanical switch** part selection for CHANNEL SOURCE / HPF
-  / INSERT.
+- **DPDT mechanical switch** part selection for HPF / INSERT.
+  (CHANNEL SOURCE is no longer a mechanical DPDT — it is a
+  momentary pushbutton + logic latch + FTR-B3 relay per
+  `00-conventions.md`; the front-panel pushbutton part is itself
+  TBD.)
 - **Ferrite chip part selection** — 330 Ω @ 100 MHz, many
   equivalents; choose by current rating and package.
 
@@ -47,10 +50,11 @@ section's Implementation details.
 
 - **Channels per input PCB** (likely 4 or 6) — TBD. This decision
   drives the partitioning of the digital control connector for the
-  ADG419 IN signals: one wide connector per PCB carrying all
-  per-channel mute lines, vs one narrow connector per channel. Note:
-  the **fader PCB** partitioning is settled (2 channels per fader
-  PCB — see Block 4); the input PCB partitioning is independent.
+  MUTE relay coil drives: one wide connector per PCB carrying all
+  per-channel mute lines, vs one narrow connector per channel.
+  Note: the **fader PCB** partitioning is settled (2 channels per
+  fader PCB — see Block 4); the input PCB partitioning is
+  independent.
 - **Other PFL sources feeding PFL DETECT**: AUX masters (`05`),
   AUX returns (`03`), and groups (`04`) all carry PFL controls. Do
   they all need to feed the PFL DETECT logical bus to drive the
@@ -101,19 +105,22 @@ section's Implementation details.
   break-before-make to avoid momentary cross-routing during a
   position change.
 
-### Mono channel — AFL switch (post-pan, stereo) — not yet designed
+### Mono channel — AFL switch (post-pan, stereo) — partly decided
 
 `02-mono-channel.md` §2.9 (b). The conceptual signal flow is fixed
-(parallel tap from post-pan L/R to AFL bus L/R, controlled by
-electronic switch under digital logic). Still to be decided:
+(parallel tap from post-pan L/R to AFL bus L/R, controlled by an
+electronic switch under digital logic). The switching element is
+fixed: **one FTR-B3GA4.5Z-B10 per channel** (DPDT 2 form C, both
+contact sets ganged on a single coil — contact 1 = L, contact 2 = R)
+per `00-conventions.md`. Still to be decided:
 
-- Choice of analog switch: same ADG419 as the MUTE in Block 3, or
-  a different part? Two switches needed (one per side, ganged
-  under the same control line).
-- Whether to use SPST-series (drive AFL bus only when active),
-  series-shunt T (better off-isolation), or something else.
 - Where on the post-pan signal the tap sits — at the opamp output
-  pin directly, or further down the chain.
+  pin directly (Block 5), or further down the chain.
+- Topology around the relay: NO contacts to the AFL bus only when
+  active, NC contacts left floating (simplest); or NC tied to
+  AGND for shunt to-ground when off (better off-isolation, but
+  ≥ 80 dB open-contact isolation is already ample at audio so
+  unnecessary).
 - Bus summing resistor toward the AFL bus L/R (these are the
   channel's contribution to the AFL summer in §08).
 
@@ -141,6 +148,30 @@ impedance-balanced jack). Still to be decided:
 
 ## Conceptual / design-phase open issues
 
+- **Standard signal relay — driver IC, partitioning, power budget,
+  protection.** The standard electronic switch in CONSOLE is the
+  **FTR-B3GA4.5Z-B10** (per `00-conventions.md`). Approximately
+  88 relays total across the console (24 mono channels × 3
+  positions — CHANNEL SOURCE, MUTE, AFL — + 4 AUX returns × 2 +
+  3 groups × 2 + 2 in master monitor). Open items:
+  - **Coil driver IC**: ULN2803-class octal Darlington (with
+    integrated flyback diodes) vs discrete BJT/MOSFET per coil,
+    vs a dedicated relay-driver IC.
+  - **Driver partitioning**: centralized (one driver bank near
+    the firmware) vs per-PCB (driver lives next to the relays it
+    powers). Coupled to the channels-per-input-PCB decision in
+    Block 3.
+  - **+5 V coil rail PSU sizing**: worst-case all-energized
+    ≈ 12 W on the +5 V rail (88 × 140 mW). Average load much
+    lower but the rail must be designed for the worst case
+    headroom.
+  - **Optional 22 Ω series resistor** per coil to drop the +5 V
+    rail to nominal 4.5 V — population decided at layout time
+    after measuring coil temperature rise on rev 1.
+  - **Coil flyback diode** (1N4148-class): external when the
+    driver doesn't integrate one; not needed with ULN2803.
+  - **Relay coil RF / audible click radiation**: PCB layout to
+    keep coil currents tightly looped, away from audio traces.
 - **Selective opamp upgrade — budget-review stage.** Default audio
   opamp is NE5532 per `00-conventions.md`. At the prototype /
   measurement stage, identify positions where NE5532 limitations

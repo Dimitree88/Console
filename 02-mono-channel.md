@@ -38,22 +38,28 @@ cold-side network (see `00-conventions.md`).
 
 ## 2.2 CHANNEL SOURCE switch (A / B select)
 
-A **DPDT mechanical switch** (front-panel) selects which of the two
-unbalanced-and-gained signals continues down the channel. Only one at
-a time. Named **CHANNEL SOURCE** to avoid confusion with the master
-Monitor section (`08-monitor.md`).
+A **relay-driven electronic switch** (DPDT 2 form C, standard signal
+relay per `00-conventions.md`) selects which of the two
+unbalanced-and-gained signals continues down the channel. Only one
+at a time. Named **CHANNEL SOURCE** to avoid confusion with the
+master Monitor section (`08-monitor.md`).
 
-The DPDT's two sections serve different purposes:
+The front-panel control is a **momentary pushbutton** (single
+contact) that toggles a logic latch; the latch in turn energizes or
+de-energizes the relay coil. The relay's two form-C contact sets
+serve different purposes:
 
-- **Section 1** — switches the audio signal (A or B onto the channel
-  path).
-- **Section 2** — switches power to two indicator LEDs on the front
-  panel:
-  - **A selected** → red LED on.
-  - **B selected** → green LED on.
+- **Contact set 1** — switches the audio signal (A or B onto the
+  channel path).
+- **Contact set 2** — switches +5 V to one of two indicator LEDs on
+  the front panel:
+  - **A selected** (coil de-energized, NC contacts) → red LED on.
+  - **B selected** (coil energized, NO contacts) → green LED on.
 
 The LED supply and its return are on +5V / DGND, not on the audio
-±15V / AGND — see `00-conventions.md`.
+±15V / AGND — see `00-conventions.md`. The default at power-on is
+A selected / red LED on, since an unpowered coil rests on the NC
+contacts.
 
 ---
 
@@ -173,11 +179,16 @@ rationale). Only one destination at a time.
 
 ### (b) AFL electronic switch
 
-Parallel tap, stereo. An electronic switch (digital control) connects
-the channel's stereo post-pan signal to the AFL bus when the AFL logic
-calls for it.
+Parallel tap, stereo. A relay-driven electronic switch (one
+**FTR-B3GA4.5Z-B10** per channel — DPDT 2 form C, standard signal
+relay per `00-conventions.md`) connects the channel's stereo
+post-pan signal to the AFL bus when the AFL logic calls for it.
+Contact set 1 carries L, contact set 2 carries R; both gated by
+the same coil so L and R are perfectly synchronous.
 
-*Implementation TBD — see `10-open-tbd.md`.*
+*Tap location, summing-resistor values toward the AFL bus, and
+fail-safe direction (NC = AFL off / contacts open) are recorded
+together with §08 — see `10-open-tbd.md`.*
 
 ### (c) 4 × AUX dual-gang pots (mono sends)
 
@@ -325,10 +336,24 @@ Op Amp Applications Handbook):
 
 *CHANNEL SOURCE switch:*
 
-- DPDT mechanical, front-panel. See §2.2.
-- Section 1 selects A or B audio signal onto the channel path.
-- Section 2 switches +5V to A-LED (red) or B-LED (green) on DGND
-  return.
+- **FTR-B3GA4.5Z-B10** (DPDT 2 form C signal relay, standard
+  signal relay per `00-conventions.md`). See §2.2.
+- Front-panel control: momentary pushbutton (single contact),
+  feeding a logic latch (firmware or simple flip-flop) that
+  energizes or de-energizes the relay coil.
+- Contact set 1 (audio): COM = onward channel path; NC = Receiver A
+  output (post-DC-block); NO = Receiver B output (post-DC-block).
+  At rest (coil unpowered), Receiver A is selected → A is the
+  default at power-up.
+- Contact set 2 (LED): COM = +5 V; NC = A-LED (red) anode;
+  NO = B-LED (green) anode. LED cathodes return through their
+  current-limit resistors to DGND. Mechanically ganged with
+  contact set 1, so the lit LED always tracks the audio
+  selection.
+- Coil drive: +5 V via a sink driver (open-collector / open-drain,
+  ~ 34 mA, with flyback diode) per `00-conventions.md` "Standard
+  signal relay". Driver IC and partitioning TBD — see
+  `10-open-tbd.md`.
 
 #### Active devices
 
@@ -336,6 +361,10 @@ Op Amp Applications Handbook):
 
 - 1× for buffers (4 opamps used).
 - 1× for balanced receivers (4 opamps used).
+
+**FTR-B3GA4.5Z-B10 × 1 per channel** (DPDT 2 form C signal relay):
+CHANNEL SOURCE A/B select. Per `00-conventions.md` "Standard
+signal relay".
 
 #### Key passive values
 
@@ -347,6 +376,11 @@ Op Amp Applications Handbook):
   thermal tracking.
 - Gain pot: 10 kΩ log × 2 per channel (one per input, independent).
 - Pot minimum series: 100 Ω × 2 per channel.
+- A-LED (red) and B-LED (green) current-limit resistors on the
+  CHANNEL SOURCE indicator: TBD (depends on chosen LED Vf and
+  brightness target).
+- Coil flyback diode (1N4148-class) across the relay coil: exact
+  part TBD with the coil driver choice.
 
 #### Design targets / expected performance
 
@@ -397,6 +431,16 @@ Op Amp Applications Handbook):
   See *Input jack idle-noise scheme* in Topology chosen.
 - **LED power on +5V / DGND**, galvanically separate from audio
   ±15V / AGND.
+- **CHANNEL SOURCE as relay-driven electronic switch** (FTR-B3
+  signal relay, single contact set for audio + single contact set
+  for LED, ganged on one coil) instead of a direct mechanical DPDT.
+  Same signal-flow behavior as a DPDT, with the addition that
+  state is held in a digital latch — making it directly compatible
+  with future remote / recall logic if ever wanted, and keeping
+  contact resistance to ≤ 75 mΩ in the signal path. Default
+  selection at power-up is A (NC contacts), matching a
+  "no-surprise-source" boot condition. Per `00-conventions.md`
+  "Standard signal relay".
 
 ---
 
@@ -625,53 +669,70 @@ Op Amp Applications Handbook):
 
 *MUTE switch (§2.6):*
 
-- **ADG419** (single SPDT analog switch, SOIC-8). Used as
-  SPST-series: S1 receives the audio signal, D drives the
-  PRE-FADER node, S2 left unconnected.
-- Power: VDD = +15 V, VSS = −15 V, with 100 nF ceramic bypass on
-  each rail per §00.
-- VL = +5 V (LED logic rail).
-- GND pin → **DGND** (referenced to the firmware-side ground that
-  generates the IN control signal — keeps the IN threshold stable
-  against any HF residue between AGND and DGND). This is a
-  **block-local choice, not promoted to a global convention**; the
-  GND-pin connection of other CMOS analog switches in the console
-  will be decided case-by-case.
-- Logic IN: comes from a connector. Partitioning between
-  per-channel and per-PCB control connectors is deferred until
-  channels-per-PCB is decided (likely 4 or 6 channels per input
-  PCB). See `10-open-tbd.md`.
-- Logic semantics: IN = 1 ⇒ S2 selected ⇒ D in high-Z ⇒ channel
-  muted. The downstream PRE-FADER node is then pulled toward AGND
-  by the ensemble of bias paths and virtual-earth returns of the
-  CUE / AUX gang 1 / fader stages that load it (to be detailed in
-  Block 4).
+- **FTR-B3GA4.5Z-B10** (DPDT 2 form C signal relay, standard
+  signal relay per `00-conventions.md`).
+- Audio path: both form-C contact sets are wired in parallel to
+  halve contact resistance and provide contact redundancy.
+  COM1 ‖ COM2 = post-INSERT signal (taken upstream of the meter
+  buffer / PFL tap node); NO1 ‖ NO2 = PRE-FADER node onward.
+  NC1 ‖ NC2 = unused (left floating — the PRE-FADER node when
+  muted is held near AGND by the ensemble of bias paths and
+  virtual-earth returns of CUE / AUX gang 1 / fader stages
+  that load it, see Block 4; no shunt-to-AGND is required given
+  the > 80 dB open-contact isolation of the relay even at
+  ultrasonic frequencies).
+- Effective parallel R_on: ≈ 37 mΩ (75 mΩ per contact, two in
+  parallel). Negligible compared to upstream/downstream source
+  impedances and pot wipers.
+- Coil drive: +5 V via a sink driver (open-collector / open-drain,
+  ~ 34 mA per coil, with flyback diode), per `00-conventions.md`
+  "Standard signal relay". The driver IC and its partitioning
+  between per-channel and per-PCB control connectors are deferred
+  until channels-per-PCB is decided (likely 4 or 6 channels per
+  input PCB) — see `10-open-tbd.md`.
+- Logic semantics: **coil energized ⇒ channel ACTIVE** (NO
+  contacts make, signal passes); **coil de-energized ⇒ channel
+  MUTED** (NO contacts open, signal interrupted). At power-up,
+  before firmware boots, all relays are de-energized → all
+  channels are silent — fail-safe boot.
 
 #### Active devices
 
 - **Meter buffer opamp**: **NE5532** (one half used). Per global
   default in `00-conventions.md`. The other half on this PCB is
   unused unless reuse can be found in a later block.
-- **ADG419** × 1 per channel, SOIC-8.
+- **FTR-B3GA4.5Z-B10** × 1 per channel (DPDT 2 form C signal
+  relay), used as the MUTE switch. Per `00-conventions.md`
+  "Standard signal relay".
 - **Small-signal diode** for the PFL DETECT wired-OR (1N4148-class):
   exact part TBD.
+- **Coil flyback diode** (1N4148-class) across the relay coil:
+  exact part TBD with the coil driver choice. Often integrated
+  into the driver IC (e.g., ULN2803 has internal flyback diodes).
 
 #### Key passive values
 
 - Meter buffer build-out: **75 Ω** (0603 1 %).
 - PFL series / summing resistor: **22 kΩ** (0603 1 %).
-- ADG419 supply bypass: 100 nF × 2 (one per rail) per §00.
 - PFL LED current-limit resistor: TBD (depends on chosen LED Vf
   and desired brightness).
+- Optional series resistor on the relay coil (~ 22 Ω) to drop
+  the +5 V rail to the 4.5 V coil nominal: layout-time decision
+  per `00-conventions.md`.
 
 #### Design targets / expected performance
 
 - Meter buffer: unity gain DC–audio band, output capable of driving
   ≈100 pF cable capacitance via the 75 Ω build-out without ringing.
-- ADG419 Ron: ≈17 Ω typical at ±15 V supplies. THD well below
-  audible at audio levels. Charge injection ≈5 pC typical.
-- Mute attenuation: limited by ADG419 off-isolation (≈80 dB at
-  1 kHz) — adequate for any practical channel mute.
+- MUTE switch contact resistance: ≤ 37 mΩ (parallel of two form-C
+  contacts at ≤ 75 mΩ each). Effectively zero THD contribution
+  (purely resistive, voltage-independent), no charge injection.
+- MUTE off-isolation: open-contact isolation > 80 dB at 1 MHz per
+  datasheet, effectively unbounded at audio. Far in excess of any
+  practical channel mute requirement.
+- MUTE operate / release time: ≤ 3 ms each per datasheet (no
+  bounce specified beyond this figure). Adequate for hard-mute
+  semantics; not used for fast gating.
 
 #### Decisions and tradeoffs
 
@@ -692,9 +753,10 @@ Op Amp Applications Handbook):
   buffer's sole purpose is to drive the meter rectifier — distortion
   and noise budget trivially met by NE5532.
 - **PFL is pre-fader and pre-mute**, achieved by tapping upstream of
-  the ADG419. PFL listen continues to work even when the channel
-  is muted, matching live-sound semantics. Conceptually relocated
-  out of §2.9 (post-pan distribution) into §2.5 (pre-mute taps).
+  the MUTE relay. PFL listen continues to work even when the
+  channel is muted, matching live-sound semantics. Conceptually
+  relocated out of §2.9 (post-pan distribution) into §2.5 (pre-mute
+  taps).
 - **22 kΩ + DPDT pattern for PFL** rather than a buffered tap:
   shared-bus summing where every active PFL contribution adds via
   its 22 kΩ at the PFL mono bus virtual-earth. The constant load on
@@ -704,30 +766,45 @@ Op Amp Applications Handbook):
   diode wired-OR from Sec2 of the DPDT. Avoids dragging analog PFL
   audio into firmware. The diode prevents inter-channel back-feed
   through the bus.
-- **ADG419 as SPST-series** (S2 NC), not series-shunt T or
-  signal/AGND-alternating SPDT. Simplest acceptable topology;
-  ≈80 dB off-isolation is sufficient for channel mute. Series-shunt
-  T would require a second switch for marginal improvement.
-- **ADG419 GND pin → DGND** (block-local, not a global convention).
-  Rationale: the IN threshold is referenced to the GND pin; tying
-  it to the same ground as the firmware that drives IN keeps the
-  threshold stable against any HF residue between AGND and DGND.
-  The audio path (S1/D) stays referenced to VDD/VSS, untouched by
-  this choice. The user has explicitly elected to revisit this
-  case-by-case for other CMOS switches rather than promote it to
-  §00.
+- **Relay (FTR-B3) for MUTE instead of a CMOS analog switch.**
+  Three combined reasons: (1) signal-path quality — contact
+  resistance ≤ 37 mΩ paralleled (vs ≈ 17 Ω for an ADG419-class
+  CMOS), no charge injection, no CMOS distortion vs source-Z
+  artefacts; (2) off-isolation effectively unbounded at audio
+  through physical contact opening; (3) fail-safe boot — coil
+  unpowered ⇒ NO open ⇒ channel muted, so power-up before firmware
+  boots is silent by construction. Trade-off accepted: ~ 3 ms
+  switching time and the need for a coil driver + ~ 140 mW per
+  energized relay. Per `00-conventions.md` "Standard signal relay".
+- **Both form-C contact sets paralleled** for the audio path.
+  Halves contact resistance and provides redundancy against a
+  single failed contact. NC contacts left floating: the PRE-FADER
+  node is already pulled toward AGND by the bias paths and
+  virtual-earth returns of the loading stages (Block 4), so an
+  explicit shunt-to-AGND on the muted path is unnecessary.
 
 #### Open issues for Block 3
 
-- **Channels per input PCB** (4 or 6) and resulting **control
-  connector partitioning** (one wide connector per PCB vs one
-  narrow connector per channel) — TBD. See `10-open-tbd.md`.
+- **Channels per input PCB** (4 or 6) and resulting **relay coil
+  control connector partitioning** (one wide connector per PCB vs
+  one narrow connector per channel) — TBD. See `10-open-tbd.md`.
+- **Coil driver IC** for the MUTE relay (and, more broadly, for
+  every FTR-B3 in the console): centralized ULN2803-class octal
+  Darlington vs discrete BJT/MOSFET per coil; partitioning and
+  exact part TBD. See `10-open-tbd.md`.
+- **Optional series resistor on the coil** (~ 22 Ω) to drop the
+  +5 V rail to the 4.5 V coil nominal: layout-time decision
+  pending coil temperature-rise measurement on rev 1. See
+  `00-conventions.md`.
 - **Other PFL sources feeding PFL DETECT**: AUX masters (§05),
   AUX returns (§03), and groups (§04) all carry PFL controls; do
   they all need to feed PFL DETECT to drive the firmware
   source-select? — TBD. See `10-open-tbd.md`.
 - **PFL LED current-limit resistor value** — depends on chosen LED.
 - **PFL signal diode** — 1N4148-class, exact part TBD.
+- **Coil flyback diode part** — 1N4148-class if external; not
+  needed if a driver IC with integrated flyback diodes (e.g.,
+  ULN2803) is chosen.
 
 ---
 
@@ -739,7 +816,8 @@ Op Amp Applications Handbook):
 
 *Pre-fader node:*
 
-The output (D pin) of the ADG419 in Block 3 is the PRE-FADER node.
+The paralleled NO outputs of the MUTE relay (FTR-B3) in Block 3
+form the PRE-FADER node.
 This node is loaded by three parallel paths:
 
 - **4 × AUX dual-gang pots, pre-fader gangs (gang 1 of each).** Top
@@ -835,8 +913,9 @@ PCB. This signal feeds in parallel:
   loop). At HF, where loop gain falls, the 680 Ω becomes effective
   output impedance and isolates the opamp from capacitive load /
   short-circuit conditions on the connector and 220 µF.
-- Pre-fader node source impedance: ADG419 R_on (≈17 Ω) + bias paths
-  from the upstream stage (Block 3).
+- Pre-fader node source impedance: ≈ 37 mΩ (parallel of two FTR-B3
+  contacts) + bias paths from the upstream stage (Block 3) —
+  effectively dominated by upstream impedances.
 - Post-fader amp drive: NE5532 is rated for 600 Ω loads at low
   distortion; the parallel load presented by 5 × 10 kΩ pot tops
   (4 AUX-post + pan) is ≈ 2 kΩ, well within capability. Verify when
