@@ -1,0 +1,230 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "1fbbd2a3-bb57-473e-beb7-4110a7f2d116")
+	(paper "A5")
+	(title_block
+		(title "Console")
+		(date "2026-02-06")
+		(rev "1")
+		(company "Dawned-Instruments")
+	)
+	(lib_symbols)
+	(sheet
+		(at 24.13 38.1)
+		(size 12.7 3.81)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "125625b2-4850-4179-a549-884731618ab2")
+		(property "Sheetname" "input-jacks"
+			(at 24.13 37.3884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "input-jacks.kicad_sch"
+			(at 24.13 42.4946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 24.13 49.53)
+		(size 12.7 3.81)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "2cc21bd0-ae90-4079-8516-c4aeb6d6841f")
+		(property "Sheetname" "fader"
+			(at 24.13 48.8184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "fader.kicad_sch"
+			(at 24.13 53.9246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 24.13 26.67)
+		(size 12.7 3.81)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "3498d277-c31c-4021-80e8-ac015cf3f84a")
+		(property "Sheetname" "send-return"
+			(at 24.13 25.9584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "send-return.kicad_sch"
+			(at 24.13 31.0646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 24.13 60.96)
+		(size 12.7 3.81)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "5d2e813f-2ae0-41f2-b482-97c91e559b6f")
+		(property "Sheetname" "mono_channel"
+			(at 24.13 60.2484 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "mono_channel.kicad_sch"
+			(at 24.13 65.3546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 68.58 26.67)
+		(size 12.7 3.81)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "b833796d-8766-4e88-a7f0-c319ee501070")
+		(property "Sheetname" "appunti"
+			(at 68.58 25.9584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "appunti.kicad_sch"
+			(at 68.58 31.0646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)
