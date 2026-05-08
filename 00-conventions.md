@@ -202,9 +202,22 @@ Topology and drive:
   include Toshiba TBD62783A (high-side) + TBD62083A (low-side)
   pair, dedicated octal latching-relay drivers
   (e.g. MAX4820 / MAX4821), or a per-relay discrete NPN+PNP
-  pair. Driver IC choice, partitioning (centralized vs per-PCB),
-  and flyback / freewheeling protection are deferred (see
-  `10-open-tbd.md`).
+  pair. Driver IC choice and flyback / freewheeling protection
+  are deferred (see `10-open-tbd.md`).
+- **PCB partitioning — stackable two-board pattern.** Each relay
+  sits on the audio PCB; its coil is exposed via a **3-pin
+  connector** (two pins for the coil terminals, **center pin for
+  DGND**). That connector mates with a **lower stackable PCB**
+  carrying all the digital / logic components that drive the
+  relay (bipolar coil driver, MCU lines, local +3.3 V bulk on
+  DGND, etc.). The two PCBs are coupled via standard
+  Arduino-style pin headers — the audio PCB holds zero digital
+  logic. **On the audio PCB, DGND is not connected to anything**:
+  it is a local copper island that exists only as a return path
+  for the relay-coil current pulses, joining the system DGND
+  exclusively through the 3-pin connector / lower PCB. Coil
+  switching transients therefore stay confined to the lower
+  (digital) board and never share copper with the audio path.
 - **State at power-up is indeterminate.** A latching relay holds
   whatever state it was last commanded into; transport or
   installation impact may also change the reset position

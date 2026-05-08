@@ -54,13 +54,15 @@ section's Implementation details.
 
 ### From mono channel Block 3 (meter buffer + PFL + MUTE)
 
-- **Channels per input PCB** (likely 4 or 6) — TBD. This decision
-  drives the partitioning of the digital control connector for the
-  MUTE relay coil drives: one wide connector per PCB carrying all
-  per-channel mute lines, vs one narrow connector per channel.
-  Note: the **fader PCB** partitioning is settled (2 channels per
-  fader PCB — see Block 4); the input PCB partitioning is
-  independent.
+- **Channels per input PCB** (likely 4 or 6) — TBD. Note: this is
+  now decoupled from the relay-coil-drive routing question: per
+  `00-conventions.md` ("PCB partitioning — stackable two-board
+  pattern"), each relay's coil exits the audio PCB through its
+  own 3-pin connector to a lower stackable digital PCB, so the
+  number of channels per input PCB no longer dictates a
+  per-channel-mute connector layout. The **fader PCB** partitioning
+  is settled (2 channels per fader PCB — see Block 4); the input
+  PCB partitioning remains independent and TBD.
 - **Other PFL sources feeding PFL DETECT**: AUX masters (`05`),
   AUX returns (`03`), and groups (`04`) all carry PFL controls. Do
   they all need to feed the PFL DETECT logical bus to drive the
@@ -169,10 +171,6 @@ impedance-balanced jack). Still to be decided:
     purpose-built relay-driver SoCs. Choice and protection
     network (freewheeling diodes / suppression for the bipolar
     drive) decided together.
-  - **Driver partitioning**: centralized (one driver bank near
-    the firmware) vs per-PCB (driver lives next to the relays it
-    powers). Coupled to the channels-per-input-PCB decision in
-    Block 3.
   - **Coil supply rail**: settled — direct drive from the +3.3 V
     logic rail (the 3 V coil tolerates +3.3 V transiently, within
     150 % max allowable; the pulse-only duty cycle makes the small
