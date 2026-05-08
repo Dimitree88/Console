@@ -1,9 +1,11 @@
 # CONSOLE — Reference Specification
 
 > Analog mixing console design — full signal-flow reference and
-> implementation record. This is a multi-file documentation project.
-> If you (Claude) are reading this in a new conversation, treat this
-> README as the entry point.
+> implementation record. This is a multi-file documentation project;
+> this README is the entry point.
+>
+> **For Claude sessions:** working rules and session-start procedure
+> live in `CLAUDE.md`, which is loaded automatically.
 
 ---
 
@@ -50,7 +52,8 @@ master meters are deliberately absent.
 
 | File | Contents |
 |------|----------|
-| `README.md` | this file — entry point, file map, working rules |
+| `CLAUDE.md` | working rules for Claude — required reading at session start, loaded automatically |
+| `README.md` | this file — entry point, file map, project status snapshot |
 | `00-conventions.md` | design conventions + electrical/implementation conventions (power supplies, grounds, packages, default audio opamp, default topologies for EMI filter, impedance-balanced output, switches+LEDs, …) |
 | `01-bus-inventory.md` | enumeration of every bus in the console (stereo + mono) and what feeds each one |
 | `02-mono-channel.md` | §2 — mono input channel signal flow + Implementation details (Blocks 1, 2, …) |
@@ -68,142 +71,15 @@ The one-paragraph mental model lives at the top of this README.)
 
 ---
 
-## How to use this documentation
-
-### When starting a new conversation about CONSOLE
-
-1. Always read `README.md` and `00-conventions.md` first. These two
-   together give the global context.
-2. Then read **only the section files relevant to the topic at hand**.
-   E.g. for "implement the meter buffer" you need `02-mono-channel.md`;
-   for "discuss summing amp topology" you need `05-aux-master.md` and
-   probably `06-cue-master.md` and `07-main-mix.md`.
-3. Look at `10-open-tbd.md` if the topic might touch any open issue.
-
-All project context lives in this repo. Read the files you need with
-the file tools available to you; do not assume context that isn't
-in the files.
-
-### When ending a conversation
-
-If any design decision was made:
-
-1. Identify which section files are affected.
-2. Update those files (Implementation details subsection for concrete
-   choices; conceptual section text only if the signal flow itself
-   changed).
-3. Update `00-conventions.md` if a pattern emerged that should apply
-   globally going forward.
-4. Update `10-open-tbd.md` if items were resolved or new ones surfaced.
-
-The user will replace the modified files in Project Knowledge. Files
-not touched do not need to be re-uploaded.
-
----
-
-## Implementation details — format for each section file
+## Section file structure
 
 Every main section file (`02-mono-channel.md` through `08-monitor.md`)
 contains both the **conceptual signal flow** description and an
-**Implementation details** subsection. The Implementation details
-subsection grows over time as concrete circuit choices are made,
-organized into "Blocks" (e.g. Block 1, Block 2, …) corresponding to
-chunks of the signal path that were finalized in a single conversation.
-
-Each Block uses this template (omit fields that don't apply, but keep
-the structure consistent):
-
-```
-#### Block N — [name] (FINALIZED | IN-PROGRESS)
-
-Status: [conceptual | in-progress | finalized]
-
-Topology chosen:
-- brief description per stage in the block
-- schematic reference (Self fig X.Y, Jung p.NN, etc.) if any
-
-Active devices:
-- Opamps: part numbers + rationale
-- Analog switches: part numbers (if applicable)
-- Other ICs (VCA, matched pairs, etc.)
-
-Key passive values:
-- values that affect transfer function, noise, CMRR, or bandwidth
-- tolerances where they matter (CMR-critical resistors, etc.)
-
-Design targets / expected performance:
-- gain, Zin, Zout, CMRR, THD+N, noise, bandwidth, headroom
-
-Decisions and tradeoffs:
-- why this topology over alternatives
-- compromises accepted
-
-Open issues for this Block:
-- still-undecided items specific to this Block
-```
-
----
-
-## Rules for edits
-
-1. **Never silently change conceptual content** (signal flow,
-   bus inventory, "not present" decisions). If the design itself
-   changes — a new bus, a new switch, a removed feature, a rerouted
-   tap — that's a real design change. Update the text accordingly,
-   making sure the new state is internally consistent across all
-   affected files.
-2. **Implementation details can grow freely**, Block by Block, as
-   conversations finalize parts of the design.
-3. **`10-open-tbd.md` should shrink over time.** When an item is
-   resolved, remove it from there and record the decision in the
-   relevant Block.
-4. **Keep §11 "Counts" (in `01-bus-inventory.md`) in sync** if the
-   topology changes.
-
----
-
-## Instructions for future Claude
-
-If you are reading this in a new conversation:
-
-- Treat the conceptual sections (§0 – §9 across the section files) as
-  the authoritative current description of the **analog signal flow**.
-- Treat `10-open-tbd.md` as the list of things not yet decided.
-- Treat per-section Implementation details as the record of concrete
-  decisions already made (topologies, parts, values).
-- **Do not invent features, stages, or assumptions that are not in
-  these files.** The user has a strict "don't assume what isn't
-  described" policy. If something is unclear, ask.
-- If the user asks you to implement a new Block, walk through the
-  Implementation details template fields one by one rather than
-  producing a monolithic answer — this makes decisions explicit and
-  easier to record.
-- When the user says "let's update the file", interpret it as
-  "update the relevant section file(s) so they reflect the new
-  state". Decisions are definitive — there is no separate history
-  to maintain.
-
-### Project rules for Claude (must-follow)
-
-These rules apply to every Claude session on this repo. They live
-here, in the repo, on purpose — so they travel with the project to
-any machine and any Claude harness.
-
-1. **No hidden / off-repo memory for this project.** Do not write
-   notes, preferences, or design decisions to any
-   harness-private memory store
-   (e.g. `~/.claude/projects/.../memory/`, system prompts,
-   side files outside this directory). Anything worth remembering
-   between sessions belongs **inside this repo** — in the relevant
-   section file, in `10-open-tbd.md`, or in this README. The
-   project must remain fully self-contained so it can be picked up
-   on any computer and any Claude session.
-2. **`kicad_pcb/` is off-limits unless the user explicitly says
-   otherwise.** Do not search, grep, glob, or read files under
-   `kicad_pcb/` proactively. Schematic / PCB files are managed
-   separately from these Markdown design docs; the docs are the
-   source of truth for design intent. If a doc-side question
-   *seems* to need schematic verification, ask the user first.
+**Implementation details** subsection. Implementation details grow
+over time as concrete circuit choices are made, organized into
+"Blocks" (Block 1, Block 2, …) corresponding to chunks of the
+signal path that were finalized in a single conversation. The Block
+template and editing rules live in `CLAUDE.md`.
 
 ---
 
@@ -248,9 +124,12 @@ future Claude can immediately see where things stand.)
   power rails). Selective upgrade to OPA1642 / OPA1656 in specific
   positions is identified as a budget-review item — see
   `10-open-tbd.md`.
-- Relay coil bipolar driver IC, partitioning, coil-rail choice
-  (3 V LDO vs +3.3 V direct), and master-output hard-mute for
-  firmware boot init are tracked as design-phase open issues in
+- Relay infrastructure: coil supply rail settled (+3.3 V direct);
+  driver partitioning settled (per-PCB stackable two-board pattern
+  per `00-conventions.md` — audio PCB carries only the relay coil
+  via a 3-pin connector, lower stackable PCB carries all logic).
+  Coil bipolar driver IC and master-output hard-mute for firmware
+  boot init still tracked as design-phase open issues in
   `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.
