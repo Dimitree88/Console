@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\Users\\\\dimitri.petrucci\\\\.claude\\\\projects\\\\c--Users-dimitri-petrucci-Desktop-repos-console\\\\memory\")",
+      "Read(//c/Users/dimitri.petrucci/.claude/projects/c--Users-dimitri-petrucci-Desktop-repos-console/memory/**)"
+    ]
+  }
+}

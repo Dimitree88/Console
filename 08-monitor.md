@@ -8,19 +8,20 @@ mono/check.
 ## 8.1 Source-select electronic switch (stereo)
 
 Main Mix L/R is the default source. A **stereo relay-driven
-electronic switch** (one **FTR-B3GA4.5Z-B10**, DPDT 2 form C, per
-`00-conventions.md` "Standard signal relay") is controlled by the
-SOLO logic:
+electronic switch** (one **AGQ210A03**, DPDT 2 form C, 1-coil
+latching, per `00-conventions.md` "Standard signal relay") is
+controlled by the SOLO logic:
 
-- If **no solo is active** (coil de-energized, NC contacts) →
+- If **no solo is active** (RESET state, NC contacts) →
   pass-through Main Mix.
-- If **any AFL or PFL is active** (coil energized, NO contacts) →
+- If **any AFL or PFL is active** (SET state, NO contacts) →
   source switches to the **Solo summer** output.
 
 Contact set 1 carries L, contact set 2 carries R, ganged on one
-coil. The default at power-up is "Main Mix" because the coil is
-unpowered at boot — the operator hears Main Mix until firmware
-asserts a solo.
+coil. The boot default is "Main Mix" — implemented by firmware
+driving this relay to RESET at startup (the relay being latching,
+state at boot is otherwise indeterminate; see "State at power-up
+is indeterminate" in `00-conventions.md`).
 
 (Control: firmware. Priority AFL vs PFL when both active is a
 firmware decision — to be defined later.)
@@ -29,12 +30,12 @@ firmware decision — to be defined later.)
 
 ## 8.2 Solo summer
 
-Another stereo relay-driven switch (one **FTR-B3GA4.5Z-B10**,
-DPDT 2 form C) alternates between the **AFL summer** and the **PFL
-summer** depending on which mode is active. Contact set 1 carries
-L, contact set 2 carries R. The output of whichever is selected
-feeds the main Solo summer output (which in turn feeds the
-source-select switch above). Per `00-conventions.md` "Standard
+Another stereo relay-driven switch (one **AGQ210A03**, DPDT
+2 form C, 1-coil latching) alternates between the **AFL summer**
+and the **PFL summer** depending on which mode is active. Contact
+set 1 carries L, contact set 2 carries R. The output of whichever
+is selected feeds the main Solo summer output (which in turn feeds
+the source-select switch above). Per `00-conventions.md` "Standard
 signal relay".
 
 ---
@@ -101,7 +102,7 @@ decided yet. For now the path "ends" here.
 Status: **conceptual**, with one part-level decision already
 fixed: the source-select switch (§8.1) and the Solo summer
 AFL/PFL alternation switch (§8.2) both use the
-**FTR-B3GA4.5Z-B10** signal relay per `00-conventions.md` — 2
+**AGQ210A03** latching signal relay per `00-conventions.md` — 2
 relays from this section. No topology details for the AFL / PFL
 summers, the "in front balance" pot, the mono/check network, or
 the monitor output stage chosen yet.

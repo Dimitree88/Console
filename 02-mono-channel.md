@@ -38,28 +38,31 @@ cold-side network (see `00-conventions.md`).
 
 ## 2.2 CHANNEL SOURCE switch (A / B select)
 
-A **relay-driven electronic switch** (DPDT 2 form C, standard signal
-relay per `00-conventions.md`) selects which of the two
-unbalanced-and-gained signals continues down the channel. Only one
-at a time. Named **CHANNEL SOURCE** to avoid confusion with the
-master Monitor section (`08-monitor.md`).
+A **relay-driven electronic switch** (DPDT 2 form C, **1-coil
+latching**, standard signal relay per `00-conventions.md`) selects
+which of the two unbalanced-and-gained signals continues down the
+channel. Only one at a time. Named **CHANNEL SOURCE** to avoid
+confusion with the master Monitor section (`08-monitor.md`).
 
 The front-panel control is a **momentary pushbutton** (single
-contact) that toggles a logic latch; the latch in turn energizes or
-de-energizes the relay coil. The relay's two form-C contact sets
+contact). Firmware reads each press and issues either a set or
+reset pulse (≥ 10 ms) to the relay coil, toggling the relay's
+mechanically latched state. The relay's two form-C contact sets
 serve different purposes:
 
 - **Contact set 1** — switches the audio signal (A or B onto the
   channel path).
-- **Contact set 2** — switches +5 V to one of two indicator LEDs on
-  the front panel:
-  - **A selected** (coil de-energized, NC contacts) → red LED on.
-  - **B selected** (coil energized, NO contacts) → green LED on.
+- **Contact set 2** — switches +3.3 V to one of two indicator LEDs
+  on the front panel:
+  - **A selected** (RESET state, NC contacts) → red LED on.
+  - **B selected** (SET state, NO contacts) → green LED on.
 
-The LED supply and its return are on +5V / DGND, not on the audio
-±15V / AGND — see `00-conventions.md`. The default at power-on is
-A selected / red LED on, since an unpowered coil rests on the NC
-contacts.
+The LED supply and its return are on +3.3V / DGND, not on the audio
+±15V / AGND — see `00-conventions.md`. The boot-time default is
+A selected / red LED on — implemented by firmware driving every
+CHANNEL SOURCE relay to its RESET state at startup (a latching
+relay does not provide this guarantee through hardware alone; see
+"State at power-up is indeterminate" in `00-conventions.md`).
 
 ---
 
@@ -116,8 +119,8 @@ mechanical front-panel switch.
   AGND (PFL OFF) and the PFL mono bus (PFL ON). The upstream node
   sees a fixed light load identical in OFF and ON, so no DC step on
   switching → click-free.
-- **Section 2** (control): pole = +5 V (LED rail per §00). In PFL
-  ON, drives a **red front-panel LED** AND contributes via a
+- **Section 2** (control): pole = +3.3 V (LED rail per §00). In
+  PFL ON, drives a **red front-panel LED** AND contributes via a
   wired-OR diode to the **PFL DETECT logical bus** that firmware
   monitors to drive the master monitor source-select (§8.1).
 
@@ -130,7 +133,8 @@ input").
 
 ## 2.6 ACTIVE / SOLO electronic switch (MUTE)
 
-An **electronic switch** controlled by digital logic interrupts the
+An **electronic switch** (standard latching signal relay per
+`00-conventions.md`) controlled by digital logic interrupts the
 main signal path. This is the on/off point used by the firmware to
 implement SOLO and/or ACTIVE muting behavior — informally referred
 to as the **MUTE** switch. (Exact behavior — mute-on-solo, AFL-only,
@@ -180,14 +184,14 @@ rationale). Only one destination at a time.
 ### (b) AFL electronic switch
 
 Parallel tap, stereo. A relay-driven electronic switch (one
-**FTR-B3GA4.5Z-B10** per channel — DPDT 2 form C, standard signal
-relay per `00-conventions.md`) connects the channel's stereo
+standard latching signal relay per channel per `00-conventions.md`
+— DPDT 2 form C, 1-coil latching) connects the channel's stereo
 post-pan signal to the AFL bus when the AFL logic calls for it.
-Contact set 1 carries L, contact set 2 carries R; both gated by
+Contact set 1 carries L, contact set 2 carries R; both ganged on
 the same coil so L and R are perfectly synchronous.
 
 *Tap location, summing-resistor values toward the AFL bus, and
-fail-safe direction (NC = AFL off / contacts open) are recorded
+reset-state direction (NC = AFL off / contacts open) are recorded
 together with §08 — see `10-open-tbd.md`.*
 
 ### (c) 4 × AUX dual-gang pots (mono sends)
@@ -336,24 +340,24 @@ Op Amp Applications Handbook):
 
 *CHANNEL SOURCE switch:*
 
-- **FTR-B3GA4.5Z-B10** (DPDT 2 form C signal relay, standard
-  signal relay per `00-conventions.md`). See §2.2.
-- Front-panel control: momentary pushbutton (single contact),
-  feeding a logic latch (firmware or simple flip-flop) that
-  energizes or de-energizes the relay coil.
+- **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay,
+  standard signal relay per `00-conventions.md`). See §2.2.
+- Front-panel control: momentary pushbutton (single contact). Each
+  press is read by firmware, which issues a set or reset pulse
+  (≥ 10 ms) to the coil's bipolar driver, toggling the latched
+  state.
 - Contact set 1 (audio): COM = onward channel path; NC = Receiver A
   output (post-DC-block); NO = Receiver B output (post-DC-block).
-  At rest (coil unpowered), Receiver A is selected → A is the
-  default at power-up.
-- Contact set 2 (LED): COM = +5 V; NC = A-LED (red) anode;
+  In the RESET state, Receiver A is selected — this is the
+  firmware-initialized boot default.
+- Contact set 2 (LED): COM = +3.3 V; NC = A-LED (red) anode;
   NO = B-LED (green) anode. LED cathodes return through their
   current-limit resistors to DGND. Mechanically ganged with
   contact set 1, so the lit LED always tracks the audio
   selection.
-- Coil drive: +5 V via a sink driver (open-collector / open-drain,
-  ~ 34 mA, with flyback diode) per `00-conventions.md` "Standard
-  signal relay". Driver IC and partitioning TBD — see
-  `10-open-tbd.md`.
+- Coil drive: bipolar pulse from a 3 V coil supply per
+  `00-conventions.md` "Standard signal relay". Driver IC and
+  partitioning TBD — see `10-open-tbd.md`.
 
 #### Active devices
 
@@ -362,9 +366,9 @@ Op Amp Applications Handbook):
 - 1× for buffers (4 opamps used).
 - 1× for balanced receivers (4 opamps used).
 
-**FTR-B3GA4.5Z-B10 × 1 per channel** (DPDT 2 form C signal relay):
-CHANNEL SOURCE A/B select. Per `00-conventions.md` "Standard
-signal relay".
+**AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
+signal relay): CHANNEL SOURCE A/B select. Per `00-conventions.md`
+"Standard signal relay".
 
 #### Key passive values
 
@@ -379,8 +383,8 @@ signal relay".
 - A-LED (red) and B-LED (green) current-limit resistors on the
   CHANNEL SOURCE indicator: TBD (depends on chosen LED Vf and
   brightness target).
-- Coil flyback diode (1N4148-class) across the relay coil: exact
-  part TBD with the coil driver choice.
+- Coil protection (flyback / freewheeling network for bipolar
+  drive): exact topology TBD with the coil driver choice.
 
 #### Design targets / expected performance
 
@@ -429,18 +433,19 @@ signal relay".
   the jack's normalling contacts to short TIP↔RING when no plug is
   inserted, so the receiver sees zero differential signal at idle.
   See *Input jack idle-noise scheme* in Topology chosen.
-- **LED power on +5V / DGND**, galvanically separate from audio
+- **LED power on +3.3V / DGND**, galvanically separate from audio
   ±15V / AGND.
-- **CHANNEL SOURCE as relay-driven electronic switch** (FTR-B3
-  signal relay, single contact set for audio + single contact set
-  for LED, ganged on one coil) instead of a direct mechanical DPDT.
-  Same signal-flow behavior as a DPDT, with the addition that
-  state is held in a digital latch — making it directly compatible
-  with future remote / recall logic if ever wanted, and keeping
-  contact resistance to ≤ 75 mΩ in the signal path. Default
-  selection at power-up is A (NC contacts), matching a
-  "no-surprise-source" boot condition. Per `00-conventions.md`
-  "Standard signal relay".
+- **CHANNEL SOURCE as relay-driven electronic switch** (AGQ210A03
+  latching signal relay, single contact set for audio + single
+  contact set for LED, ganged on one coil) instead of a direct
+  mechanical DPDT. Same signal-flow behavior as a DPDT, with the
+  addition that state is held in the relay's mechanical latch —
+  making it directly compatible with future remote / recall logic
+  if ever wanted, and keeping contact resistance ≤ 100 mΩ initial
+  in the signal path. Boot default = A (RESET state, NC contacts);
+  this is a firmware-init contract, not a hardware property —
+  every CHANNEL SOURCE relay is reset by firmware at startup. Per
+  `00-conventions.md` "Standard signal relay".
 
 ---
 
@@ -473,7 +478,7 @@ signal relay".
 - DPDT mechanical, front-panel.
 - Section 1: alternates between bypass (signal from CHANNEL SOURCE
   post-DC-block) and HPF output (post-C42).
-- Section 2: drives **orange LED**, on when HPF IN, +5V / DGND.
+- Section 2: drives **orange LED**, on when HPF IN, +3.3V / DGND.
 
 *Insert Send (§2.4):*
 
@@ -510,7 +515,7 @@ signal relay".
 - Section 1: alternates onward signal between the pre-insert tap
   (post-HPF, branch upstream of the Send 75 Ω) and the Return
   receiver output (post-C38).
-- Section 2: drives **blue LED**, on when INSERT IN, +5V / DGND.
+- Section 2: drives **blue LED**, on when INSERT IN, +3.3V / DGND.
 
 *5-pin connector — channel PCB ↔ jack PCB:*
 
@@ -556,8 +561,11 @@ signal relay".
 - Insert Return bias paths: R22 = 47 kΩ.
 - Insert Send build-out: 75 Ω (tip series); cold dummy = 75 Ω + 47 µF
   to AGND + 47 kΩ to AGND.
-- HPF / INSERT LEDs: standard low-current parts on +5V / DGND
-  (orange and blue).
+- HPF / INSERT LEDs: standard low-current parts on +3.3V / DGND
+  (orange and blue). **Note**: blue LED Vf is typically
+  3.0–3.4 V, leaving very little headroom across the current-limit
+  resistor on a +3.3 V rail. Either use a low-Vf blue (~2.7 V) or
+  re-evaluate the LED color choice — see `10-open-tbd.md`.
 
 #### Design targets / expected performance
 
@@ -659,18 +667,18 @@ signal relay".
   bus (PFL ON). The 22 kΩ is the bus summing resistor for this
   channel's PFL contribution. Constant load on the upstream node in
   both positions → no DC step on switching → click-free.
-- Section 2 (control): pole = +5 V (LED rail). In PFL ON, throws to
-  a junction connecting (a) the anode of the **red front-panel PFL
-  LED** (cathode to DGND via current-limit resistor) and (b) the
-  anode of a small-signal diode whose cathode goes to the **PFL
-  DETECT logical bus** (wired-OR HIGH ⇒ at least one PFL active
-  anywhere on the console). The diode prevents back-feed of +5 V
-  from one channel's Sec2 to another's LED via the bus.
+- Section 2 (control): pole = +3.3 V (LED rail). In PFL ON, throws
+  to a junction connecting (a) the anode of the **red front-panel
+  PFL LED** (cathode to DGND via current-limit resistor) and
+  (b) the anode of a small-signal diode whose cathode goes to the
+  **PFL DETECT logical bus** (wired-OR HIGH ⇒ at least one PFL
+  active anywhere on the console). The diode prevents back-feed of
+  +3.3 V from one channel's Sec2 to another's LED via the bus.
 
 *MUTE switch (§2.6):*
 
-- **FTR-B3GA4.5Z-B10** (DPDT 2 form C signal relay, standard
-  signal relay per `00-conventions.md`).
+- **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay,
+  standard signal relay per `00-conventions.md`).
 - Audio path: both form-C contact sets are wired in parallel to
   halve contact resistance and provide contact redundancy.
   COM1 ‖ COM2 = post-INSERT signal (taken upstream of the meter
@@ -679,36 +687,37 @@ signal relay".
   muted is held near AGND by the ensemble of bias paths and
   virtual-earth returns of CUE / AUX gang 1 / fader stages
   that load it, see Block 4; no shunt-to-AGND is required given
-  the > 80 dB open-contact isolation of the relay even at
-  ultrasonic frequencies).
-- Effective parallel R_on: ≈ 37 mΩ (75 mΩ per contact, two in
-  parallel). Negligible compared to upstream/downstream source
-  impedances and pot wipers.
-- Coil drive: +5 V via a sink driver (open-collector / open-drain,
-  ~ 34 mA per coil, with flyback diode), per `00-conventions.md`
-  "Standard signal relay". The driver IC and its partitioning
-  between per-channel and per-PCB control connectors are deferred
-  until channels-per-PCB is decided (likely 4 or 6 channels per
-  input PCB) — see `10-open-tbd.md`.
-- Logic semantics: **coil energized ⇒ channel ACTIVE** (NO
-  contacts make, signal passes); **coil de-energized ⇒ channel
-  MUTED** (NO contacts open, signal interrupted). At power-up,
-  before firmware boots, all relays are de-energized → all
-  channels are silent — fail-safe boot.
+  the open-contact isolation of the relay even at ultrasonic
+  frequencies).
+- Effective parallel R_on: ≈ 50 mΩ (100 mΩ per contact initial,
+  two in parallel). Negligible compared to upstream/downstream
+  source impedances and pot wipers.
+- Coil drive: bipolar pulse from a 3 V coil supply, per
+  `00-conventions.md` "Standard signal relay". The driver IC and
+  its partitioning between per-channel and per-PCB control
+  connectors are deferred until channels-per-PCB is decided
+  (likely 4 or 6 channels per input PCB) — see `10-open-tbd.md`.
+- Logic semantics: **SET state ⇒ channel ACTIVE** (NO contacts
+  make, signal passes); **RESET state ⇒ channel MUTED** (NO
+  contacts open, signal interrupted). The relay holds its state
+  mechanically; firmware initializes every MUTE relay to the
+  RESET state at startup so the channel is muted by the time
+  audio output is unmuted. Master-output hard-mute keeps the room
+  silent until firmware completes init (master section, TBD).
 
 #### Active devices
 
 - **Meter buffer opamp**: **NE5532** (one half used). Per global
   default in `00-conventions.md`. The other half on this PCB is
   unused unless reuse can be found in a later block.
-- **FTR-B3GA4.5Z-B10** × 1 per channel (DPDT 2 form C signal
-  relay), used as the MUTE switch. Per `00-conventions.md`
+- **AGQ210A03** × 1 per channel (DPDT 2 form C, 1-coil latching
+  signal relay), used as the MUTE switch. Per `00-conventions.md`
   "Standard signal relay".
 - **Small-signal diode** for the PFL DETECT wired-OR (1N4148-class):
   exact part TBD.
-- **Coil flyback diode** (1N4148-class) across the relay coil:
-  exact part TBD with the coil driver choice. Often integrated
-  into the driver IC (e.g., ULN2803 has internal flyback diodes).
+- **Coil protection** (flyback / freewheeling network for bipolar
+  drive): exact topology TBD with the coil driver choice. Typically
+  integrated into the chosen latching-relay driver IC.
 
 #### Key passive values
 
@@ -716,9 +725,9 @@ signal relay".
 - PFL series / summing resistor: **22 kΩ** (0603 1 %).
 - PFL LED current-limit resistor: TBD (depends on chosen LED Vf
   and desired brightness).
-- Optional series resistor on the relay coil (~ 22 Ω) to drop
-  the +5 V rail to the 4.5 V coil nominal: layout-time decision
-  per `00-conventions.md`.
+- Coil supply: directly from the +3.3 V logic rail per
+  `00-conventions.md` "Standard signal relay" — no series
+  dropping network needed.
 
 #### Design targets / expected performance
 
@@ -766,16 +775,19 @@ signal relay".
   diode wired-OR from Sec2 of the DPDT. Avoids dragging analog PFL
   audio into firmware. The diode prevents inter-channel back-feed
   through the bus.
-- **Relay (FTR-B3) for MUTE instead of a CMOS analog switch.**
-  Three combined reasons: (1) signal-path quality — contact
-  resistance ≤ 37 mΩ paralleled (vs ≈ 17 Ω for an ADG419-class
+- **Latching relay (AGQ210A03) for MUTE instead of a CMOS analog
+  switch.** Combined reasons: (1) signal-path quality — contact
+  resistance ≤ 50 mΩ paralleled (vs ≈ 17 Ω for an ADG419-class
   CMOS), no charge injection, no CMOS distortion vs source-Z
   artefacts; (2) off-isolation effectively unbounded at audio
-  through physical contact opening; (3) fail-safe boot — coil
-  unpowered ⇒ NO open ⇒ channel muted, so power-up before firmware
-  boots is silent by construction. Trade-off accepted: ~ 3 ms
-  switching time and the need for a coil driver + ~ 140 mW per
-  energized relay. Per `00-conventions.md` "Standard signal relay".
+  through physical contact opening; (3) latching means coil power
+  is consumed only during ~10 ms set/reset pulses — no continuous
+  140 mW-per-energized-relay budget on the coil rail. Trade-off
+  accepted: indeterminate state at power-up (firmware must
+  initialize every MUTE relay to RESET / muted at boot, with a
+  master-output hard-mute covering the init window — TBD, master
+  section), ~ 4 ms switching time, and the need for a bipolar
+  pulse driver. Per `00-conventions.md` "Standard signal relay".
 - **Both form-C contact sets paralleled** for the audio path.
   Halves contact resistance and provides redundancy against a
   single failed contact. NC contacts left floating: the PRE-FADER
@@ -786,25 +798,27 @@ signal relay".
 #### Open issues for Block 3
 
 - **Channels per input PCB** (4 or 6) and resulting **relay coil
-  control connector partitioning** (one wide connector per PCB vs
-  one narrow connector per channel) — TBD. See `10-open-tbd.md`.
+  control connector partitioning** (one wide connector per PCB
+  carrying SET + RESET lines per channel, vs narrower per-channel
+  connectors) — TBD. See `10-open-tbd.md`.
 - **Coil driver IC** for the MUTE relay (and, more broadly, for
-  every FTR-B3 in the console): centralized ULN2803-class octal
-  Darlington vs discrete BJT/MOSFET per coil; partitioning and
-  exact part TBD. See `10-open-tbd.md`.
-- **Optional series resistor on the coil** (~ 22 Ω) to drop the
-  +5 V rail to the 4.5 V coil nominal: layout-time decision
-  pending coil temperature-rise measurement on rev 1. See
-  `00-conventions.md`.
+  every AGQ210A03 in the console): bipolar / half-H-bridge per
+  relay (TBD62783A + TBD62083A pair, octal latching-relay driver
+  like MAX4820/4821, or per-relay discrete NPN+PNP); partitioning
+  and exact part TBD. See `10-open-tbd.md`.
+- **Coil supply**: from the +3.3 V logic rail (the 3 V coil
+  tolerates +3.3 V — see `00-conventions.md`). Local bulk
+  capacitance on the +3.3 V plane sized for the worst-case
+  pulse-current transient on each PCB.
 - **Other PFL sources feeding PFL DETECT**: AUX masters (§05),
   AUX returns (§03), and groups (§04) all carry PFL controls; do
   they all need to feed PFL DETECT to drive the firmware
   source-select? — TBD. See `10-open-tbd.md`.
 - **PFL LED current-limit resistor value** — depends on chosen LED.
 - **PFL signal diode** — 1N4148-class, exact part TBD.
-- **Coil flyback diode part** — 1N4148-class if external; not
-  needed if a driver IC with integrated flyback diodes (e.g.,
-  ULN2803) is chosen.
+- **Coil protection network** for bipolar drive — topology and
+  parts TBD with the chosen latching-relay driver IC (often
+  integrated). See `10-open-tbd.md`.
 
 ---
 
@@ -816,7 +830,7 @@ signal relay".
 
 *Pre-fader node:*
 
-The paralleled NO outputs of the MUTE relay (FTR-B3) in Block 3
+The paralleled NO outputs of the MUTE relay (AGQ210A03) in Block 3
 form the PRE-FADER node.
 This node is loaded by three parallel paths:
 
@@ -913,9 +927,10 @@ PCB. This signal feeds in parallel:
   loop). At HF, where loop gain falls, the 680 Ω becomes effective
   output impedance and isolates the opamp from capacitive load /
   short-circuit conditions on the connector and 220 µF.
-- Pre-fader node source impedance: ≈ 37 mΩ (parallel of two FTR-B3
-  contacts) + bias paths from the upstream stage (Block 3) —
-  effectively dominated by upstream impedances.
+- Pre-fader node source impedance: ≈ 50 mΩ (parallel of two
+  AGQ210A03 contacts, 100 mΩ each initial) + bias paths from the
+  upstream stage (Block 3) — effectively dominated by upstream
+  impedances.
 - Post-fader amp drive: NE5532 is rated for 600 Ω loads at low
   distortion; the parallel load presented by 5 × 10 kΩ pot tops
   (4 AUX-post + pan) is ≈ 2 kΩ, well within capability. Verify when

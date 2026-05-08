@@ -45,8 +45,9 @@ any of the section files (`02-mono-channel.md`, etc.).
 
 - **±15V** rails for the audio signal path (all opamps, active
   switches in the audio path).
-- **+5V** separate rail for LED indicators and any future digital
-  logic (SOLO / ACTIVE / AFL electronic switch controls, firmware).
+- **+3.3V** separate rail for LED indicators, MCU / digital logic,
+  and standard-signal-relay coil drive (SOLO / ACTIVE / AFL
+  electronic switches, firmware, front-panel pushbuttons).
 
 ### Grounds
 
@@ -109,9 +110,9 @@ bead, direct bond, etc.) is a global decision — see `10-open-tbd.md`.
   is a default that is not repeated in individual section
   descriptions.
 - **Local bulk on each PCB power rail:** in addition to the per-IC
-  100 nF above, every PCB that receives the ±15V (or +5V) rails
+  100 nF above, every PCB that receives the ±15V (or +3.3V) rails
   carries a bulk capacitor on each rail to its respective ground
-  (AGND for ±15V, DGND for +5V), placed near the local IC group.
+  (AGND for ±15V, DGND for +3.3V), placed near the local IC group.
   Typical value **4.7–10 µF**; exact value and dielectric (tantalum,
   polymer, ceramic X7R, low-ESR electrolytic) chosen per PCB at
   layout time, based on density of active devices and signal-path
@@ -125,12 +126,13 @@ bead, direct bond, etc.) is a global decision — see `10-open-tbd.md`.
   electrolytic** (e.g., Nichicon Muse ES or equivalent). Film is
   acceptable where value and size allow, but not the default.
 
-### Standard signal relay — FTR-B3GA4.5Z-B10
+### Standard signal relay — AGQ210A03
 
 Default electronic switching element throughout CONSOLE:
-**Fujitsu FTR-B3GA4.5Z-B10** — DPDT 2 form C signal relay, gold
-overlay silver-nickel bifurcated contacts, 4.5 V standard
-(non-latching) coil, surface mount, B10 tape & reel.
+**Panasonic AGQ210A03** — DPDT 2 form C, **1-coil latching**
+signal relay, AgPd + Au-clad contacts, **3 V coil** (1-coil
+latching, pulse-driven), surface-mount terminal A type, sealed
+package, Telcordia / FCC Part 68 surge withstand.
 
 Used in every position where the audio signal must be interrupted
 or rerouted under digital control:
@@ -144,18 +146,27 @@ or rerouted under digital control:
 
 Why a relay rather than a CMOS analog switch:
 
-- True dry-circuit signal path: contact resistance ≤ 75 mΩ (vs
-  ≈ 17 Ω R_on for an ADG419-class CMOS), no charge injection,
-  no CMOS-specific THD vs source-Z artefacts.
+- True dry-circuit signal path: contact resistance ≤ 100 mΩ
+  initial (vs ≈ 17 Ω R_on for an ADG419-class CMOS), no charge
+  injection, no CMOS-specific THD vs source-Z artefacts.
 - Off-isolation: open contacts are physically separated and
-  plastic-sealed; isolation > 80 dB at 1 MHz, effectively
-  unbounded at audio.
-- Min switching load 10 mV / 0.01 mA — well below any signal
+  plastic-sealed; effectively unbounded at audio.
+- Min switching load 10 µA / 10 mV DC — well below any signal
   level encountered in the path.
 - DPDT 2 form C lets one relay handle a stereo pair (L on one
   contact set, R on the other) wherever the switched signal is
   stereo, halving the relay count.
 - Plastic-sealed body: no flux/dust ingress during PCB assembly.
+
+Why latching (over a non-latching standard signal relay):
+
+- **Coil current flows only during set/reset pulses** (~10 ms);
+  average dissipation on the coil rail is essentially zero. The
+  worst-case continuous coil-rail budget (~10 W across 88 relays)
+  that a non-latching plan would impose is replaced by a small
+  peak transient handled by local bulk capacitance.
+- **State held mechanically** — the audio path is immune to
+  glitches on the coil supply, brown-outs, or MCU resets.
 
 Topology and drive:
 
@@ -163,43 +174,65 @@ Topology and drive:
   form-C contact sets are wired in parallel — COM1 ‖ COM2,
   NO1 ‖ NO2 — to halve the contact resistance and provide
   contact redundancy. NC contacts are wired according to the
-  fail-safe direction needed (signal-to-AGND for shunt-mute, or
-  to a default source for A/B selection — see per-block details).
+  reset-state direction needed (signal-to-AGND for shunt-mute,
+  or to a default source for A/B selection — see per-block
+  details).
 - Stereo switching position (one stereo pair in, one stereo pair
   out): contact set 1 carries L, contact set 2 carries R; they
-  are mechanically ganged inside the relay, so a single coil
-  drives both sides perfectly synchronously.
-- **Coil drive: from the +5 V rail.** The 4.5 V coil tolerates
-  +5 V (≈ +10 % over nominal, well within the operating-voltage
-  range shown on the datasheet). Coil current ≈ 34 mA at +5 V;
-  rated power 140 mW (datasheet) is exceeded by ~25 %, accepted
-  given the temperature-rise margin. A series resistor (~ 22 Ω)
-  to drop ~ 0.7 V back to nominal 4.5 V is an option at layout
-  time if measured coil temperature rise is excessive.
-- **Flyback diode** (1N4148-class, exact part TBD) across the
-  coil for inductive kickback when the driver releases.
-- **Coil driver**: open-collector / open-drain sink capable of
-  ~ 40 mA per coil (e.g., ULN2803-class octal Darlington with
-  built-in flyback diodes, or discrete BJT/MOSFET per coil).
-  Partitioning between centralized drivers and per-PCB drivers,
-  and exact driver IC, are deferred (see `10-open-tbd.md`).
-- **Polarity**: the coil is polarized (datasheet pins 1 and 8 =
-  + and − respectively for energize). Layout must respect this.
-- **Fail-safe at power-up**: at rest (coil unpowered) the NC
-  contacts are closed and NO are open. The default position of
-  each switch is therefore chosen so that an unpowered relay
-  produces a "safe" state — channel muted, AFL off, monitor on
-  Main Mix, CHANNEL SOURCE on Input A — rather than a
-  surprising one.
+  are mechanically ganged inside the relay, so a single set
+  (or reset) pulse drives both sides perfectly synchronously.
+- **Coil drive: bipolar pulse**, ≥ 10 ms duration per Panasonic
+  guideline (operate / release time itself ≤ 4 ms; the longer
+  pulse covers temperature and operating-condition variation).
+  A pulse of one polarity across the polarized coil **sets** the
+  relay (NO contacts make); the opposite polarity **resets** it
+  (NC contacts make). State persists with the coil unpowered.
+  Two control lines per relay at the firmware level (SET, RESET).
+- **Coil supply rail: +3.3 V** (the project's logic rail). The
+  3 V coil tolerates +3.3 V — ≈ +10 % over rated, well within the
+  150 % max allowable specified by the datasheet — and the
+  pulse-only duty cycle makes the small overdrive thermally
+  irrelevant. No dedicated rail or series dropping resistor is
+  needed; the bipolar driver feeds the coil directly from the
+  +3.3 V plane.
+- **Coil polarity matters** (the coil is polarized — see the
+  Panasonic schematic, pins 1 = + and 8 = − for "set"). Layout
+  must respect the + / − pin assignment.
+- **Coil driver**: bipolar / half-H-bridge per relay. Candidates
+  include Toshiba TBD62783A (high-side) + TBD62083A (low-side)
+  pair, dedicated octal latching-relay drivers
+  (e.g. MAX4820 / MAX4821), or a per-relay discrete NPN+PNP
+  pair. Driver IC choice, partitioning (centralized vs per-PCB),
+  and flyback / freewheeling protection are deferred (see
+  `10-open-tbd.md`).
+- **State at power-up is indeterminate.** A latching relay holds
+  whatever state it was last commanded into; transport or
+  installation impact may also change the reset position
+  (Panasonic explicit guideline). At every cold boot, firmware
+  must initialize every relay by issuing explicit set / reset
+  pulses to drive each one to a known state. The desired boot
+  state of each relay is the same "safe" state that a
+  non-latching design would have produced via NC contacts:
+  channel muted, AFL off, monitor on Main Mix, CHANNEL SOURCE
+  on Input A — see per-block details. Boot-init is a firmware
+  contract, not a hardware-guaranteed property.
+- **Master-output hard-mute during firmware init**: until
+  firmware finishes initializing all relays to their reset
+  state, audio output to the room must be held silent by a
+  separate master-stage hardware mute. Topology of that
+  master mute is deferred to the master-section design (see
+  `10-open-tbd.md`).
 
 Power-budget note: full count is approximately 88 relays
 across the console (24 mono channels × 3 + 4 AUX returns × 2 +
-3 groups × 2 + 2 in master monitor). Worst-case all-energized
-power on the +5 V coil rail ≈ 12 W. Average is much lower
-(MUTE is normally OFF / coil not energized, AFL is rare,
-CHANNEL SOURCE picks one of two so on average ~50 %). PSU
-sizing for the +5 V coil rail is part of the global power
-design (see `10-open-tbd.md`).
+3 groups × 2 + 2 in master monitor). Pulse energy per state
+change ≈ 1.2 mJ (3.3 V × 37 mA × 10 ms, with the 3 V coil
+tolerated at +3.3 V per "Coil supply rail" above). Average
+coil-rail dissipation in normal operation is essentially zero.
+Peak transient if every relay in the console were toggled
+simultaneously ≈ 3.2 A for 10 ms — handled by local bulk on
+the +3.3 V rail per PCB, with firmware staging changes
+(e.g. N relays per stage) when this matters.
 
 ### Front-panel switches with LED indicators
 
@@ -207,19 +240,22 @@ Two patterns coexist on the channel strip and on master sections:
 
 **Pattern A — direct mechanical DPDT.** A front-panel toggle / push
 switch has two sections: one commutes the audio signal, the other
-commutes +5 V to a front-panel LED on DGND return. Used for HPF,
+commutes +3.3 V to a front-panel LED on DGND return. Used for HPF,
 INSERT, PFL, and any mechanical switch whose state is set directly
 by the operator and held mechanically.
 
-**Pattern B — momentary pushbutton + logic latch + standard relay
-(FTR-B3GA4.5Z-B10).** A single-contact front-panel pushbutton
-(momentary) feeds a logic latch (firmware or simple flip-flop) that
-energizes the relay coil. The relay's two form-C contact sets
-commute respectively the audio signal and the +5 V LED indicator
-current. Used for CHANNEL SOURCE A/B (see §2.2) and, in general,
-for any switch whose state is also reflected in the digital control
-domain (ACTIVE, SOLO, AFL — though those have no front-panel LED on
-the channel strip itself, only in master sections).
+**Pattern B — momentary pushbutton + MCU + bipolar pulse driver +
+standard latching relay (AGQ210A03).** A single-contact front-panel
+pushbutton (momentary) is read by firmware; on each press, firmware
+issues a set or reset pulse (≥ 10 ms) to the relay coil's bipolar
+driver, toggling the relay's mechanically latched state. The
+relay's two form-C contact sets commute respectively the audio
+signal and the +3.3 V LED indicator current — the LED tracks the
+latched contact position regardless of coil energization. Used
+for CHANNEL SOURCE A/B (see §2.2) and, in general, for any switch
+whose state is also reflected in the digital control domain
+(ACTIVE, SOLO, AFL — though those have no front-panel LED on the
+channel strip itself, only in master sections).
 
 LEDs are low-current standard parts in either pattern.
 

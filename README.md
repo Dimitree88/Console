@@ -19,6 +19,33 @@ the implementation decisions made during circuit design.
 
 ---
 
+## Mental model (one paragraph)
+
+CONSOLE is a 24+4+3 analog desk (24 mono channels, 4 stereo AUX
+returns, 3 stereo sub-groups) feeding a Main stereo bus with
+parallel SSL-style compression. Channel strips follow a conventional
+flow (balanced in → gain → HPF → insert → meter and PFL taps →
+MUTE electronic switch → fader → +10 dB post-amp → pan → routing)
+with two distinctive design choices: (1) dual balanced inputs A/B
+with a full-differential Direct Out from Input A for ADC tracking;
+(2) every channel has 4 AUX sends implemented as dual-gang pots that
+simultaneously drive a pre-fader and a post-fader mono bus, giving
+8 AUX buses total. The 4 stereo AUX returns are routing-only
+(no Post-Fader Output to the outside, no Insert, no AUX send) — they
+contribute only to internal buses (Main / Groups / AFL / CUE / PFL
+stereo). Groups offer per-AUX split-or-mono mode switches so a
+stereo group can feed stereo AUX pairs either as L/R split or as
+mono premix. The master section's distinguishing features are the
+parallel compression on the main bus (dry fader + SSL-style
+compressor + wet fader → summed output) and an "in front balance"
+pot that mixes an attenuated main mix behind the AFL so the engineer
+always hears the context. Digital control is limited to hard-muting /
+enabling electronic switches for ACTIVE, SOLO, and AFL — no VCAs,
+no recall, no automation. Talkback, tone oscillators, and master
+master meters are deliberately absent.
+
+---
+
 ## File map
 
 | File | Contents |
@@ -35,9 +62,9 @@ the implementation decisions made during circuit design.
 | `08-monitor.md` | §8 — Master monitor section |
 | `09-not-present.md` | §9 — features deliberately NOT in CONSOLE |
 | `10-open-tbd.md` | §10 — items deliberately unresolved at this stage |
-| `12-mental-model.md` | §12 — one-paragraph narrative summary |
 
-(Sections §11 "Counts" lives at the end of `01-bus-inventory.md`.)
+(Sections §11 "Counts" lives at the end of `01-bus-inventory.md`.
+The one-paragraph mental model lives at the top of this README.)
 
 ---
 
@@ -53,9 +80,9 @@ the implementation decisions made during circuit design.
    probably `06-cue-master.md` and `07-main-mix.md`.
 3. Look at `10-open-tbd.md` if the topic might touch any open issue.
 
-The Project Knowledge stores all these files. They are accessible via
-`project_knowledge_search`. There is no need for the user to attach
-files manually at the start of a conversation.
+All project context lives in this repo. Read the files you need with
+the file tools available to you; do not assume context that isn't
+in the files.
 
 ### When ending a conversation
 
@@ -156,6 +183,28 @@ If you are reading this in a new conversation:
   state". Decisions are definitive — there is no separate history
   to maintain.
 
+### Project rules for Claude (must-follow)
+
+These rules apply to every Claude session on this repo. They live
+here, in the repo, on purpose — so they travel with the project to
+any machine and any Claude harness.
+
+1. **No hidden / off-repo memory for this project.** Do not write
+   notes, preferences, or design decisions to any
+   harness-private memory store
+   (e.g. `~/.claude/projects/.../memory/`, system prompts,
+   side files outside this directory). Anything worth remembering
+   between sessions belongs **inside this repo** — in the relevant
+   section file, in `10-open-tbd.md`, or in this README. The
+   project must remain fully self-contained so it can be picked up
+   on any computer and any Claude session.
+2. **`kicad_pcb/` is off-limits unless the user explicitly says
+   otherwise.** Do not search, grep, glob, or read files under
+   `kicad_pcb/` proactively. Schematic / PCB files are managed
+   separately from these Markdown design docs; the docs are the
+   source of truth for design intent. If a doc-side question
+   *seems* to need schematic verification, ask the user first.
+
 ---
 
 ## Project status snapshot
@@ -165,12 +214,12 @@ future Claude can immediately see where things stand.)
 
 - Mono channel: signal flow conceptually complete. Implementation:
   - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED —
-    CHANNEL SOURCE now relay-driven (FTR-B3GA4.5Z-B10) with
-    front-panel momentary pushbutton + logic latch, replacing
-    the earlier mechanical DPDT.
+    CHANNEL SOURCE now relay-driven (AGQ210A03 latching) with
+    front-panel momentary pushbutton + firmware-driven bipolar
+    pulse, replacing the earlier mechanical DPDT.
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
   - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED — MUTE
-    now uses the FTR-B3GA4.5Z-B10 signal relay (both form-C
+    now uses the AGQ210A03 latching signal relay (both form-C
     contacts paralleled), replacing the earlier ADG419.
   - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
     AUX/CUE pre & post sends) FINALIZED.
@@ -178,28 +227,30 @@ future Claude can immediately see where things stand.)
     values (R_FB = 2.2 kΩ, center dip ≈ 4.5 dB).
   - Block 6 (post-pan 2-gang × 4-pos routing rotary) topology
     defined; bus summing resistor values TBD together with §04 / §07.
-  - AFL switch: switching element fixed (FTR-B3GA4.5Z-B10, one
+  - AFL switch: switching element fixed (AGQ210A03 latching, one
     per channel handling L+R on its two form-C contact sets);
     tap location and AFL summing-resistor values still deferred
     to §08. Post-Fader Output stage: conceptual flow fixed,
     implementation deferred (see `10-open-tbd.md`).
 - AUX returns: 4 channels, all identical, conceptual stage. ACTIVE
-  and AFL switching elements fixed as FTR-B3GA4.5Z-B10 (1 relay
+  and AFL switching elements fixed as AGQ210A03 (1 relay
   per function, handling L+R on its two contact sets).
-- Groups: same — ACTIVE and AFL fixed as FTR-B3GA4.5Z-B10.
+- Groups: same — ACTIVE and AFL fixed as AGQ210A03.
 - Master monitor: source-select (§8.1) and Solo summer AFL/PFL
-  alternation (§8.2) fixed as FTR-B3GA4.5Z-B10. Other stages still
+  alternation (§8.2) fixed as AGQ210A03. Other stages still
   conceptual.
 - All other sections (AUX/CUE/Main masters): still conceptual.
 - Global conventions: established (power, grounds, packages, default
   audio opamp **NE5532**, **standard signal relay
-  FTR-B3GA4.5Z-B10**, EMI filter, sleeve termination,
-  impedance-balanced output topology, front-panel switches with
-  LEDs, per-PCB local bulk decoupling on power rails). Selective
-  upgrade to OPA1642 / OPA1656 in specific positions is identified
-  as a budget-review item — see `10-open-tbd.md`.
-- Relay coil driver IC, partitioning, +5 V coil-rail PSU sizing,
-  and flyback-diode part are tracked as a design-phase open issue
-  in `10-open-tbd.md`.
+  AGQ210A03** (Panasonic, 1-coil latching, 3 V coil), EMI filter,
+  sleeve termination, impedance-balanced output topology,
+  front-panel switches with LEDs, per-PCB local bulk decoupling on
+  power rails). Selective upgrade to OPA1642 / OPA1656 in specific
+  positions is identified as a budget-review item — see
+  `10-open-tbd.md`.
+- Relay coil bipolar driver IC, partitioning, coil-rail choice
+  (3 V LDO vs +3.3 V direct), and master-output hard-mute for
+  firmware boot init are tracked as design-phase open issues in
+  `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.

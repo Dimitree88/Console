@@ -32,9 +32,9 @@ Same as on AUX return — premix L+R to both lines.
 ## 4.4 Meter buffers (× 2), ACTIVE electronic switch (stereo)
 
 Same as AUX return. The ACTIVE switch is a single
-**FTR-B3GA4.5Z-B10** signal relay (DPDT 2 form C) handling L and R
-simultaneously on its two contact sets — see §3.4 and
-`00-conventions.md` "Standard signal relay".
+**AGQ210A03** latching signal relay (DPDT 2 form C, 1-coil
+latching) handling L and R simultaneously on its two contact sets
+— see §3.4 and `00-conventions.md` "Standard signal relay".
 
 ---
 
@@ -51,7 +51,7 @@ Differences vs AUX return:
 - **No 4-pos rotary**. Groups can only be routed to the **Main Mix**.
   A **mechanical on/off switch** enables or disables the Main send.
 - **AFL** electronic switch (stereo) → AFL bus. One
-  **FTR-B3GA4.5Z-B10** per group; contact set 1 carries L, contact
+  **AGQ210A03** per group; contact set 1 carries L, contact
   set 2 carries R, ganged on one coil. Per `00-conventions.md`
   "Standard signal relay".
 - **4 × AUX dual-gang pots** with an important twist: each AUX has
@@ -86,7 +86,7 @@ Differences vs AUX return:
 
 Status: **conceptual**, with one part-level decision already
 fixed: the ACTIVE and AFL electronic switches both use the
-**FTR-B3GA4.5Z-B10** signal relay per `00-conventions.md` —
+**AGQ210A03** latching signal relay per `00-conventions.md` —
 2 relays per group × 3 groups = 6 relays from this section. No
 topology details for the audio summing / insert / fader / balance
 stages chosen yet.
