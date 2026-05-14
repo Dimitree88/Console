@@ -2542,6 +2542,16 @@
 		)
 		(uuid "825da99a-ffcd-4f5b-9194-b320b8f09ad7")
 	)
+	(text "collegare"
+		(exclude_from_sim no)
+		(at 120.65 27.94 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "eef794b9-a3f7-4f3d-a75a-e1bcd0728266")
+	)
 	(junction
 		(at 147.32 68.58)
 		(diameter 0)
@@ -3878,166 +3888,8 @@
 		)
 	)
 	(symbol
-		(lib_id "0_Basics:GNDD")
-		(at 168.91 25.4 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "786b17da-11e5-47cb-abbe-f0e79d391691")
-		(property "Reference" "#PWR0114"
-			(at 168.91 31.75 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GNDD"
-			(at 168.91 28.575 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 168.91 25.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 168.91 25.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 168.91 25.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "0de0a364-aac3-4a56-a10c-52286e9d495e")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/2cc21bd0-ae90-4079-8516-c4aeb6d6841f"
-					(reference "#PWR0114")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:GNDD")
-		(at 168.91 38.1 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7e8a6d2f-b38c-4a75-b9d9-1323b95d6156")
-		(property "Reference" "#PWR0110"
-			(at 168.91 44.45 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GNDD"
-			(at 168.91 41.275 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 168.91 38.1 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 168.91 38.1 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 168.91 38.1 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "43133632-4e08-40c3-8694-13d3b346e03c")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/2cc21bd0-ae90-4079-8516-c4aeb6d6841f"
-					(reference "#PWR0110")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "0_ED-Sounds:SWITCH-PUSH-LED")
-		(at 181.61 27.94 0)
+		(at 162.56 27.94 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -4048,7 +3900,7 @@
 		(fields_autoplaced yes)
 		(uuid "8743b97d-8c0e-45d7-9184-c255153ed3cd")
 		(property "Reference" "REC-CH1"
-			(at 181.61 21.336 0)
+			(at 162.56 21.336 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -4059,7 +3911,7 @@
 			)
 		)
 		(property "Value" "KS01 red"
-			(at 181.61 19.812 0)
+			(at 162.56 19.812 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -4070,7 +3922,7 @@
 			)
 		)
 		(property "Footprint" "0_Switches:KS-01"
-			(at 182.118 34.036 0)
+			(at 163.068 34.036 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4081,7 +3933,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 181.61 27.94 0)
+			(at 162.56 27.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4092,7 +3944,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 181.61 27.94 0)
+			(at 162.56 27.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -4497,86 +4349,6 @@
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/2cc21bd0-ae90-4079-8516-c4aeb6d6841f"
 					(reference "ACTIVE-CH1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:R")
-		(at 168.91 34.29 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "9c3a0320-34f7-4eb9-a26d-dc96236dc432")
-		(property "Reference" "R63"
-			(at 167.64 37.084 90)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Value" "R"
-			(at 168.91 34.29 90)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 0.889 0.889)
-				)
-			)
-		)
-		(property "Footprint" "0_Resistors:0603"
-			(at 167.132 34.29 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 168.91 34.29 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 168.91 34.29 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "9e0c6d40-2375-46dd-9c55-555311555f75")
-		)
-		(pin "2"
-			(uuid "036d910b-a8ce-4f29-86e2-e077f65e3689")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/2cc21bd0-ae90-4079-8516-c4aeb6d6841f"
-					(reference "R63")
 					(unit 1)
 				)
 			)
@@ -5060,96 +4832,8 @@
 		)
 	)
 	(symbol
-		(lib_id "0_ED-Sounds:SWITCH-PUSH-LED")
-		(at 163.83 27.94 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "baccfec7-5554-4874-bde3-10d7e09d82f2")
-		(property "Reference" "SELECT-CH1"
-			(at 163.83 21.336 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.016 1.016)
-					(thickness 0.127)
-				)
-			)
-		)
-		(property "Value" "KS-01 green"
-			(at 163.83 19.812 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 0.762 0.762)
-					(thickness 0.0953)
-				)
-			)
-		)
-		(property "Footprint" "0_Switches:KS-01"
-			(at 164.338 34.036 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 163.83 27.94 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 163.83 27.94 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "SW-A"
-			(uuid "acf782f5-5648-40ba-b90d-9a88084ea777")
-		)
-		(pin "SW-B"
-			(uuid "beb4d45d-6746-4535-aecc-a61ea7198aba")
-		)
-		(pin "LED-A"
-			(uuid "6aac519b-59f4-4dc3-b42b-0f499ef79656")
-		)
-		(pin "LED-C"
-			(uuid "1e166463-ad27-486e-8c5f-e038c12b23e9")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/2cc21bd0-ae90-4079-8516-c4aeb6d6841f"
-					(reference "SELECT-CH1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 186.69 25.4 0)
+		(at 167.64 25.4 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -5160,7 +4844,7 @@
 		(fields_autoplaced yes)
 		(uuid "c51ba50b-b841-40b6-99f3-6b61cf478272")
 		(property "Reference" "#PWR0115"
-			(at 186.69 31.75 0)
+			(at 167.64 31.75 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5171,7 +4855,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 186.69 28.575 0)
+			(at 167.64 28.575 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5182,7 +4866,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 186.69 25.4 0)
+			(at 167.64 25.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5193,7 +4877,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 25.4 0)
+			(at 167.64 25.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5204,7 +4888,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 186.69 25.4 0)
+			(at 167.64 25.4 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5228,7 +4912,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:R")
-		(at 186.69 34.29 0)
+		(at 167.64 34.29 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -5238,7 +4922,7 @@
 		(dnp no)
 		(uuid "d0008e84-9274-449a-ad82-5ef847354695")
 		(property "Reference" "R64"
-			(at 185.42 37.084 90)
+			(at 166.37 37.084 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -5249,7 +4933,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 186.69 34.29 90)
+			(at 167.64 34.29 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -5259,7 +4943,7 @@
 			)
 		)
 		(property "Footprint" "0_Resistors:0603"
-			(at 184.912 34.29 90)
+			(at 165.862 34.29 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5270,7 +4954,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 34.29 0)
+			(at 167.64 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5281,7 +4965,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 186.69 34.29 0)
+			(at 167.64 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5470,7 +5154,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 186.69 38.1 0)
+		(at 167.64 38.1 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -5481,7 +5165,7 @@
 		(fields_autoplaced yes)
 		(uuid "dc16564a-a734-4a44-b5b7-9af3118b8f04")
 		(property "Reference" "#PWR0111"
-			(at 186.69 44.45 0)
+			(at 167.64 44.45 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5492,7 +5176,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 186.69 41.275 0)
+			(at 167.64 41.275 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5503,7 +5187,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 186.69 38.1 0)
+			(at 167.64 38.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5514,7 +5198,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 186.69 38.1 0)
+			(at 167.64 38.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5525,7 +5209,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 186.69 38.1 0)
+			(at 167.64 38.1 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

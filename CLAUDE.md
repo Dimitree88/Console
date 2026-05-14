@@ -76,6 +76,8 @@ files. If something is unclear, ask.
 4. Update `10-open-tbd.md` if items were resolved or new ones surfaced.
 5. Update the "Project status snapshot" at the bottom of `README.md` if
    the change is structurally relevant to where the design stands.
+6. Update `11-digital-io.md` if the change affects relay, LED, or
+   pushbutton counts (any row added, removed, or renamed in those tables).
 
 Decisions are definitive — there is no separate history to maintain. When
 the user says "let's update the file", interpret it as "update the
@@ -97,6 +99,8 @@ relevant section file(s) so they reflect the new state".
    relevant Block.
 4. **Keep §11 "Counts" (in `01-bus-inventory.md`) in sync** if the
    topology changes.
+5. **Keep `11-digital-io.md` in sync** if relay, LED, or button counts
+   change (see rule 6 above).
 
 ---
 

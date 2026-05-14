@@ -266,22 +266,36 @@ driver, toggling the relay's mechanically latched state. The
 relay's two form-C contact sets commute respectively the audio
 signal and the +3.3 V LED indicator current — the LED tracks the
 latched contact position regardless of coil energization. Used
-for CHANNEL SOURCE A/B (see §2.2) and, in general, for any switch
-whose state is also reflected in the digital control domain
-(ACTIVE, SOLO, AFL — though those have no front-panel LED on the
-channel strip itself, only in master sections).
+for CHANNEL SOURCE A/B (see §2.2).
 
-LEDs are low-current standard parts in either pattern.
+**Pattern C — momentary pushbutton with integrated LED + MCU GPIO.**
+A front-panel pushbutton with an integrated LED. The button press is
+read by firmware as a GPIO input; the integrated LED is driven
+directly by a firmware GPIO output — not by a relay contact set.
+May additionally command a relay coil as a secondary action:
+ACTIVE/MUTE (orange) commands the MUTE relay; SOLO (red) commands
+the AFL relay of this channel and optionally the MUTE relays of other
+channels (SIP mode); REC ARM (red) does not command any audio relay —
+it generates a MIDI or equivalent signal toward the DAW. See §2.11.
+
+LEDs are low-current standard parts in all patterns.
 
 Color assignments per channel:
 
-| Switch | LED behavior | Pattern |
-|---|---|---|
-| CHANNEL SOURCE | red (A selected) / green (B selected) | B (relay-driven) |
-| HPF | orange (IN) | A (mechanical DPDT) |
-| INSERT | blue (IN) | A (mechanical DPDT) |
-| PFL | red (IN) | A (mechanical DPDT) |
-| Output PRE-POST | two LEDs, one per position; colors TBD | A (mechanical DPDT) |
+| Switch | LED color | Count | LED drive | Pattern |
+|---|---|---|---|---|
+| CHANNEL SOURCE | red (A) / green (B) | 2 | relay contact set 2 | B |
+| ACTIVE/MUTE | orange (active) | 1 | MCU GPIO | C |
+| SOLO | red (solo active) | 1 | MCU GPIO | C |
+| REC ARM | red (armed) | 1 | MCU GPIO | C |
+| HPF | orange (IN) | 1 | mech switch sec.2 | A |
+| INSERT | blue (IN) | 1 | mech switch sec.2 | A |
+| PFL | red (IN) | 1 | mech switch sec.2 | A |
+| Output PRE-POST | TBD (one per position) | 2 | mech switch sec.2 | A |
+
+Per-channel LED total: **10** (2 relay-contact + 3 MCU GPIO + 5 mech-switch).
+Per-channel MCU GPIO LED outputs: **3** (ACTIVE/MUTE, SOLO, REC ARM).
+Per-channel MCU GPIO button inputs: **4** (CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM).
 
 (Additional switches with LEDs encountered later will be added here.)
 

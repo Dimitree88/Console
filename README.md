@@ -65,6 +65,7 @@ master meters are deliberately absent.
 | `08-monitor.md` | §8 — Master monitor section |
 | `09-not-present.md` | §9 — features deliberately NOT in CONSOLE |
 | `10-open-tbd.md` | §10 — items deliberately unresolved at this stage |
+| `11-digital-io.md` | §11 — running count of relays, LEDs, and pushbuttons; keep in sync with design changes |
 
 (Sections §11 "Counts" lives at the end of `01-bus-inventory.md`.
 The one-paragraph mental model lives at the top of this README.)
@@ -142,3 +143,10 @@ future Claude can immediately see where things stand.)
   design-phase open issues in `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.
+- Front-panel channel buttons (§2.11): defined — 4 pushbuttons per
+  channel: CHANNEL SOURCE (Pattern B, relay-contact LED), plus
+  ACTIVE/MUTE (orange), SOLO (red), REC ARM (red) all Pattern C
+  (integrated LED, MCU GPIO in + out). SOLO drives AFL relay + SIP
+  option; REC ARM MIDI-only, no audio relay. Per-channel digital
+  I/O: 4 GPIO inputs (buttons) + 3 GPIO outputs (LEDs) +
+  relay coil drivers via dedicated ICs.
