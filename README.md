@@ -89,25 +89,33 @@ template and editing rules live in `CLAUDE.md`.
 future Claude can immediately see where things stand.)
 
 - Mono channel: signal flow conceptually complete. Implementation:
-  - Block 1 (input stage → CHANNEL SOURCE switch) FINALIZED —
-    CHANNEL SOURCE now relay-driven (AGQ210A03 latching) with
-    front-panel momentary pushbutton + firmware-driven bipolar
-    pulse, replacing the earlier mechanical DPDT.
+  - Block 1 (input stage → CHANNEL SOURCE switch + DIRECT OUT
+    SELECT relay on input PCB) FINALIZED — CHANNEL SOURCE
+    relay-driven (AGQ210A03 latching) with momentary pushbutton +
+    firmware bipolar pulse; primary motivation: enables global
+    master A/B flip across all 24 channels. DIRECT OUT SELECT
+    relay added: makes the Direct Out TRS jack switchable between
+    Input A full-differential and channel PRE/POST impedance-
+    balanced signal (see Block 8).
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
   - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED — MUTE
-    now uses the AGQ210A03 latching signal relay (both form-C
-    contacts paralleled), replacing the earlier ADG419.
+    relay (AGQ210A03) now configured **series + shunt** (contact
+    set 1 = series switch, contact set 2 = shunt PRE-FADER to AGND
+    when muted), replacing the earlier paralleled-contacts approach.
   - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
     AUX/CUE pre & post sends) FINALIZED.
   - Block 5 (active pan, Self-style) FINALIZED — Self canonical
     values (R_FB = 2.2 kΩ, center dip ≈ 4.5 dB).
   - Block 6 (post-pan 2-gang × 4-pos routing rotary) topology
     defined; bus summing resistor values TBD together with §04 / §07.
-  - AFL switch: switching element fixed (AGQ210A03 latching, one
-    per channel handling L+R on its two form-C contact sets);
-    tap location and AFL summing-resistor values still deferred
-    to §08. Post-Fader Output stage: conceptual flow fixed,
-    implementation deferred (see `10-open-tbd.md`).
+  - Block 7 (AFL switch) FINALIZED — tap at post-pan opamp output;
+    NC to AGND (constant termination, click-free); NO to AFL bus.
+    Summing resistor values deferred to §08.
+  - Block 8 (Output PRE-POST switch + switchable Direct Out)
+    IN-PROGRESS — 75R taps from pre-MUTE and POST-FADER nodes;
+    mechanical PRE-POST selector; 2-pin connector to input PCB;
+    DIRECT OUT SELECT relay on input PCB. Cold dummy network and
+    LED colors TBD (see `10-open-tbd.md`).
 - AUX returns: 4 channels, all identical, conceptual stage. ACTIVE
   and AFL switching elements fixed as AGQ210A03 (1 relay
   per function, handling L+R on its two contact sets).
@@ -128,8 +136,9 @@ future Claude can immediately see where things stand.)
   driver partitioning settled (per-PCB stackable two-board pattern
   per `00-conventions.md` — audio PCB carries only the relay coil
   via a 3-pin connector, lower stackable PCB carries all logic).
-  Coil bipolar driver IC and master-output hard-mute for firmware
-  boot init still tracked as design-phase open issues in
-  `10-open-tbd.md`.
+  Total relay count: **112** (24 channels × 4 + 4 AUX returns × 2 +
+  3 groups × 2 + 2 master monitor). Coil bipolar driver IC and
+  master-output hard-mute for firmware boot init still tracked as
+  design-phase open issues in `10-open-tbd.md`.
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.

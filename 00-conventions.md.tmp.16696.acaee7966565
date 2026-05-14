@@ -244,9 +244,9 @@ change ≈ 1.2 mJ (3.3 V × 37 mA × 10 ms, with the 3 V coil
 tolerated at +3.3 V per "Coil supply rail" above). Average
 coil-rail dissipation in normal operation is essentially zero.
 Peak transient if every relay in the console were toggled
-simultaneously ≈ 4.1 A for 10 ms (112 × 37 mA) — handled by
-local bulk on the +3.3 V rail per PCB, with firmware staging
-changes (e.g. N relays per stage) when this matters.
+simultaneously ≈ 3.2 A for 10 ms — handled by local bulk on
+the +3.3 V rail per PCB, with firmware staging changes
+(e.g. N relays per stage) when this matters.
 
 ### Front-panel switches with LED indicators
 

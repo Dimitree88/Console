@@ -275,14 +275,12 @@ not post-mute.)*
 ## 2.10 Implementation details
 
 Status: **in-progress** — Block 1 (input stage to CHANNEL SOURCE
-switch + DIRECT OUT SELECT relay on input PCB) FINALIZED. Block 2
-(HPF + Insert Send/Return + jack PCB), Block 3 (meter buffer + PFL
-switch + MUTE, now series+shunt), Block 4 (pre-fader node + fader PCB
-+ post-fader amp + AUX/CUE sends), and Block 5 (active pan) finalized.
-Block 6 (post-pan routing rotary) topology defined, values TBD.
-Block 7 (AFL switch) finalized — topology fixed, summing resistor
-values deferred to §08. Block 8 (Output PRE-POST switch + switchable
-Direct Out) in-progress — see `10-open-tbd.md`.
+switch), Block 2 (HPF + Insert Send/Return + jack PCB), Block 3
+(meter buffer + PFL switch + MUTE), Block 4 (pre-fader node + fader
+PCB + post-fader amp + AUX/CUE sends), and Block 5 (active pan)
+finalized. Block 6 (post-pan routing rotary) topology defined,
+values TBD. AFL switch and Post-Fader Output stages still
+conceptual — see `10-open-tbd.md`.
 
 ### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
@@ -343,21 +341,6 @@ cold):
   same character. The §2.1 wording "full-differential" should be read
   as "both lines are actively driven by a buffer", not as "a
   differential feedback forces hot = −cold".
-
-*DIRECT OUT SELECT relay (§2.1):*
-
-- **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay, per
-  `00-conventions.md`) on the input PCB, interposed between the
-  75 Ω build-out resistors and the Direct Out EMI filter.
-- **NC / RESET state (Input A — default):** contact set 1 COM →
-  Input A hot 75 Ω build-out → EMI filter tip; contact set 2 COM →
-  Input A cold 75 Ω build-out → EMI filter ring. Original
-  full-differential behavior.
-- **NO / SET state (Channel signal):** contact set 1 COM → pin 1
-  of 2-pin connector (channel PRE/POST signal) → EMI filter tip;
-  contact set 2 COM → pin 2 of 2-pin connector (cold dummy 75 Ω)
-  → EMI filter ring. Impedance-balanced behavior.
-- See Block 8 for full wiring and decisions.
 
 *Balanced receivers — "All Inverting" topology* (Jung/Kester Fig. 6-26,
 Op Amp Applications Handbook):
@@ -421,10 +404,6 @@ Op Amp Applications Handbook):
 **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
 signal relay): CHANNEL SOURCE A/B select. Per `00-conventions.md`
 "Standard signal relay".
-
-**AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-signal relay): DIRECT OUT SELECT (Input A vs channel PRE/POST).
-Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 #### Key passive values
 
@@ -494,15 +473,13 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 - **CHANNEL SOURCE as relay-driven electronic switch** (AGQ210A03
   latching signal relay, single contact set for audio + single
   contact set for LED, ganged on one coil) instead of a direct
-  mechanical DPDT. Primary reason: the relay approach is directly
-  compatible with a **global master A/B flip** — firmware can toggle
-  every channel's CHANNEL SOURCE relay simultaneously, routing all
-  24 channels from DAW (B) to instruments (A) or vice versa in one
-  command. A secondary benefit is that state is held mechanically
-  (latch), keeping contact resistance ≤ 100 mΩ initial in the
-  signal path. Boot default = A (RESET state, NC contacts); this is
-  a firmware-init contract, not a hardware property — every CHANNEL
-  SOURCE relay is reset by firmware at startup. Per
+  mechanical DPDT. Same signal-flow behavior as a DPDT, with the
+  addition that state is held in the relay's mechanical latch —
+  making it directly compatible with future remote / recall logic
+  if ever wanted, and keeping contact resistance ≤ 100 mΩ initial
+  in the signal path. Boot default = A (RESET state, NC contacts);
+  this is a firmware-init contract, not a hardware property —
+  every CHANNEL SOURCE relay is reset by firmware at startup. Per
   `00-conventions.md` "Standard signal relay".
 
 ---
@@ -737,31 +714,31 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 - **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay,
   standard signal relay per `00-conventions.md`).
-- Audio path: **series + shunt configuration** — the two contact
-  sets serve different roles (not wired in parallel):
-  - **Contact set 1 (series):** COM1 = post-INSERT signal (taken
-    upstream of the meter buffer / PFL tap node); NO1 = PRE-FADER
-    node onward; NC1 = floating.
-  - **Contact set 2 (shunt):** COM2 = PRE-FADER node; NC2 = AGND;
-    NO2 = floating.
-- **ACTIVE state (SET):** series contact closes (signal passes from
-  post-INSERT to PRE-FADER); shunt contact opens (PRE-FADER not
-  shunted to AGND). Normal signal flow.
-- **MUTE state (RESET):** series contact opens (signal
-  interrupted); shunt contact closes (PRE-FADER shunted to AGND).
-  Both mechanisms act simultaneously on the single coil.
-- Series contact R_on: ≈ 100 mΩ initial (single contact set).
+- Audio path: both form-C contact sets are wired in parallel to
+  halve contact resistance and provide contact redundancy.
+  COM1 ‖ COM2 = post-INSERT signal (taken upstream of the meter
+  buffer / PFL tap node); NO1 ‖ NO2 = PRE-FADER node onward.
+  NC1 ‖ NC2 = unused (left floating — the PRE-FADER node when
+  muted is held near AGND by the ensemble of bias paths and
+  virtual-earth returns of CUE / AUX gang 1 / fader stages
+  that load it, see Block 4; no shunt-to-AGND is required given
+  the open-contact isolation of the relay even at ultrasonic
+  frequencies).
+- Effective parallel R_on: ≈ 50 mΩ (100 mΩ per contact initial,
+  two in parallel). Negligible compared to upstream/downstream
+  source impedances and pot wipers.
 - Coil drive: bipolar pulse from a 3 V coil supply, per
-  `00-conventions.md` "Standard signal relay". Driver IC and
-  partitioning TBD — see `10-open-tbd.md`.
-- Logic semantics: **SET state ⇒ channel ACTIVE** (series contact
-  makes, signal passes; shunt contact opens, PRE-FADER free);
-  **RESET state ⇒ channel MUTED** (series contact opens, signal
-  interrupted; shunt contact makes, PRE-FADER shunted to AGND).
-  The relay holds its state mechanically; firmware initializes
-  every MUTE relay to RESET at startup. Master-output hard-mute
-  keeps the room silent until firmware completes init (master
-  section, TBD).
+  `00-conventions.md` "Standard signal relay". The driver IC and
+  its partitioning between per-channel and per-PCB control
+  connectors are deferred until channels-per-PCB is decided
+  (likely 4 or 6 channels per input PCB) — see `10-open-tbd.md`.
+- Logic semantics: **SET state ⇒ channel ACTIVE** (NO contacts
+  make, signal passes); **RESET state ⇒ channel MUTED** (NO
+  contacts open, signal interrupted). The relay holds its state
+  mechanically; firmware initializes every MUTE relay to the
+  RESET state at startup so the channel is muted by the time
+  audio output is unmuted. Master-output hard-mute keeps the room
+  silent until firmware completes init (master section, TBD).
 
 #### Active devices
 
@@ -791,9 +768,9 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 - Meter buffer: unity gain DC–audio band, output capable of driving
   ≈100 pF cable capacitance via the 75 Ω build-out without ringing.
-- MUTE switch contact resistance (series branch): ≤ 100 mΩ initial
-  (single contact set). Effectively zero THD contribution (purely
-  resistive, voltage-independent), no charge injection.
+- MUTE switch contact resistance: ≤ 37 mΩ (parallel of two form-C
+  contacts at ≤ 75 mΩ each). Effectively zero THD contribution
+  (purely resistive, voltage-independent), no charge injection.
 - MUTE off-isolation: open-contact isolation > 80 dB at 1 MHz per
   datasheet, effectively unbounded at audio. Far in excess of any
   practical channel mute requirement.
@@ -846,14 +823,12 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
   master-output hard-mute covering the init window — TBD, master
   section), ~ 4 ms switching time, and the need for a bipolar
   pulse driver. Per `00-conventions.md` "Standard signal relay".
-- **Series + shunt configuration** for the MUTE relay, rather than
-  paralleling both contact sets for lower R_on. Trade-off: series
-  R_on rises from ≈ 50 mΩ (paralleled) to ≈ 100 mΩ (single contact
-  set) — still negligible in the signal path. Gain: the shunt
-  contact explicitly drives the PRE-FADER node to AGND when muted,
-  so any residual signal leaking through the open series contact
-  (contact capacitance, PCB parasitics at HF) is further attenuated
-  by the shunt. Mute depth exceeds open-contact isolation alone.
+- **Both form-C contact sets paralleled** for the audio path.
+  Halves contact resistance and provides redundancy against a
+  single failed contact. NC contacts left floating: the PRE-FADER
+  node is already pulled toward AGND by the bias paths and
+  virtual-earth returns of the loading stages (Block 4), so an
+  explicit shunt-to-AGND on the muted path is unnecessary.
 
 #### Open issues for Block 3
 
@@ -1248,207 +1223,3 @@ None on this stage.
   make-before-break vs break-before-make): TBD. Probably
   break-before-make to avoid momentary cross-routing during
   position change.
-
----
-
-### Block 7 — AFL switch (post-pan stereo tap) (FINALIZED)
-
-**Status:** finalized — topology and relay wiring fixed; AFL bus
-summing resistor values deferred to §08.
-
-#### Topology chosen
-
-*AFL tap (§2.9 (b)):*
-
-- Tap directly from each post-pan opamp output (Block 5): one tap
-  for L, one for R.
-- Each tap feeds a **bus summing resistor** (value TBD — see §08)
-  in series, whose far end connects to COM of the respective
-  contact set on the AFL relay.
-- **Contact set 1** carries L; **contact set 2** carries R. Both
-  are mechanically ganged on the same coil (one AGQ210A03, DPDT
-  1-coil latching) — L and R switch perfectly synchronously.
-- **NC contacts → AGND**: in the RESET state (AFL off), the far
-  end of each summing resistor is terminated to AGND. The post-pan
-  opamp output always sees a constant resistive load (the summing
-  resistor alone) regardless of AFL state — no impedance step on
-  switching, no click.
-- **NO contacts → AFL bus**: in the SET state (AFL on), the far
-  end of each summing resistor connects to the AFL Left / AFL Right
-  bus respectively.
-
-Boot-up default: RESET (AFL off, NC contacts on AGND). Per the
-console-wide firmware boot-init contract.
-
-#### Active devices
-
-- **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-  signal relay). Contact set 1 = L; contact set 2 = R. Per
-  `00-conventions.md` "Standard signal relay".
-
-#### Key passive values
-
-- AFL bus summing resistors: × 2 per channel (L and R). Value TBD
-  — to be calculated together with §08 AFL summer design.
-
-#### Design targets / expected performance
-
-- Constant resistive load on post-pan L/R opamp output in both AFL
-  states: R_load = summing resistor value (terminated to AGND or
-  feeding AFL bus — both look like a resistive load to the opamp).
-- Off-isolation: open-contact isolation > 80 dB at 1 MHz per
-  datasheet, effectively unbounded at audio.
-
-#### Decisions and tradeoffs
-
-- **NC → AGND (terminated, not floating)**: gives constant
-  resistive loading on the post-pan output in both AFL on and off
-  states. Avoids any thump or level shift when switching. The
-  summing resistor dissipates a small signal power to AGND at all
-  times in AFL-off state — negligible at audio signal levels.
-- **Tap directly from the post-pan opamp output** (Block 5), no
-  buffer. NE5532 V_os is small enough that no DC block is needed
-  before the AFL bus summer. The summing resistor serves both as
-  AFL bus contribution weight and as switch source impedance.
-- **Summing resistor value deferred to §08**: AFL bus summing
-  resistors must be designed together with the AFL summer /
-  monitor section (§08) as a coherent system (source count,
-  individual resistor values, and summer opamp gain interact).
-
-#### Open issues for Block 7
-
-- **AFL bus summing resistor value** (× 2 per channel, L and R).
-  TBD together with §08 AFL summer design.
-
----
-
-### Block 8 — Output PRE-POST switch + switchable Direct Out (IN-PROGRESS)
-
-**Status:** in-progress — signal flow and relay topology fixed;
-cold dummy network details and LED color assignments TBD.
-
-#### Topology chosen
-
-*Pre-mute signal tap (on channel PCB):*
-
-- A **75 Ω** resistor taps the post-INSERT / pre-MUTE signal node
-  (same node that feeds the meter buffer — Block 3 — and the MUTE
-  relay COM). This is a branch tap, not in series with the main path.
-  The far end of this 75 Ω is one input to the Output PRE-POST switch.
-
-*Post-fader signal tap (on channel PCB):*
-
-- A **75 Ω** resistor taps the POST-FADER node (after the
-  post-fader amp, before pan). Branch tap. Far end = other input
-  to the Output PRE-POST switch.
-
-*Output PRE-POST switch (on channel PCB, front-panel):*
-
-- **DPDT mechanical switch, front-panel.** Pattern A per
-  `00-conventions.md`.
-- Section 1 (signal): common feeds pin 1 of the 2-pin connector
-  (below). Throws select between the pre-mute 75 Ω output (PRE)
-  and the post-fader 75 Ω output (POST).
-- Section 2 (indicator): drives two front-panel LEDs (one per
-  position) from +3.3V / DGND. Colors TBD —
-  see `10-open-tbd.md`.
-
-*2-pin connector — channel PCB → input PCB:*
-
-- **Pin 1 (hot)**: the signal selected by the Output PRE-POST
-  switch (already through the chosen 75 Ω build-out).
-- **Pin 2 (cold dummy)**: a dedicated **75 Ω to AGND** only — no
-  47 µF ‖ 47 kΩ completion. The two source paths have incompatible
-  upstream DC-block conditions (PRE path: 47 µF blocks with 47 kΩ
-  pull-down; POST path: 220 µF output block from fader PCB with no
-  pull-down at the tap point), so a single matched cold dummy
-  network cannot suit both positions. A simple 75 Ω to AGND gives
-  frequency-independent impedance balance over this short internal
-  run and is the correct compromise.
-
-*DIRECT OUT SELECT relay (on input PCB):*
-
-- **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay, per
-  `00-conventions.md`). See also Block 1 (Direct Out section) for
-  the PCB context.
-- **Contact set 1 (hot line):** COM → Direct Out EMI filter tip
-  (→ TRS tip). NC = 75 Ω build-out on Input A hot buffer (existing
-  path). NO = pin 1 of 2-pin connector (channel PRE/POST signal).
-- **Contact set 2 (cold line):** COM → Direct Out EMI filter ring
-  (→ TRS ring). NC = 75 Ω build-out on Input A cold buffer
-  (existing path). NO = pin 2 of 2-pin connector (cold dummy from
-  channel PCB).
-- **RESET state (Input A — default):** Direct Out = full-
-  differential from Input A buffers through their matched 75 Ω
-  build-out resistors. Original behavior, unchanged.
-- **SET state (Channel signal):** Direct Out = impedance-balanced;
-  hot = selected PRE or POST signal (already through 75 Ω); cold =
-  75 Ω-to-AGND cold dummy from channel PCB.
-- In both states, signal passes through the standard T-balanced
-  double-pi EMI filter on the Direct Out TRS jack.
-
-#### Active devices
-
-- **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-  signal relay): DIRECT OUT SELECT. Per `00-conventions.md`
-  "Standard signal relay". Sits on the input PCB.
-
-#### Key passive values
-
-- Pre-mute 75 Ω tap: **75 Ω** (0603 1 %), on channel PCB.
-- Post-fader 75 Ω tap: **75 Ω** (0603 1 %), on channel PCB.
-- Cold dummy 75 Ω: **75 Ω** (0603 1 %), on channel PCB.
-- Cold dummy bypass / load network (47 µF ‖ 47 kΩ): TBD.
-- Output PRE-POST switch LED current-limit resistors: TBD.
-
-#### Design targets / expected performance
-
-- Direct Out in Input-A state: full-differential, same
-  specification as Block 1 Direct Out.
-- Direct Out in Channel-signal state: impedance-balanced output.
-  Source impedance looking into tip = 75 Ω (matched to cold dummy
-  75 Ω to AGND). Downstream CMR limited by impedance balance,
-  not by differential drive.
-
-#### Decisions and tradeoffs
-
-- **Direct Out jack as multifunction output**: combines the
-  original full-differential Input A tracking output with a
-  channel-signal output (pre-mute or post-fader). Eliminates the
-  need for a separate rear-panel "Post-Fader Output" jack
-  (original §2.9 (e) concept), reducing jack and connector count.
-- **Output PRE-POST as a mechanical switch (not firmware-
-  controlled)**: set directly by the operator, appropriate for
-  a per-session configuration choice (recording pre vs post fader).
-  No firmware needed for this selection.
-- **DIRECT OUT SELECT as a relay (AGQ210A03, firmware-controlled)**:
-  allows remote switching of the Direct Out source (e.g. for a
-  global "engage all channel sends" command, or DAW integration),
-  consistent with the console-wide relay-for-firmware-control
-  approach.
-- **75 Ω build-outs on both PRE and POST tap paths**: provides the
-  correct source impedance for the Direct Out EMI filter in the
-  Channel-signal state (same rationale as Input A build-out —
-  see Block 1). Both taps use 75 Ω to stay consistent with the
-  standard impedance-balanced output convention.
-- **Cold dummy as plain 75 Ω to AGND (no 47 µF ‖ 47 kΩ completion)**:
-  the two source paths have incompatible upstream conditions. The
-  PRE path has 47 µF DC blocks with 47 kΩ pull-down upstream; the
-  POST path exits the fader PCB through a 220 µF output block with
-  no pull-down at the tap point. A single completion network cannot
-  properly match both positions. Plain 75 Ω to AGND gives frequency-
-  independent impedance balance over this short internal PCB-to-PCB
-  run — the correct practical compromise.
-
-#### Open issues for Block 8
-
-- **Output PRE-POST LED color assignment**: two LEDs, one per
-  position (PRE / POST). Colors TBD.
-- **DIRECT OUT SELECT front-panel control type**: will be relay-
-  driven (AGQ210A03) regardless. Whether the front-panel control
-  is a momentary pushbutton (always via MCU, Pattern B) or a
-  mechanical toggle routed through MCU before driving the relay
-  is TBD pending inter-PCB wiring decisions.
-- **DIRECT OUT SELECT relay boot state**: RESET (Input A default)
-  is the expected choice; to be confirmed and recorded in the
-  firmware boot-init spec.

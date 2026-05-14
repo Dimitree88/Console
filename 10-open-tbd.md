@@ -113,44 +113,38 @@ section's Implementation details.
   break-before-make to avoid momentary cross-routing during a
   position change.
 
-### Mono channel — AFL switch (post-pan, stereo) — partly decided
+### Mono channel — AFL switch (post-pan, stereo) — FINALIZED (summing values TBD)
 
-`02-mono-channel.md` §2.9 (b). The conceptual signal flow is fixed
-(parallel tap from post-pan L/R to AFL bus L/R, controlled by an
-electronic switch under digital logic). The switching element is
-fixed: **one AGQ210A03 per channel** (DPDT 2 form C, 1-coil
-latching, both contact sets ganged on a single coil — contact 1 =
-L, contact 2 = R) per `00-conventions.md`. Still to be decided:
+`02-mono-channel.md` §2.9 (b) and Block 7. Topology now fully fixed:
+tap at the post-pan opamp output (Block 5); per-side bus summing
+resistor → COM of AGQ210A03; NC contacts to AGND (constant termination
+when AFL off, click-free); NO contacts to AFL Left / AFL Right bus.
 
-- Where on the post-pan signal the tap sits — at the opamp output
-  pin directly (Block 5), or further down the chain.
-- Topology around the relay: NO contacts to the AFL bus only when
-  active (SET), NC contacts left floating (simplest); or NC tied
-  to AGND for shunt-to-ground when in RESET state (better
-  off-isolation, but the open-contact isolation is already ample
-  at audio so unnecessary).
-- Bus summing resistor toward the AFL bus L/R (these are the
-  channel's contribution to the AFL summer in §08).
+Still to be decided:
 
-### Mono channel — Post-Fader Output (mono, jack out) — not yet designed
+- **AFL bus summing resistor value** (× 2 per channel, L and R):
+  TBD together with §08 AFL summer design (source count, individual
+  resistors, and summer opamp gain form one coherent system).
 
-`02-mono-channel.md` §2.9 (e). The conceptual signal flow is fixed
-(tap from POST-FADER node, before pan, to a rear-panel TRS
-impedance-balanced jack). Still to be decided:
+### Mono channel — Block 8 (Output PRE-POST switch + switchable Direct Out) — in-progress
 
-- Direct tap vs buffered tap. The POST-FADER node is already loaded
-  by 4 AUX-post gangs and the pan pot; adding a TRS jack with
-  EMI filter and dummy network adds further loading and any cable
-  /connection changes downstream of the jack would slightly alter
-  the pan stage's source impedance. A dedicated buffer isolates
-  the post-fader amp and keeps the jack independent of internal
-  loading variations.
-- Output stage topology: default impedance-balanced per `00-
-  conventions.md` (75 Ω tip + 75 Ω + 47 µF ‖ 47 kΩ cold dummy),
-  or ground-cancelling alla Soundcraft (compensates for GND
-  difference at the receiving device, gives most of the benefit
-  of a balanced link into an unbalanced output)?
-- EMI filter: standard T-balanced double-pi per `00-conventions.md`.
+`02-mono-channel.md` §2.9 (e) and Block 8. The standalone
+Post-Fader Output dedicated jack (original §2.9 (e)) is superseded:
+channel signal is now routed to the input PCB via a 2-pin connector,
+and the Direct Out TRS jack is made switchable via the DIRECT OUT
+SELECT relay. Topology is fixed; remaining open items:
+
+- **Output PRE-POST LED color assignment**: two LEDs, one per
+  position (PRE / POST). Colors not yet assigned — to be decided
+  together with the full front-panel LED color scheme.
+- **DIRECT OUT SELECT front-panel control type**: relay-driven
+  (AGQ210A03) regardless. Whether the front-panel element is a
+  momentary pushbutton (Pattern B, always via MCU) or a mechanical
+  toggle routed through MCU is TBD pending inter-PCB wiring
+  decisions.
+- **DIRECT OUT SELECT relay boot state**: RESET (Input A default)
+  is the expected choice; to be confirmed with the firmware
+  boot-init spec.
 
 ---
 
@@ -159,9 +153,10 @@ impedance-balanced jack). Still to be decided:
 - **Standard signal relay — driver IC, partitioning, supply,
   protection.** The standard electronic switch in CONSOLE is the
   **AGQ210A03** (1-coil latching, 3 V coil, per
-  `00-conventions.md`). Approximately 88 relays total across the
-  console (24 mono channels × 3 positions — CHANNEL SOURCE, MUTE,
-  AFL — + 4 AUX returns × 2 + 3 groups × 2 + 2 in master monitor).
+  `00-conventions.md`). Approximately 112 relays total across the
+  console (24 mono channels × 4 positions — CHANNEL SOURCE, MUTE,
+  AFL, DIRECT OUT SELECT — + 4 AUX returns × 2 + 3 groups × 2 +
+  2 in master monitor).
   Open items:
   - **Coil driver IC**: bipolar / half-H-bridge per relay
     (set-pulse and reset-pulse drive). Candidates: Toshiba
