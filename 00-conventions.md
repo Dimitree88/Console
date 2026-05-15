@@ -236,15 +236,15 @@ Topology and drive:
   master mute is deferred to the master-section design (see
   `10-open-tbd.md`).
 
-Power-budget note: full count is approximately 112 relays
-across the console (24 mono channels × 4 — CHANNEL SOURCE, MUTE,
-AFL, DIRECT OUT SELECT — + 4 AUX returns × 2 + 3 groups × 2 +
-2 in master monitor). Pulse energy per state
+Power-budget note: full count is approximately 136 relays
+across the console (24 mono channels × 5 — CHANNEL SOURCE, MUTE,
+AFL, DIRECT OUT SELECT, HPF/INSERT BYPASS — + 4 AUX returns × 2 +
+3 groups × 2 + 2 in master monitor). Pulse energy per state
 change ≈ 1.2 mJ (3.3 V × 37 mA × 10 ms, with the 3 V coil
 tolerated at +3.3 V per "Coil supply rail" above). Average
 coil-rail dissipation in normal operation is essentially zero.
 Peak transient if every relay in the console were toggled
-simultaneously ≈ 4.1 A for 10 ms (112 × 37 mA) — handled by
+simultaneously ≈ 5.0 A for 10 ms (136 × 37 mA) — handled by
 local bulk on the +3.3 V rail per PCB, with firmware staging
 changes (e.g. N relays per stage) when this matters.
 
@@ -288,14 +288,16 @@ Color assignments per channel:
 | ACTIVE/MUTE | orange (active) | 1 | MCU GPIO | C |
 | SOLO | red (solo active) | 1 | MCU GPIO | C |
 | REC ARM | red (armed) | 1 | MCU GPIO | C |
+| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / FOLLOW A / FOLLOW B) | 3 | MCU GPIO | — |
 | HPF | orange (IN) | 1 | mech switch sec.2 | A |
 | INSERT | blue (IN) | 1 | mech switch sec.2 | A |
 | PFL | red (IN) | 1 | mech switch sec.2 | A |
 | Output PRE-POST | TBD (one per position) | 2 | mech switch sec.2 | A |
 
-Per-channel LED total: **10** (2 relay-contact + 3 MCU GPIO + 5 mech-switch).
-Per-channel MCU GPIO LED outputs: **3** (ACTIVE/MUTE, SOLO, REC ARM).
-Per-channel MCU GPIO button inputs: **4** (CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM).
+Per-channel LED total: **13** (2 relay-contact + 6 MCU GPIO + 5 mech-switch).
+Per-channel MCU GPIO LED outputs: **6** (ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS × 3).
+Per-channel MCU GPIO button inputs: **5** (CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM,
+HPF/INSERT BYPASS).
 
 (Additional switches with LEDs encountered later will be added here.)
 

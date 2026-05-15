@@ -2,7 +2,23 @@
   "permissions": {
     "allow": [
       "Bash(ls \"C:\\\\Users\\\\dimitri.petrucci\\\\.claude\\\\projects\\\\c--Users-dimitri-petrucci-Desktop-repos-console\\\\memory\")",
-      "Read(//c/Users/dimitri.petrucci/.claude/projects/c--Users-dimitri-petrucci-Desktop-repos-console/memory/**)"
+      "Read(//c/Users/dimitri.petrucci/.claude/projects/c--Users-dimitri-petrucci-Desktop-repos-console/memory/**)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Get-ChildItem -Path . -Recurse -Include '*.tmp.*' -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue",
+            "shell": "powershell"
+          }
+        ]
+      }
     ]
   }
 }

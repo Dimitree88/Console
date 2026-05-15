@@ -22,13 +22,14 @@ per `00-conventions.md` "Standard signal relay").
 | Mono channel | MUTE (ACTIVE/SOLO) | 1 | 24 | 24 | ✓ |
 | Mono channel | AFL | 1 | 24 | 24 | ✓ |
 | Mono channel | DIRECT OUT SELECT | 1 | 24 | 24 | ✓ |
+| Mono channel | HPF/INSERT BYPASS | 1 | 24 | 24 | ✓ |
 | AUX return | ACTIVE | 1 | 4 | 4 | ✓ |
 | AUX return | AFL | 1 | 4 | 4 | ✓ |
 | Group | ACTIVE | 1 | 3 | 3 | ✓ |
 | Group | AFL | 1 | 3 | 3 | ✓ |
 | Monitor | Source-select (§8.1) | 1 | 1 | 1 | ✓ |
 | Monitor | AFL/PFL alternation (§8.2) | 1 | 1 | 1 | ✓ |
-| **Total** | | | | **112** | |
+| **Total** | | | | **136** | |
 
 ---
 
@@ -42,13 +43,14 @@ per `00-conventions.md` "Standard signal relay").
 | ACTIVE/MUTE | orange | 1 | MCU GPIO | C |
 | SOLO | red | 1 | MCU GPIO | C |
 | REC ARM | red | 1 | MCU GPIO | C |
+| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / A / B) | 3 | MCU GPIO | — |
 | HPF | orange | 1 | mech switch sec.2 | A |
 | INSERT | blue | 1 | mech switch sec.2 | A |
 | PFL | red | 1 | mech switch sec.2 | A |
 | Output PRE-POST | TBD (one per position) | 2 | mech switch sec.2 | A |
-| **Per channel total** | | **10** | | |
+| **Per channel total** | | **13** | | |
 
-**Mono channels subtotal: 10 × 24 = 240** ✓
+**Mono channels subtotal: 13 × 24 = 312** ✓
 
 ### Other sections (estimates — update as sections are finalized)
 
@@ -63,7 +65,7 @@ per `00-conventions.md` "Standard signal relay").
 
 **Estimated non-channel subtotal: ~66–84**
 
-**Console total indicator LEDs: ~306–324** (round estimate: ~310)
+**Console total indicator LEDs: ~378–396** (round estimate: ~386)
 
 > Meter bridge LEDs (signal-level meters) are driven by dedicated
 > LED driver ICs on the meter PCBs — counted separately when the
@@ -81,9 +83,10 @@ per `00-conventions.md` "Standard signal relay").
 | ACTIVE/MUTE | C | MUTE relay | MCU GPIO (orange) | ✓ |
 | SOLO | C | AFL relay + others' MUTE (SIP opt.) | MCU GPIO (red) | ✓ |
 | REC ARM | C | none — MIDI to DAW | MCU GPIO (red) | ✓ |
-| **Per channel** | | | | **4** |
+| HPF/INSERT BYPASS | — | HPF/INSERT BYPASS relay | MCU GPIO (3× orange, separate LEDs) | ✓ |
+| **Per channel** | | | | **5** |
 
-**Mono channels subtotal: 4 × 24 = 96** ✓
+**Mono channels subtotal: 5 × 24 = 120** ✓
 
 ### Other sections (estimates)
 
@@ -94,7 +97,7 @@ per `00-conventions.md` "Standard signal relay").
 | AUX master × 4 | 1 each (PFL) → 4 | ~ |
 | Monitor / master | ~2–4 (mono/check L+R + TBD) | ~ |
 
-**Console total pushbuttons: ~116–118**
+**Console total pushbuttons: ~140–142**
 
 ---
 
@@ -102,9 +105,10 @@ per `00-conventions.md` "Standard signal relay").
 
 | Signal type | Per channel | × 24 channels | Note |
 |---|---|---|---|
-| GPIO input — buttons | 4 | 96 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM |
-| GPIO output — LEDs | 3 | 72 | ACTIVE/MUTE, SOLO, REC ARM (integrated buttons) |
-| Relay coil control lines | 8 (4 relays × 2) | 192 | via dedicated driver ICs, not direct GPIO |
+| GPIO input — buttons | 5 | 120 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS |
+| GPIO output — LEDs | 6 | 144 | ACTIVE/MUTE, SOLO, REC ARM (integrated), HPF/INSERT BYPASS × 3 (separate) |
+| Relay coil control lines | 10 (5 relays × 2) | 240 | via dedicated driver ICs, not direct GPIO |
 
 CHANNEL SOURCE LEDs (red/green) are relay-contact-driven — no GPIO output needed.
 HPF, INSERT, PFL, PRE-POST LEDs are mech-switch-driven — no GPIO output needed.
+HPF/INSERT BYPASS mode LEDs (3× orange) are MCU GPIO driven — separate from the button.

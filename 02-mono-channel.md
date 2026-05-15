@@ -70,7 +70,50 @@ relay does not provide this guarantee through hardware alone; see
 
 ---
 
-## 2.3 HPF
+## 2.3 HPF / INSERT chain
+
+The HPF and INSERT stages form a switchable chain that can be bypassed
+as a unit by the **HPF/INSERT BYPASS relay** (§2.3.1 below). The
+individual HPF switch (§2.3.2) and INSERT switch (§2.3.3) remain and
+operate independently within the chain.
+
+### 2.3.1 HPF / INSERT bypass relay
+
+A **DPDT relay** (standard AGQ210A03, firmware-controlled, per
+`00-conventions.md`) is interposed between the CHANNEL SOURCE relay
+output and the rest of the channel. It either routes the signal through
+the HPF / INSERT chain (NO contacts) or bypasses it entirely
+(NC contacts):
+
+- **COM1** — CHANNEL SOURCE relay output.
+- **NC1 ↔ NC2** — hard-wired together. In the RESET / NC state the
+  signal passes COM1 → NC1 → NC2 → COM2, bypassing the chain.
+- **COM2** — the pre-MUTE node: feeds the meter buffer, PFL tap, and
+  MUTE relay COM1 (see §2.5 and §2.6). Also the PRE tap for the Output
+  PRE-POST switch (see §2.9 (e)).
+- **NO1** — input of the HPF switch (§2.3.2 Section 1). Chain entry
+  point.
+- **NO2** — output of the Insert Return receiver (post-C38, §2.3.3).
+  Chain exit point.
+
+In the SET / NO state the signal path is: COM1 → NO1 → [HPF switch →
+HPF → INSERT switch → Insert Return] → NO2 → COM2. The individual
+switches within the chain remain fully functional.
+
+**Front-panel control:** a momentary **pushbutton** (MCU GPIO input)
+cycles through three modes, each indicated by one of three separate
+**orange LEDs** (MCU GPIO outputs):
+
+| LED | Mode | Relay behaviour |
+|---|---|---|
+| FOLLOW PATH (center) | Chain always in path | Relay always SET (NO) |
+| FOLLOW A | Chain follows source A | SET when CHANNEL SOURCE = A; RESET when B |
+| FOLLOW B | Chain follows source B | SET when CHANNEL SOURCE = B; RESET when A |
+
+Mode cycling logic and boot state are firmware decisions — TBD, see
+`10-open-tbd.md`.
+
+### 2.3.2 HPF
 
 Switchable **fixed-frequency high-pass filter** with a characteristic
 voicing (resonant peak before the rolloff, see §2.10 Block 2). The HPF
@@ -78,9 +121,7 @@ stage is always powered; a DPDT mechanical switch (front-panel) selects
 between the unfiltered and filtered signal path. The DPDT's second
 section drives an **orange LED** indicating HPF IN.
 
----
-
-## 2.4 Insert
+### 2.3.3 Insert
 
 Send/return insert point.
 
@@ -102,8 +143,8 @@ connector — see §2.10 Block 2 for pin assignment.
 
 ## 2.5 Pre-mute taps
 
-The post-INSERT mono signal feeds two parallel taps before reaching
-the MUTE switch.
+The pre-MUTE mono signal (output of the HPF/INSERT bypass relay, COM2)
+feeds two parallel taps before reaching the MUTE switch.
 
 ### 2.5.1 Meter buffer
 
@@ -244,8 +285,9 @@ Similar to an AUX send, but:
 Two signal taps are taken from the channel PCB for routing to the input
 PCB (to feed the switchable Direct Out — see §2.1):
 
-- **PRE tap**: post-INSERT / pre-MUTE signal, through a **75 Ω** series
-  resistor (branch tap; not in series with the main signal path).
+- **PRE tap**: pre-MUTE signal (output of the HPF/INSERT bypass relay,
+  COM2), through a **75 Ω** series resistor (branch tap; not in series
+  with the main signal path).
 - **POST tap**: POST-FADER node (after post-fader amp, before pan),
   through a **75 Ω** series resistor (branch tap).
 
@@ -282,13 +324,15 @@ not post-mute.)*
 
 Status: **in-progress** — Block 1 (input stage to CHANNEL SOURCE
 switch + DIRECT OUT SELECT relay on input PCB) FINALIZED. Block 2
-(HPF + Insert Send/Return + jack PCB), Block 3 (meter buffer + PFL
-switch + MUTE, now series+shunt), Block 4 (pre-fader node + fader PCB
-+ post-fader amp + AUX/CUE sends), and Block 5 (active pan) finalized.
-Block 6 (post-pan routing rotary) topology defined, values TBD.
-Block 7 (AFL switch) finalized — topology fixed, summing resistor
-values deferred to §08. Block 8 (Output PRE-POST switch + switchable
-Direct Out) in-progress — see `10-open-tbd.md`.
+(HPF + Insert Send/Return + jack PCB — now in the NO loop of Block 9),
+Block 3 (meter buffer + PFL switch + MUTE, now series+shunt), Block 4
+(pre-fader node + fader PCB + post-fader amp + AUX/CUE sends), and
+Block 5 (active pan) finalized. Block 6 (post-pan routing rotary)
+topology defined, values TBD. Block 7 (AFL switch) finalized — topology
+fixed, summing resistor values deferred to §08. Block 8 (Output
+PRE-POST switch + switchable Direct Out) in-progress — see
+`10-open-tbd.md`. Block 9 (HPF/INSERT chain bypass relay) in-progress
+— relay wiring established, logical modes and boot state TBD.
 
 ### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
@@ -515,7 +559,9 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 ### Block 2 — HPF + Insert Send/Return + jack PCB (FINALIZED)
 
-**Status:** finalized
+**Status:** finalized — this block describes the circuitry within the
+NO loop of the HPF/INSERT bypass relay (Block 9). The entry point is
+NO1 of that relay; the exit point is NO2.
 
 #### Topology chosen
 
@@ -540,8 +586,8 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 *HPF switch:*
 
 - DPDT mechanical, front-panel.
-- Section 1: alternates between bypass (signal from CHANNEL SOURCE
-  post-DC-block) and HPF output (post-C42).
+- Section 1: alternates between unfiltered (NO1 of the HPF/INSERT
+  bypass relay, Block 9) and HPF output (post-C42).
 - Section 2: drives **orange LED**, on when HPF IN, +3.3V / DGND.
 
 *Insert Send (§2.4):*
@@ -711,9 +757,11 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 *Meter buffer (§2.5.1):*
 
 - Single opamp wired as unity-gain follower. Input is the
-  high-impedance tap directly on the post-INSERT node (signal is
-  already DC-free thanks to C42 / C38 upstream, so no input
-  DC-block on the buffer).
+  high-impedance tap at the pre-MUTE node (HPF/INSERT bypass relay
+  COM2). The signal is DC-free in both relay states: in the NC
+  (bypass) path the Block 1 post-receiver DC block provides the
+  coupling cap; in the NO (chain active) path C42 or C38 (Block 2)
+  do so. No input DC-block on the buffer.
 - Output: 75 Ω in series (build-out, for stability into cable
   capacitance) → 2-pin connector to the meter bridge PCB.
 - Connector pinout: pin 1 = signal (post-build-out), pin 2 = AGND.
@@ -725,8 +773,8 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 *PFL switch (§2.5.2):*
 
-- 22 kΩ in series with the post-INSERT signal feeds the pole of a
-  DPDT mechanical front-panel switch.
+- 22 kΩ in series with the pre-MUTE node signal (bypass relay COM2)
+  feeds the pole of a DPDT mechanical front-panel switch.
 - Section 1 (audio): throws between AGND (PFL OFF) and the PFL mono
   bus (PFL ON). The 22 kΩ is the bus summing resistor for this
   channel's PFL contribution. Constant load on the upstream node in
@@ -745,9 +793,9 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
   standard signal relay per `00-conventions.md`).
 - Audio path: **series + shunt configuration** — the two contact
   sets serve different roles (not wired in parallel):
-  - **Contact set 1 (series):** COM1 = post-INSERT signal (taken
-    upstream of the meter buffer / PFL tap node); NO1 = PRE-FADER
-    node onward; NC1 = floating.
+  - **Contact set 1 (series):** COM1 = pre-MUTE node (HPF/INSERT
+    bypass relay COM2 — taken upstream of the meter buffer / PFL
+    tap node); NO1 = PRE-FADER node onward; NC1 = floating.
   - **Contact set 2 (shunt):** COM2 = PRE-FADER node; NC2 = AGND;
     NO2 = floating.
 - **ACTIVE state (SET):** series contact closes (signal passes from
@@ -1337,10 +1385,11 @@ cold dummy network details and LED color assignments TBD.
 
 *Pre-mute signal tap (on channel PCB):*
 
-- A **75 Ω** resistor taps the post-INSERT / pre-MUTE signal node
-  (same node that feeds the meter buffer — Block 3 — and the MUTE
-  relay COM). This is a branch tap, not in series with the main path.
-  The far end of this 75 Ω is one input to the Output PRE-POST switch.
+- A **75 Ω** resistor taps the pre-MUTE node — the HPF/INSERT bypass
+  relay COM2 output — which is the same node that feeds the meter
+  buffer (Block 3) and the MUTE relay COM1. This is a branch tap, not
+  in series with the main path. The far end of this 75 Ω is one input
+  to the Output PRE-POST switch.
 
 *Post-fader signal tap (on channel PCB):*
 
@@ -1461,12 +1510,66 @@ cold dummy network details and LED color assignments TBD.
 
 ---
 
+### Block 9 — HPF / INSERT chain bypass relay (IN-PROGRESS)
+
+**Status:** in-progress — relay wiring and front-panel hardware
+established; logical mode cycling and boot state TBD.
+
+#### Topology chosen
+
+Standard **AGQ210A03** DPDT 1-coil latching signal relay per
+`00-conventions.md`. Contact wiring per §2.3.1:
+
+| Contact | Connection |
+|---|---|
+| COM1 | CHANNEL SOURCE relay output |
+| NC1 | Hard-wired to NC2 |
+| NC2 | Hard-wired to NC1 |
+| COM2 | Pre-MUTE node (meter buffer + PFL tap + MUTE relay COM1) |
+| NO1 | HPF switch Section 1 input (chain entry) |
+| NO2 | Insert Return receiver output, post-C38 (chain exit) |
+
+- **RESET (NC active):** COM1 → NC1 ↔ NC2 → COM2. HPF / INSERT
+  chain bypassed.
+- **SET (NO active):** COM1 → NO1 → [HPF + INSERT chain] → NO2 →
+  COM2. Chain in signal path.
+
+Front-panel control:
+
+- **Momentary pushbutton**, single contact, MCU GPIO input.
+- **Three separate orange LEDs**, each driven by an individual MCU
+  GPIO output: FOLLOW PATH (center), FOLLOW A, FOLLOW B — per the
+  mode table in §2.3.1.
+
+#### Active devices
+
+- **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
+  signal relay). Per `00-conventions.md` "Standard signal relay".
+
+#### Key passive values
+
+- HPF/INSERT BYPASS LED current-limit resistors (× 3 per channel):
+  TBD (depends on chosen LED Vf and brightness target).
+- Coil drive: bipolar pulse from +3.3 V per `00-conventions.md`
+  "Standard signal relay". Driver IC TBD.
+
+#### Open issues for Block 9
+
+- **Boot state**: RESET (chain bypassed by default) or SET (chain
+  in path by default) — TBD. See `10-open-tbd.md`.
+- **Mode cycling logic and CHANNEL SOURCE synchronization**:
+  firmware decision — TBD. See `10-open-tbd.md`.
+- **Front-panel button part** (momentary, single contact, no
+  integrated LED): TBD.
+
+---
+
 ## 2.11 Front-panel control buttons (Pattern C)
 
-Three momentary pushbuttons with integrated LEDs per channel, all
-read by firmware (MCU GPIO inputs) with firmware-driven integrated
-LEDs (MCU GPIO outputs). Per `00-conventions.md` Pattern C.
-A fourth button (CHANNEL SOURCE, Pattern B) is described in §2.2.
+Three momentary pushbuttons with integrated LEDs per channel (Pattern C),
+plus a fourth momentary pushbutton with three separate orange LEDs
+(HPF/INSERT BYPASS, described in §2.3.1). A fifth button (CHANNEL
+SOURCE, Pattern B) is described in §2.2.
 
 ### ACTIVE/MUTE (orange LED)
 
@@ -1496,3 +1599,14 @@ A fourth button (CHANNEL SOURCE, Pattern B) is described in §2.2.
   toward the DAW via MIDI (exact protocol TBD).
 - Red LED on = channel armed for recording. Driven by MCU GPIO.
 - Boot default: LED off (unarmed).
+
+### HPF / INSERT BYPASS (three separate orange LEDs)
+
+- Button press → firmware cycles the HPF/INSERT bypass relay
+  (AGQ210A03, §2.3.1) through three modes: FOLLOW PATH → FOLLOW A
+  → FOLLOW B → FOLLOW PATH → …
+- Three separate orange LEDs (not integrated in the button), each
+  driven by a dedicated MCU GPIO output. Exactly one LED is on at
+  all times, indicating the current mode.
+- Boot default and mode cycling logic: TBD — see `10-open-tbd.md`
+  and Block 9 open issues.

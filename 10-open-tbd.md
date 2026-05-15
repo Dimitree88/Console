@@ -126,6 +126,22 @@ Still to be decided:
   TBD together with §08 AFL summer design (source count, individual
   resistors, and summer opamp gain form one coherent system).
 
+### From mono channel Block 9 (HPF/INSERT chain bypass relay) — in-progress
+
+- **Boot state**: RESET (chain bypassed at power-up) or SET (chain
+  always active at power-up). To decide with the firmware boot-init
+  spec. RESET is the "safe audio path" default (bypass = no
+  processing); SET is the "always insert" default.
+- **Mode cycling logic**: the button cycles FOLLOW PATH → FOLLOW A →
+  FOLLOW B → FOLLOW PATH. Firmware must track current mode and
+  synchronize relay state to the CHANNEL SOURCE relay state in FOLLOW A
+  and FOLLOW B modes (i.e., respond to CHANNEL SOURCE changes even
+  without a button press). Details TBD.
+- **Front-panel button part** (momentary, single contact, no integrated
+  LED): TBD.
+
+---
+
 ### Mono channel — Block 8 (Output PRE-POST switch + switchable Direct Out) — in-progress
 
 `02-mono-channel.md` §2.9 (e) and Block 8. The standalone
@@ -157,7 +173,9 @@ SELECT relay. Topology is fixed; remaining open items:
   console (24 mono channels × 4 positions — CHANNEL SOURCE, MUTE,
   AFL, DIRECT OUT SELECT — + 4 AUX returns × 2 + 3 groups × 2 +
   2 in master monitor).
-  Open items:
+  Open items (relay count updated: 136 total — 24 mono channels × 5
+  positions CHANNEL SOURCE, MUTE, AFL, DIRECT OUT SELECT, HPF/INSERT
+  BYPASS + 4 AUX returns × 2 + 3 groups × 2 + 2 monitor):
   - **Coil driver IC**: bipolar / half-H-bridge per relay
     (set-pulse and reset-pulse drive). Candidates: Toshiba
     TBD62783A high-side + TBD62083A low-side pair sharing 8
