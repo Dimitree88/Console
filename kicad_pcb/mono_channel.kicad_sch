@@ -2867,7 +2867,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "0_Switches:FTRB3GA45ZB10"
+			(property "Footprint" "0_Switches:RELAY-2FORMC"
 				(at -1.016 22.352 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -5723,23 +5723,23 @@
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "U"
-				(at -4.572 0.254 0)
+				(at 0 5.08 0)
 				(show_name no)
-				(do_not_autoplace yes)
+				(do_not_autoplace no)
 				(effects
 					(font
-						(size 1.016 1.016)
+						(size 1.27 1.27)
 					)
 					(justify left)
 				)
 			)
 			(property "Value" "Opamp_Quad"
-				(at -4.572 -1.016 0)
+				(at 0 -5.08 0)
 				(show_name no)
-				(do_not_autoplace yes)
+				(do_not_autoplace no)
 				(effects
 					(font
-						(size 0.762 0.762)
+						(size 1.27 1.27)
 					)
 					(justify left)
 				)
@@ -5756,7 +5756,7 @@
 				)
 			)
 			(property "Datasheet" ""
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -5767,7 +5767,7 @@
 				)
 			)
 			(property "Description" "Quad operational amplifier"
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -5778,7 +5778,7 @@
 				)
 			)
 			(property "Sim.Library" "${KICAD9_SYMBOL_DIR}/Simulation_SPICE.sp"
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -5789,7 +5789,7 @@
 				)
 			)
 			(property "Sim.Name" "kicad_builtin_opamp_quad"
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -5800,7 +5800,7 @@
 				)
 			)
 			(property "Sim.Device" "SUBCKT"
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -5811,7 +5811,7 @@
 				)
 			)
 			(property "Sim.Pins" "1=out1 2=in1- 3=in1+ 4=vcc 5=in2+ 6=in2- 7=out2 8=out3 9=in3- 10=in3+ 11=vee 12=in4+ 13=in4- 14=out4"
-				(at 0 -0.254 0)
+				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(hide yes)
@@ -6126,24 +6126,13 @@
 				)
 			)
 			(symbol "Opamp_Quad_5_1"
-				(rectangle
-					(start -5.08 3.81)
-					(end 3.81 -2.286)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
 				(pin power_in line
-					(at 7.62 2.54 180)
+					(at -2.54 7.62 270)
 					(length 3.81)
 					(name "V+"
 						(effects
 							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
 							)
 						)
 					)
@@ -6156,12 +6145,12 @@
 					)
 				)
 				(pin power_in line
-					(at -8.89 2.54 0)
+					(at -2.54 -7.62 90)
 					(length 3.81)
 					(name "V-"
 						(effects
 							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
 							)
 						)
 					)
@@ -15935,7 +15924,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "0_Switches:FTRB3GA45ZB10"
+		(property "Footprint" "0_Switches:RELAY-2FORMC"
 			(at 368.554 193.548 0)
 			(hide yes)
 			(show_name no)
@@ -17521,7 +17510,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "0_Switches:FTRB3GA45ZB10"
+		(property "Footprint" "0_Switches:RELAY-2FORMC"
 			(at 128.016 164.338 0)
 			(hide yes)
 			(show_name no)
@@ -20931,7 +20920,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "0_Switches:FTRB3GA45ZB10"
+		(property "Footprint" "0_Switches:RELAY-2FORMC"
 			(at 148.844 164.338 0)
 			(hide yes)
 			(show_name no)
@@ -30787,7 +30776,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "0_Switches:FTRB3GA45ZB10"
+		(property "Footprint" "0_Switches:RELAY-2FORMC"
 			(at 239.014 145.288 0)
 			(hide yes)
 			(show_name no)
