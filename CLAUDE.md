@@ -78,6 +78,8 @@ files. If something is unclear, ask.
    the change is structurally relevant to where the design stands.
 6. Update `11-digital-io.md` if the change affects relay, LED, or
    pushbutton counts (any row added, removed, or renamed in those tables).
+7. Update `BOM-summary.md` if the change involves a newly confirmed part
+   number, a count change, or a section moving from conceptual to finalized.
 
 Decisions are definitive — there is no separate history to maintain. When
 the user says "let's update the file", interpret it as "update the

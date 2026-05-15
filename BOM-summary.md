@@ -1,7 +1,7 @@
 # BOM Summary — Component Numerosity Reference
 
 > Counts all major components except: resistors, capacitors, diodes, PCB-to-PCB connectors.
-> Faders excluded from potentiometer and knob counts per project rule.
+> Faders excluded from potentiometer and knob counts.
 > **Status:** ✓ = confirmed from finalized blocks; ~ = estimated from sections still conceptual.
 
 ---
@@ -41,6 +41,14 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 | TL072 | Dual SOIC | Dual meter buffer — active (pre-MUTE) + inactive (CHANNEL SOURCE relay set 2) | 1 | 24 | ✓ |
 | **Mono channel subtotal** | | | | **132** | ✓ |
 
+**Per tipo IC — mono ch (per l'ordine; altre sezioni ancora TBD):**
+
+| IC | Totale mono ch | Altre sezioni | Status |
+|---|---|---|---|
+| OPA1679 | **48** | TBD | ✓ / ~ |
+| NE5532 | **60** | TBD | ✓ / ~ |
+| TL072 | **24** | TBD | ✓ / ~ |
+
 ### 2b. Other sections — TBD (conceptual)
 
 | Section | Notes | Status |
@@ -54,18 +62,14 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 
 ---
 
-## 3. Potentiometers (faders excluded — 1 knob per pot)
+## 3. Potentiometers (faders excluded)
 
 ### 3a. Mono channels (×24)
 
 | Function | Type | Value | Per ch | Total | Status |
 |---|---|---|---|---|---|
-| Gain — Input A (All-Inverting receiver Rf) | Single-gang | 10 kΩ LOG | 1 | 24 | ✓ |
-| Gain — Input B (All-Inverting receiver Rf) | Single-gang | 10 kΩ LOG | 1 | 24 | ✓ |
-| AUX 1 send — gang 1 (pre-fader) + gang 2 (post-fader) | Dual-gang | TBD | 1 | 24 | ~ |
-| AUX 2 send — gang 1 (pre-fader) + gang 2 (post-fader) | Dual-gang | TBD | 1 | 24 | ~ |
-| AUX 3 send — gang 1 (pre-fader) + gang 2 (post-fader) | Dual-gang | TBD | 1 | 24 | ~ |
-| AUX 4 send — gang 1 (pre-fader) + gang 2 (post-fader) | Dual-gang | TBD | 1 | 24 | ~ |
+| Gain — Input A + B (stesso part, All-Inverting Rf) | Single-gang | 10 kΩ LOG | 2 | 48 | ✓ |
+| AUX 1–4 send — tutti stesso part, gang 1 pre-fader + gang 2 post-fader | Dual-gang | TBD | 4 | 96 | ~ |
 | CUE send — both gangs pre-fader → CUE L / CUE R | Dual-gang | TBD | 1 | 24 | ~ |
 | Pan — Self active panpot (L + R, center-detent preferred) | Dual-gang | 10 kΩ LIN | 1 | 24 | ✓ |
 | **Mono channel subtotal** | | | **8 / ch** | **192** | |
@@ -83,10 +87,7 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 
 | Function | Type | Value | Per unit | Total | Status |
 |---|---|---|---|---|---|
-| AUX 1 send (pre + post gangs) | Dual-gang | TBD | 1 | 3 | ~ |
-| AUX 2 send (pre + post gangs) | Dual-gang | TBD | 1 | 3 | ~ |
-| AUX 3 send (pre + post gangs) | Dual-gang | TBD | 1 | 3 | ~ |
-| AUX 4 send (pre + post gangs) | Dual-gang | TBD | 1 | 3 | ~ |
+| AUX 1–4 send (tutti stesso part, pre + post gangs) | Dual-gang | TBD | 4 | 12 | ~ |
 | Active balance (L / R) | Dual-gang | TBD | 1 | 3 | ~ |
 | CUE send (stereo, pre-fader) | Dual-gang | TBD | 1 | 3 | ~ |
 | **Group subtotal** | | | **6 / group** | **18** | |
@@ -100,11 +101,37 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 | "In front balance" (Main Mix level behind AFL) | TBD | TBD | Monitor | 1 | ~ |
 | **Master subtotal** | | | | **6** | |
 
-### Potentiometer + knob total: 192 + 12 + 18 + 6 = **228**
+### Potentiometer total: 192 + 12 + 18 + 6 = **228**
 
 ---
 
-## 4. Rotary switches (routing)
+## 4. Knobs
+
+> 1 knob per potentiometer + 1 per rotary switch. Fader caps esclusi (§7).
+> Colori TBD — da definire per funzione e assegnare a un part number unico o differenziati.
+
+| Funzione | Pot/switch | Count | Colore | Status |
+|---|---|---|---|---|
+| Gain (Input A + B) — mono ch | Single-gang | 48 | TBD | ~ |
+| AUX 1–4 send — mono ch | Dual-gang | 96 | TBD | ~ |
+| CUE send — mono ch | Dual-gang | 24 | TBD | ~ |
+| Pan — mono ch | Dual-gang | 24 | TBD | ~ |
+| Stereo gain — AUX return | Dual-gang | 4 | TBD | ~ |
+| Active balance — AUX return | Dual-gang | 4 | TBD | ~ |
+| CUE send — AUX return | Dual-gang | 4 | TBD | ~ |
+| AUX 1–4 send — groups | Dual-gang | 12 | TBD | ~ |
+| Active balance — groups | Dual-gang | 3 | TBD | ~ |
+| CUE send — groups | Dual-gang | 3 | TBD | ~ |
+| Variable gain — AUX master | Single-gang | 4 | TBD | ~ |
+| Stereo gain — CUE master | Dual-gang | 1 | TBD | ~ |
+| "In front balance" — monitor | TBD | 1 | TBD | ~ |
+| Routing — post-pan (mono ch) | Rotary 4-pos | 24 | TBD | ~ |
+| Routing — post-balance (AUX return) | Rotary 4-pos | 4 | TBD | ~ |
+| **TOTAL** | | **256** | | |
+
+---
+
+## 5. Rotary switches (routing)
 
 | Function | Type | Per unit | Section | Total | Status |
 |---|---|---|---|---|---|
@@ -114,17 +141,17 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 
 ---
 
-## 5. Pushbuttons
+## 6. Pushbuttons
 
 All front-panel controls share the same physical pushbutton body. Three sub-categories:
 
-- **Momentary with integrated LED** — the LED is inside the button body and is NOT listed separately in §7. Firmware drives both the LED and the relay.
-- **Momentary without integrated LED** — spring-return; firmware manages relay and any separate LEDs.
-- **Latching DPDT** — push-push self-locking; section 1 carries the audio or control signal, section 2 drives a separate LED (those LEDs ARE listed in §7). No firmware involved.
+- **Momentary with integrated LED** — the LED is inside the button body and is NOT listed separately in §8. Firmware drives both the LED and the relay.
+- **Momentary without integrated LED** — spring-return; firmware manages relay and any separate LEDs. **Requires cap.**
+- **Latching DPDT** — push-push self-locking; section 1 carries the audio or control signal, section 2 drives a separate LED (those LEDs ARE listed in §8). No firmware involved. **Requires cap.**
 
-### 5a. Momentary — with integrated LED (on fader PCB)
+### 6a. Momentary — with integrated LED (on fader PCB)
 
-> These 3 LEDs are integral to the button — **not** listed separately in §7.
+> These 3 LEDs are integral to the button — **not** listed separately in §8.
 > Location: fader PCB (same board as fader and post-fader amp). Connection to digital logic PCB: TBD.
 
 | Function | LED color | Per ch | Total | Status |
@@ -132,9 +159,9 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | ACTIVE / MUTE | Orange | 1 | 24 | ✓ |
 | SOLO | Red | 1 | 24 | ✓ |
 | REC ARM (MIDI only — no audio relay) | Red | 1 | 24 | ✓ |
-| **Subtotal** | | **3 / ch** | **72** | ✓ |
+| **Subtotal momentary w/ LED** | | **3 / ch** | **72** | ✓ |
 
-### 5b. Momentary — without integrated LED
+### 6b. Momentary — without integrated LED
 
 | Function | Separate LEDs | Per unit | Section | Total | Status |
 |---|---|---|---|---|---|
@@ -147,9 +174,9 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | PFL | TBD | 1 | 4 AUX master | 4 | ~ |
 | Mono/check L | TBD | 1 | monitor | 1 | ~ |
 | Mono/check R | TBD | 1 | monitor | 1 | ~ |
-| **Subtotal** | | | | **~68** | |
+| **Subtotal momentary no LED** | | | | **~68** | |
 
-### 5c. Latching DPDT (push-push self-locking — LED driven by button sec. 2, listed in §7)
+### 6c. Latching DPDT (push-push self-locking — LED driven by button sec. 2, listed in §8)
 
 #### Mono channels (×24)
 
@@ -171,17 +198,29 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | AUX mode — split / premix (one per AUX) | TBD | 4 | Group ×3 | 12 | ~ |
 | **Other subtotal** | | | | **19** | |
 
-### Latching subtotal: 120 + 19 = **139**
+### Subtotal latching: 120 + 19 = **139**
 
-### Pushbutton grand total: 72 + ~68 + 139 = **~279**
+### Caps total (momentary no LED + latching): ~68 + 139 = **~207**
 
 ---
 
-## 7. Indicator LEDs (meter bridge bargraph LEDs excluded — counted separately)
+## 7. Faders
 
-### 7a. Mono channels (×24) — confirmed
+> Esclusi dai conteggi di pot e knob.
 
-> ACTIVE/MUTE, SOLO, REC ARM LEDs are integrated in their pushbutton bodies — **not listed here** (see §5a).
+| Part | Tipo | Per unità | Sezione | Totale | Status |
+|---|---|---|---|---|---|
+| Alps RSA0N111900Q | Fader mono lineare | 1 | 24 mono ch | 24 | ✓ |
+| Fader stereo gruppo | TBD | 1 | 3 groups | 3 | ~ |
+| Fader master / altri | TBD | TBD | Main mix + altri | TBD | ~ |
+
+---
+
+## 8. Indicator LEDs (meter bridge bargraph LEDs excluded — counted separately)
+
+### 8a. Mono channels (×24) — confirmed
+
+> ACTIVE/MUTE, SOLO, REC ARM LEDs are integrated in their pushbutton bodies — **not listed here** (see §6a).
 
 | Function | Color | Drive source | Per ch | Total | Status |
 |---|---|---|---|---|---|
@@ -207,7 +246,7 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | Blue | 24 | INSERT |
 | TBD | 48 | Output PRE-POST ×2 per channel |
 
-### 7b. Other sections — estimated
+### 8b. Other sections — estimated
 
 | Section | Estimated LEDs | Status |
 |---|---|---|
@@ -223,9 +262,9 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 
 ---
 
-## 8. TRS Jacks
+## 9. TRS Jacks
 
-Single type throughout: **TRS stereo-with-switch (5-contact)**. Switch contacts (TIP-SW / RING-SW) used for idle-noise termination — they short TIP↔TIP-SW and RING↔RING-SW when no plug is inserted — on: Input A, Input B, and Insert Return. Left unconnected on all output jacks and Insert Send.
+Single type throughout: **Rean RJ5VM** — TRS stereo-with-switch (5-contact). Switch contacts (TIP-SW / RING-SW) used for idle-noise termination — they short TIP↔TIP-SW and RING↔RING-SW when no plug is inserted — on: Input A, Input B, and Insert Return. Left unconnected on all output jacks and Insert Send.
 
 | Function | Per unit | Section | SW contacts used | Total | Status |
 |---|---|---|---|---|---|
@@ -253,23 +292,32 @@ Single type throughout: **TRS stereo-with-switch (5-contact)**. Switch contacts 
 | Main Insert Return R | 1 | Main mix | TBD | 1 | ~ |
 | **TOTAL** | | | | **154** | |
 
-> Monitor output jacks not included (§8.7 TBD).
+> Monitor output jacks not included (TBD).
 
 ---
 
-## Grand summary
+## Grand summary — per part number
 
-| Category | Total | Confidence |
-|---|---|---|
-| Relay AGQ210A03 | **136** | ✓ full |
-| IC / Opamp — mono channels only | **132** | ✓ full |
-| IC / Opamp — other sections | **TBD** | ~ conceptual |
-| Potentiometers (faders excluded) | **228** | ✓ / ~ mixed |
-| Knobs (1 per pot) | **228** | — |
-| Rotary switches 2-gang 4-pos | **28** | ~ |
-| Pushbuttons — momentary w/ integrated LED (fader PCB) | **72** | ✓ |
-| Pushbuttons — momentary w/o integrated LED | **~68** | ✓ / ~ mixed |
-| Pushbuttons — latching DPDT (LED on button sec. 2) | **~139** | ✓ / ~ mixed |
-| Pushbuttons — total | **~279** | ✓ / ~ mixed |
-| Indicator LEDs (not meter bridge, not integrated-LED buttons) | **~306–324** | ✓ / ~ mixed |
-| TRS jacks (incl. 5-pin with switch) | **154** | ✓ / ~ mixed |
+> Questo è il reference per l'ordine. Items con part number TBD si sdoppieranno in più righe una volta definiti i valori.
+
+| Part number / tipo | Descrizione | Qty | Status |
+|---|---|---|---|
+| **AGQ210A03** | Relay DPDT latching 3 V (Panasonic) | 136 | ✓ |
+| **OPA1679** | Quad opamp SOIC-14 | ≥48 | ✓ mono ch; altre sez. TBD |
+| **NE5532** | Dual opamp SOIC-8 | ≥60 | ✓ mono ch; altre sez. TBD |
+| **TL072** | Dual opamp SOIC-8 | ≥24 | ✓ mono ch; altre sez. TBD |
+| **Alps RSA0N111900Q** | Fader mono lineare | 24 | ✓ |
+| Fader stereo (part TBD) | Fader stereo — groups + master | TBD | ~ |
+| **Rean RJ5VM** | Jack TRS 5-contact con switch | 154 | ✓/~ |
+| Pot single-gang 10 kΩ LOG | Gain (Input A + B, mono ch) | 48 | ✓ |
+| Pot dual-gang 10 kΩ LIN | Pan (mono ch) | 24 | ✓ |
+| Pot dual-gang (value TBD) | AUX send (96 ch + 12 gr) + CUE send (24 ch + 4 ret + 3 gr) + balance (4 ret + 3 gr) + CUE master (1) = 147 | 147 | ~ |
+| Pot single-gang (value TBD) | AUX master variable gain | 4 | ~ |
+| Pot TBD (gang + value TBD) | Monitor "in front balance" | 1 | ~ |
+| Rotary switch 2-gang 4-pos (part TBD) | Routing post-pan + post-balance | 28 | ~ |
+| Pushbutton momentary w/ integrated LED (part TBD) | ACTIVE/SOLO/REC ARM — fader PCB | 72 | ✓ |
+| Pushbutton momentary no LED (part TBD) | Channel source, HPF/INS bypass, AUX/group/master controls | ~68 | ✓/~ |
+| Pushbutton latching DPDT (part TBD) | HPF, INSERT, PFL, PRE/POST, DIRECT/PROC, AUX mode | ~139 | ✓/~ |
+| Button cap (part TBD) | Per momentary no LED + latching | ~207 | ~ |
+| Knob (colore TBD) | 1 per pot + 1 per rotary | 256 | ~ |
+| Indicator LED (color mix — see §8) | Separate LEDs, non integrati nei tasti | ~315 | ✓/~ |
