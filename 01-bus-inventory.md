@@ -73,7 +73,7 @@ Main Mix to the Solo summer when any PFL is active.
 | Total summing lines | 7 stereo × 2 lines + 9 mono × 1 line = **23** |
 | Main outputs | 2 pairs (A + B), 4 TRS jacks total |
 | Insert points | 24 (channels) + 3 (groups) + 1 (main mix) = 28 |
-| Direct Outs | 24 (full-differential, on Input A of each mono channel) |
+| Channel Outputs | 24 (TRS rear-panel, switchable: full-differential from Input A / processed signal via PRE-POST switch; controlled by Channel Output SELECT relay) |
 | Post-Fader Outs | 24 (channels, mono) + 6 (3 groups × L/R) = 30. (AUX returns do NOT have Post-Fader Outs.) |
 | AUX master OUT jacks | 4 (one per AUX master, TRS impedance-balanced) |
 | CUE master OUT jacks | 2 (L + R, TRS impedance-balanced) |

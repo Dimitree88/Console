@@ -21,7 +21,7 @@ per `00-conventions.md` "Standard signal relay").
 | Mono channel | CHANNEL SOURCE (A/B select) | 1 | 24 | 24 | ✓ |
 | Mono channel | MUTE (ACTIVE/SOLO) | 1 | 24 | 24 | ✓ |
 | Mono channel | AFL | 1 | 24 | 24 | ✓ |
-| Mono channel | DIRECT OUT SELECT | 1 | 24 | 24 | ✓ |
+| Mono channel | Channel Output SELECT | 1 | 24 | 24 | ✓ |
 | Mono channel | HPF/INSERT BYPASS | 1 | 24 | 24 | ✓ |
 | AUX return | ACTIVE | 1 | 4 | 4 | ✓ |
 | AUX return | AFL | 1 | 4 | 4 | ✓ |
@@ -37,20 +37,22 @@ per `00-conventions.md` "Standard signal relay").
 
 ### Per mono channel (× 24)
 
-| Switch | Color | Count | Drive | Pattern |
-|---|---|---|---|---|
-| CHANNEL SOURCE | red (A) / green (B) | 2 | MCU GPIO | — |
-| ACTIVE/MUTE | orange | 1 | MCU GPIO | C |
-| SOLO | red | 1 | MCU GPIO | C |
-| REC ARM | red | 1 | MCU GPIO | C |
-| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / A / B) | 3 | MCU GPIO | — |
-| HPF | orange | 1 | mech switch sec.2 | A |
-| INSERT | blue | 1 | mech switch sec.2 | A |
-| PFL | red | 1 | mech switch sec.2 | A |
-| Output PRE-POST | TBD (one per position) | 2 | mech switch sec.2 | A |
-| **Per channel total** | | **13** | | |
+> ACTIVE/MUTE (orange), SOLO (red), REC ARM (red) LEDs are **integrated
+> in their pushbutton bodies** (located on the fader PCB). They are MCU
+> GPIO driven but are **not listed here** as separate indicators —
+> they ship with the button.
 
-**Mono channels subtotal: 13 × 24 = 312** ✓
+| Switch / button | Color | Count | Drive |
+|---|---|---|---|
+| CHANNEL SOURCE | red (A) / green (B) | 2 | MCU GPIO |
+| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / A / B) | 3 | MCU GPIO |
+| HPF | orange | 1 | latching button sec. 2 |
+| INSERT | blue | 1 | latching button sec. 2 |
+| PFL | red | 1 | latching button sec. 2 |
+| Output PRE-POST | TBD × 2 (one per position) | 2 | latching button sec. 2 |
+| **Per channel total** | | **10** | |
+
+**Mono channels subtotal: 10 × 24 = 240** ✓
 
 ### Other sections (estimates — update as sections are finalized)
 
@@ -73,20 +75,38 @@ per `00-conventions.md` "Standard signal relay").
 
 ---
 
-## Front-panel pushbuttons (MCU GPIO inputs)
+## Front-panel pushbuttons
 
-### Per mono channel (× 24)
+### Per mono channel (× 24) — 10 per channel
 
-| Button | Pattern | Relay commanded | LED drive | Status |
+**Momentary with integrated LED — on fader PCB (3 per channel):**
+
+| Button | LED color | Relay / action | LED drive | Status |
 |---|---|---|---|---|
-| CHANNEL SOURCE | B | CHANNEL SOURCE relay | relay contact set 2 | ✓ |
-| ACTIVE/MUTE | C | MUTE relay | MCU GPIO (orange) | ✓ |
-| SOLO | C | AFL relay + others' MUTE (SIP opt.) | MCU GPIO (red) | ✓ |
-| REC ARM | C | none — MIDI to DAW | MCU GPIO (red) | ✓ |
-| HPF/INSERT BYPASS | — | HPF/INSERT BYPASS relay | MCU GPIO (3× orange, separate LEDs) | ✓ |
-| **Per channel** | | | | **5** |
+| ACTIVE/MUTE | orange (in button) | MUTE relay | MCU GPIO | ✓ |
+| SOLO | red (in button) | AFL relay + others' MUTE (SIP opt.) | MCU GPIO | ✓ |
+| REC ARM | red (in button) | none — MIDI to DAW | MCU GPIO | ✓ |
 
-**Mono channels subtotal: 5 × 24 = 120** ✓
+Connection from fader PCB to digital logic PCB: TBD.
+
+**Momentary without integrated LED (2 per channel):**
+
+| Button | Separate LEDs | Relay / action | LED drive | Status |
+|---|---|---|---|---|
+| CHANNEL SOURCE | red (A) + green (B), MCU GPIO | CHANNEL SOURCE relay | MCU GPIO | ✓ |
+| HPF/INSERT BYPASS | 3× orange, MCU GPIO | HPF/INSERT BYPASS relay (3 modes) | MCU GPIO | ✓ |
+
+**Latching DPDT (5 per channel):**
+
+| Button | LED sec. 2 | Signal / relay | MCU GPIO in? | Status |
+|---|---|---|---|---|
+| HPF | orange | audio path direct | no | ✓ |
+| INSERT | blue | audio path direct | no | ✓ |
+| PFL | red | audio path direct | no | ✓ |
+| Output PRE-POST | TBD × 2 | audio path direct | no | ✓ |
+| DIRECT/PROCESSED output | TBD | sec. 1 → MCU GPIO in; MCU fires Channel Output SELECT relay | yes | ~ |
+
+**Mono channel subtotal: 10 × 24 = 240**
 
 ### Other sections (estimates)
 
@@ -97,7 +117,7 @@ per `00-conventions.md` "Standard signal relay").
 | AUX master × 4 | 1 each (PFL) → 4 | ~ |
 | Monitor / master | ~2–4 (mono/check L+R + TBD) | ~ |
 
-**Console total pushbuttons: ~140–142**
+**Console total pushbuttons: ~258–262**
 
 ---
 
@@ -105,10 +125,11 @@ per `00-conventions.md` "Standard signal relay").
 
 | Signal type | Per channel | × 24 channels | Note |
 |---|---|---|---|
-| GPIO input — buttons | 5 | 120 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS |
-| GPIO output — LEDs | 8 | 192 | ACTIVE/MUTE, SOLO, REC ARM (integrated), HPF/INSERT BYPASS × 3 (separate), CHANNEL SOURCE A-LED + B-LED |
+| GPIO input — buttons | 6 | 144 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS, DIRECT/PROCESSED output (latching button sec. 1) |
+| GPIO output — LEDs | 8 | 192 | ACTIVE/MUTE, SOLO, REC ARM (integrated in button on fader PCB), HPF/INSERT BYPASS × 3 (separate), CHANNEL SOURCE A-LED + B-LED |
 | Relay coil control lines | 10 (5 relays × 2) | 240 | via dedicated driver ICs, not direct GPIO |
 
-CHANNEL SOURCE LEDs (red/green) are MCU GPIO driven — firmware updates them on each CHANNEL SOURCE toggle.
-HPF, INSERT, PFL, PRE-POST LEDs are mech-switch-driven — no GPIO output needed.
-HPF/INSERT BYPASS mode LEDs (3× orange) are MCU GPIO driven — separate from the button.
+CHANNEL SOURCE LEDs (red/green): MCU GPIO driven — updated on each CHANNEL SOURCE toggle.
+ACTIVE/MUTE, SOLO, REC ARM LEDs: MCU GPIO driven — integrated in button body (fader PCB); GPIO wire routes fader PCB → digital logic PCB (TBD).
+HPF/INSERT BYPASS mode LEDs (3× orange): MCU GPIO driven — separate from the button.
+HPF, INSERT, PFL, PRE-POST, DIRECT/PROCESSED LEDs: latching button sec. 2 driven — no MCU GPIO output needed.

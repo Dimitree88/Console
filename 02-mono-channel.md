@@ -23,15 +23,15 @@ Each input has:
    (A and B) has its **own independent gain pot** — they are not
    ganged.
 
-**Direct Out** (TRS jack on input PCB): its default output is the
+**Channel Output** (TRS jack on input PCB): its default output is the
 full-differential signal from the two Input A buffers (before the
-unbalancing stage). A firmware-controlled relay (**DIRECT OUT SELECT**,
+unbalancing stage). A firmware-controlled relay (**Channel Output SELECT**,
 on the input PCB) can switch this jack to instead output an
 impedance-balanced signal from the channel PCB — either pre-MUTE or
 post-fader, depending on the **Output PRE-POST** mechanical switch on
 the channel strip (see §2.9 (e)).
 
-Note: in the Input-A state (RESET / default), the Direct Out is fully
+Note: in the Input-A state (RESET / default), the Channel Output is fully
 differential (both lines actively driven from Input A buffers) —
 not merely impedance-balanced. In the Channel-signal state (SET), the
 output is impedance-balanced (hot = channel PRE/POST through 75 Ω;
@@ -294,7 +294,7 @@ Similar to an AUX send, but:
 ### (e) PRE-POST output tap and Output PRE-POST switch
 
 Two signal taps are taken from the channel PCB for routing to the input
-PCB (to feed the switchable Direct Out — see §2.1):
+PCB (to feed the switchable Channel Output — see §2.1):
 
 - **PRE tap**: pre-MUTE signal (output of the HPF/INSERT bypass relay,
   COM2), through a **75 Ω** series resistor (branch tap; not in series
@@ -319,8 +319,8 @@ to the input PCB:
   per `00-conventions.md` standard — 47 µF ‖ 47 kΩ — TBD,
   see `10-open-tbd.md`).
 
-On the input PCB, these lines feed the **DIRECT OUT SELECT** relay
-(Block 8), which alternates the Direct Out TRS jack between Input A
+On the input PCB, these lines feed the **Channel Output SELECT** relay
+(Block 8), which alternates the Channel Output TRS jack between Input A
 buffers and this channel signal.
 
 *See Block 8 for implementation details.*
@@ -334,20 +334,20 @@ not post-mute.)*
 ## 2.10 Implementation details
 
 Status: **in-progress** — Block 1 (input stage to CHANNEL SOURCE
-switch + DIRECT OUT SELECT relay on input PCB) FINALIZED. Block 2
+switch + Channel Output SELECT relay on input PCB) FINALIZED. Block 2
 (HPF + Insert Send/Return + jack PCB — now in the NO loop of Block 9),
 Block 3 (meter buffer + PFL switch + MUTE, now series+shunt), Block 4
 (pre-fader node + fader PCB + post-fader amp + AUX/CUE sends), and
 Block 5 (active pan) finalized. Block 6 (post-pan routing rotary)
 topology defined, values TBD. Block 7 (AFL switch) finalized — topology
 fixed, summing resistor values deferred to §08. Block 8 (Output
-PRE-POST switch + switchable Direct Out) in-progress — see
+PRE-POST switch + switchable Channel Output) in-progress — see
 `10-open-tbd.md`. Block 9 (HPF/INSERT chain bypass relay) in-progress
 — relay wiring established, logical modes and boot state TBD.
 Block 10 (dual meter buffers: TL072 dual buffer, CHANNEL SOURCE relay
 contact set 2 for inactive source selection) FINALIZED.
 
-### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
+### Block 1 — Input stage, buffers, Channel Output, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
 **Status:** finalized
 
@@ -381,13 +381,13 @@ cold):
 - The 4 buffer outputs leave the input PCB via a 5-pin connector
   (4 signals + AGND centered).
 
-*Direct Out* (Input A only, TRS rear-panel jack):
+*Channel Output* (Input A only, TRS rear-panel jack):
 
 - Tap from the two buffer outputs of Input A (hot and cold), driven
   actively on both lines.
 - **Build-out resistors: 75 Ω 0.1 % thin-film matched pair**, one
   per leg (hot and cold), in series between each buffer output and
-  the EMI filter. The build-out is on the Direct Out branch only;
+  the EMI filter. The build-out is on the Channel Output branch only;
   the internal off-board path to the next PCB (toward the
   All-Inverting receiver) does NOT carry build-out, since the
   receiver wants Z_source ≈ 0 and the two opamps of the same quad
@@ -400,18 +400,18 @@ cold):
   would degrade CMR at low frequencies (electrolytic tolerance
   produces ΔX_c that translates to ΔZ_source) exactly where mains
   hum sits. Trade favors omitting the cap.
-- Note: the Direct Out is "fully-balanced" only if the source driving
+- Note: the Channel Output is "fully-balanced" only if the source driving
   the TRS input is itself balanced; if the source is
-  impedance-balanced or single-ended, the Direct Out preserves that
+  impedance-balanced or single-ended, the Channel Output preserves that
   same character. The §2.1 wording "full-differential" should be read
   as "both lines are actively driven by a buffer", not as "a
   differential feedback forces hot = −cold".
 
-*DIRECT OUT SELECT relay (§2.1):*
+*Channel Output SELECT relay (§2.1):*
 
 - **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay, per
   `00-conventions.md`) on the input PCB, interposed between the
-  75 Ω build-out resistors and the Direct Out EMI filter.
+  75 Ω build-out resistors and the Channel Output EMI filter.
 - **NC / RESET state (Input A — default):** contact set 1 COM →
   Input A hot 75 Ω build-out → EMI filter tip; contact set 2 COM →
   Input A cold 75 Ω build-out → EMI filter ring. Original
@@ -490,7 +490,7 @@ signal relay): CHANNEL SOURCE A/B select. Per `00-conventions.md`
 "Standard signal relay".
 
 **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-signal relay): DIRECT OUT SELECT (Input A vs channel PRE/POST).
+signal relay): Channel Output SELECT (Input A vs channel PRE/POST).
 Per `00-conventions.md` "Standard signal relay". See Block 8.
 
 #### Key passive values
@@ -498,7 +498,7 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 - Receiver matched resistors: 1 kΩ × 4 per receiver × 2 receivers =
   **8 per channel — CMR-critical**. Target tolerance: **0.1 %
   thin-film**.
-- **Direct Out build-out: 75 Ω × 2 per channel** (hot and cold of
+- **Channel Output build-out: 75 Ω × 2 per channel** (hot and cold of
   Input A only). **0.1 % thin-film matched pair**, same lot for
   thermal tracking.
 - Gain pot: 10 kΩ log × 2 per channel (one per input, independent).
@@ -535,11 +535,11 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
   for NE5532) would drop ~40 mV across the input bias resistor and
   must be matched between hot and cold legs to preserve CMR — the
   CMOS ~10 pA bias current sidesteps this.
-  (3) the Direct Out path runs without a DC block (see above);
+  (3) the Channel Output path runs without a DC block (see above);
   OPA1679's low Vos keeps the cumulative offset within budget for
   any downstream ADC differential input.
-- **Direct Out build-out: 75 Ω 0.1 % matched pair**, on hot and cold,
-  on the Direct Out branch only. Trades a small CMR floor (≈ 96 dB
+- **Channel Output build-out: 75 Ω 0.1 % matched pair**, on hot and cold,
+  on the Channel Output branch only. Trades a small CMR floor (≈ 96 dB
   with 0.1 % matching, well below the receiver's CMR ceiling) for
   cable-capacitance isolation, short-circuit protection, and proper
   source impedance for the EMI filter — the build-out becomes the
@@ -547,10 +547,10 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
   the filter loses HF attenuation due to near-zero source Z.
   Internal off-board path to the All-Inverting receiver stays at
   Z_source ≈ 0.
-- **No DC block on the Direct Out path.** OPA1679 V_os is small
+- **No DC block on the Channel Output path.** OPA1679 V_os is small
   enough that a series cap is not needed and would actively hurt
   CMR at low frequencies (electrolytic tolerance ⇒ ΔX_c ⇒ ΔZ_source
-  exactly where mains hum lives). See *Direct Out* in Topology
+  exactly where mains hum lives). See *Channel Output* in Topology
   chosen for the numbers.
 - **TIP-SW = RING-SW shorting on Input A and B jacks.** Exploits
   the jack's normalling contacts to short TIP↔RING when no plug is
@@ -989,6 +989,11 @@ ground potential differences from showing up at the wiper.
 Hosts **2 channels per PCB** (12 fader PCBs total for the 24 mono
 channels). Each channel uses one half of an NE5532 dual.
 
+The fader PCB also hosts the **3 momentary pushbuttons with integrated
+LEDs** for this channel: ACTIVE/MUTE (orange), SOLO (red), REC ARM
+(red). Physical co-location with the fader is confirmed; electrical
+connection to the digital logic PCB (GPIO routing) is TBD.
+
 Per channel on the fader PCB:
 
 1. **Fader** (mono, taper TBD): top lug = pin 1 (PRE-FADER), bottom
@@ -1387,7 +1392,7 @@ console-wide firmware boot-init contract.
 
 ---
 
-### Block 8 — Output PRE-POST switch + switchable Direct Out (IN-PROGRESS)
+### Block 8 — Output PRE-POST switch + switchable Channel Output (IN-PROGRESS)
 
 **Status:** in-progress — signal flow and relay topology fixed;
 cold dummy network details and LED color assignments TBD.
@@ -1432,31 +1437,31 @@ cold dummy network details and LED color assignments TBD.
   frequency-independent impedance balance over this short internal
   run and is the correct compromise.
 
-*DIRECT OUT SELECT relay (on input PCB):*
+*Channel Output SELECT relay (on input PCB):*
 
 - **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay, per
-  `00-conventions.md`). See also Block 1 (Direct Out section) for
+  `00-conventions.md`). See also Block 1 (Channel Output section) for
   the PCB context.
-- **Contact set 1 (hot line):** COM → Direct Out EMI filter tip
+- **Contact set 1 (hot line):** COM → Channel Output EMI filter tip
   (→ TRS tip). NC = 75 Ω build-out on Input A hot buffer (existing
   path). NO = pin 1 of 2-pin connector (channel PRE/POST signal).
-- **Contact set 2 (cold line):** COM → Direct Out EMI filter ring
+- **Contact set 2 (cold line):** COM → Channel Output EMI filter ring
   (→ TRS ring). NC = 75 Ω build-out on Input A cold buffer
   (existing path). NO = pin 2 of 2-pin connector (cold dummy from
   channel PCB).
-- **RESET state (Input A — default):** Direct Out = full-
+- **RESET state (Input A — default):** Channel Output = full-
   differential from Input A buffers through their matched 75 Ω
   build-out resistors. Original behavior, unchanged.
-- **SET state (Channel signal):** Direct Out = impedance-balanced;
+- **SET state (Channel signal):** Channel Output = impedance-balanced;
   hot = selected PRE or POST signal (already through 75 Ω); cold =
   75 Ω-to-AGND cold dummy from channel PCB.
 - In both states, signal passes through the standard T-balanced
-  double-pi EMI filter on the Direct Out TRS jack.
+  double-pi EMI filter on the Channel Output TRS jack.
 
 #### Active devices
 
 - **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-  signal relay): DIRECT OUT SELECT. Per `00-conventions.md`
+  signal relay): Channel Output SELECT. Per `00-conventions.md`
   "Standard signal relay". Sits on the input PCB.
 
 #### Key passive values
@@ -1469,16 +1474,16 @@ cold dummy network details and LED color assignments TBD.
 
 #### Design targets / expected performance
 
-- Direct Out in Input-A state: full-differential, same
-  specification as Block 1 Direct Out.
-- Direct Out in Channel-signal state: impedance-balanced output.
+- Channel Output in Input-A state: full-differential, same
+  specification as Block 1 Channel Output.
+- Channel Output in Channel-signal state: impedance-balanced output.
   Source impedance looking into tip = 75 Ω (matched to cold dummy
   75 Ω to AGND). Downstream CMR limited by impedance balance,
   not by differential drive.
 
 #### Decisions and tradeoffs
 
-- **Direct Out jack as multifunction output**: combines the
+- **Channel Output jack as multifunction output**: combines the
   original full-differential Input A tracking output with a
   channel-signal output (pre-mute or post-fader). Eliminates the
   need for a separate rear-panel "Post-Fader Output" jack
@@ -1487,13 +1492,13 @@ cold dummy network details and LED color assignments TBD.
   controlled)**: set directly by the operator, appropriate for
   a per-session configuration choice (recording pre vs post fader).
   No firmware needed for this selection.
-- **DIRECT OUT SELECT as a relay (AGQ210A03, firmware-controlled)**:
-  allows remote switching of the Direct Out source (e.g. for a
+- **Channel Output SELECT as a relay (AGQ210A03, firmware-controlled)**:
+  allows remote switching of the Channel Output source (e.g. for a
   global "engage all channel sends" command, or DAW integration),
   consistent with the console-wide relay-for-firmware-control
   approach.
 - **75 Ω build-outs on both PRE and POST tap paths**: provides the
-  correct source impedance for the Direct Out EMI filter in the
+  correct source impedance for the Channel Output EMI filter in the
   Channel-signal state (same rationale as Input A build-out —
   see Block 1). Both taps use 75 Ω to stay consistent with the
   standard impedance-balanced output convention.
@@ -1510,14 +1515,16 @@ cold dummy network details and LED color assignments TBD.
 
 - **Output PRE-POST LED color assignment**: two LEDs, one per
   position (PRE / POST). Colors TBD.
-- **DIRECT OUT SELECT front-panel control type**: will be relay-
-  driven (AGQ210A03) regardless. Whether the front-panel control
-  is a momentary pushbutton (always via MCU, Pattern B) or a
-  mechanical toggle routed through MCU before driving the relay
-  is TBD pending inter-PCB wiring decisions.
-- **DIRECT OUT SELECT relay boot state**: RESET (Input A default)
-  is the expected choice; to be confirmed and recorded in the
-  firmware boot-init spec.
+- **Channel Output SELECT front-panel control**: latching DPDT
+  pushbutton, named "DIRECT / PROCESSED output". Section 1
+  connects to MCU GPIO input (MCU reads state change and fires
+  the relay set/reset pulse accordingly). Section 2 drives an
+  indicator LED (TBD color). The button's mechanical latch means
+  the MCU always reads the desired state directly — no toggle
+  logic needed, no sync ambiguity at boot.
+- **Channel Output SELECT relay boot state**: RESET (Input A /
+  direct default) is the expected choice; to be confirmed and
+  recorded in the firmware boot-init spec.
 
 ---
 
@@ -1668,12 +1675,23 @@ ICs. Dimming of the inactive bargraph is a meter bridge design decision
 
 ---
 
-## 2.11 Front-panel control buttons (Pattern C)
+## 2.11 Front-panel control buttons
 
-Three momentary pushbuttons with integrated LEDs per channel (Pattern C),
-plus a fourth momentary pushbutton with three separate orange LEDs
-(HPF/INSERT BYPASS, described in §2.3.1). A fifth button (CHANNEL SOURCE) is described in §2.2; its indicator
-LEDs (A-LED red, B-LED green) are MCU GPIO driven.
+Per mono channel there are **10 pushbuttons** in three categories:
+
+**Momentary with integrated LED (3) — physically on the fader PCB:**
+ACTIVE/MUTE (orange), SOLO (red), REC ARM (red). LED is inside the
+button body; not listed separately in the LED inventory. Connection
+from fader PCB to digital logic PCB: TBD.
+
+**Momentary without integrated LED (2) — on channel/input PCB:**
+CHANNEL SOURCE (§2.2) and HPF/INSERT BYPASS (§2.3.1).
+
+**Latching DPDT (5) — on channel/input PCB:**
+HPF (§2.3.2), INSERT (§2.3.3), PFL (§2.5.2), Output PRE/POST
+(§2.9 (e)), DIRECT/PROCESSED output (§2.9 (e) / Block 8). For
+each: section 1 carries the signal or GPIO-to-MCU control line;
+section 2 drives an indicator LED.
 
 ### ACTIVE/MUTE (orange LED)
 

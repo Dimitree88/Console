@@ -29,7 +29,7 @@ parallel SSL-style compression. Channel strips follow a conventional
 flow (balanced in → gain → HPF → insert → meter and PFL taps →
 MUTE electronic switch → fader → +10 dB post-amp → pan → routing)
 with two distinctive design choices: (1) dual balanced inputs A/B
-with a full-differential Direct Out from Input A for ADC tracking;
+with a full-differential Channel Output from Input A for ADC tracking;
 (2) every channel has 4 AUX sends implemented as dual-gang pots that
 simultaneously drive a pre-fader and a post-fader mono bus, giving
 8 AUX buses total. The 4 stereo AUX returns are routing-only
@@ -94,8 +94,8 @@ future Claude can immediately see where things stand.)
     SELECT relay on input PCB) FINALIZED — CHANNEL SOURCE
     relay-driven (AGQ210A03 latching) with momentary pushbutton +
     firmware bipolar pulse; primary motivation: enables global
-    master A/B flip across all 24 channels. DIRECT OUT SELECT
-    relay added: makes the Direct Out TRS jack switchable between
+    master A/B flip across all 24 channels. Channel Output SELECT
+    relay added: makes the Channel Output TRS jack switchable between
     Input A full-differential and channel PRE/POST impedance-
     balanced signal (see Block 8).
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
@@ -113,10 +113,12 @@ future Claude can immediately see where things stand.)
   - Block 7 (AFL switch) FINALIZED — tap at post-pan opamp output;
     NC to AGND (constant termination, click-free); NO to AFL bus.
     Summing resistor values deferred to §08.
-  - Block 8 (Output PRE-POST switch + switchable Direct Out)
+  - Block 8 (Output PRE-POST switch + switchable Channel Output)
     IN-PROGRESS — 75R taps from pre-MUTE and POST-FADER nodes;
     mechanical PRE-POST selector; 2-pin connector to input PCB;
-    DIRECT OUT SELECT relay on input PCB. Cold dummy network and
+    Channel Output SELECT relay on input PCB. Front-panel control
+    resolved: latching DPDT pushbutton ("DIRECT/PROCESSED output"),
+    sec. 1 → MCU GPIO, sec. 2 → indicator LED. Cold dummy network and
     LED colors TBD (see `10-open-tbd.md`).
   - Block 10 (dual meter buffers) FINALIZED — CHANNEL SOURCE relay
     contact set 2 (wired complementary to set 1) delivers the
