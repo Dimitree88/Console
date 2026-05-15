@@ -196,7 +196,7 @@ Topology and drive:
   needed; the bipolar driver feeds the coil directly from the
   +3.3 V plane.
 - **Coil polarity matters** (the coil is polarized — see the
-  Panasonic schematic, pins 1 = + and 8 = − for "set"). Layout
+  Panasonic schematic, pins 8 = + and 1 = − for "set"). Layout
   must respect the + / − pin assignment.
 - **Coil driver**: bipolar / half-H-bridge per relay. Candidates
   include Toshiba TBD62783A (high-side) + TBD62083A (low-side)

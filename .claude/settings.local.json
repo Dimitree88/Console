@@ -4,7 +4,12 @@
       "Bash(ls \"C:\\\\Users\\\\dimitri.petrucci\\\\.claude\\\\projects\\\\c--Users-dimitri-petrucci-Desktop-repos-console\\\\memory\")",
       "Read(//c/Users/dimitri.petrucci/.claude/projects/c--Users-dimitri-petrucci-Desktop-repos-console/memory/**)",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(Get-Item \"c:\\\\Users\\\\Dimitri\\\\Dropbox\\\\DIY\\\\Cose mie\\\\Console\\\\Console\\\\Console.txt\")",
+      "Bash(Select-Object Name, Length, LastWriteTime)",
+      "Bash(python3 -c ' *)",
+      "Bash(stat -c \"%y\" \"c:/Users/Dimitri/Dropbox/DIY/Cose mie/Console/Console/kicad_pcb/Console.net\" 2>/dev/null || echo \"stat not available\")",
+      "Read(//c/Users/Dimitri/Dropbox/DIY/Cose mie/Console/Console/**)"
     ]
   },
   "hooks": {

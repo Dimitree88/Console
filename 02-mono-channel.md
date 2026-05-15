@@ -198,11 +198,11 @@ PRE-FADER node to AGND. Referred to as the **MUTE relay**.
 This relay is commanded by three sources:
 
 - **ACTIVE/MUTE button** on this channel (Pattern C, orange LED —
-  see §2.11): toggles this channel between ACTIVE (relay SET) and
-  MUTED (relay RESET).
+  see §2.11): toggles this channel between ACTIVE (relay RESET) and
+  MUTED (relay SET).
 - **SOLO logic** from any other channel: when another channel's
   SOLO is engaged in SIP (Solo In Place) mode, firmware drives
-  this relay to RESET (muted). Restored when the SOLO is cleared.
+  this relay to SET (muted). Restored when the SOLO is cleared.
 - **Global MUTE ALL** command from firmware (e.g. master button).
 
 The output of this switch is the **PRE-FADER node** — source of all
