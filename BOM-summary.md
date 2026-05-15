@@ -108,7 +108,7 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 ## 4. Knobs
 
 > 1 knob per potentiometer + 1 per rotary switch. Fader caps esclusi (§7).
-> Colori TBD — da definire per funzione e assegnare a un part number unico o differenziati.
+> Colori disponibili (Tayda 15×13 mm plastic knob): **nero, grigio, blu, rosso** — da assegnare per funzione (TBD).
 
 | Funzione | Pot/switch | Count | Colore | Status |
 |---|---|---|---|---|
@@ -300,24 +300,24 @@ Single type throughout: **Rean RJ5VM** — TRS stereo-with-switch (5-contact). S
 
 > Questo è il reference per l'ordine. Items con part number TBD si sdoppieranno in più righe una volta definiti i valori.
 
-| Part number / tipo | Descrizione | Qty | Status |
-|---|---|---|---|
-| **AGQ210A03** | Relay DPDT latching 3 V (Panasonic) | 136 | ✓ |
-| **OPA1679** | Quad opamp SOIC-14 | ≥48 | ✓ mono ch; altre sez. TBD |
-| **NE5532** | Dual opamp SOIC-8 | ≥60 | ✓ mono ch; altre sez. TBD |
-| **TL072** | Dual opamp SOIC-8 | ≥24 | ✓ mono ch; altre sez. TBD |
-| **Alps RSA0N111900Q** | Fader mono lineare | 24 | ✓ |
-| Fader stereo (part TBD) | Fader stereo — groups + master | TBD | ~ |
-| **Rean RJ5VM** | Jack TRS 5-contact con switch | 154 | ✓/~ |
-| Pot single-gang 10 kΩ LOG | Gain (Input A + B, mono ch) | 48 | ✓ |
-| Pot dual-gang 10 kΩ LIN | Pan (mono ch) | 24 | ✓ |
-| Pot dual-gang (value TBD) | AUX send (96 ch + 12 gr) + CUE send (24 ch + 4 ret + 3 gr) + balance (4 ret + 3 gr) + CUE master (1) = 147 | 147 | ~ |
-| Pot single-gang (value TBD) | AUX master variable gain | 4 | ~ |
-| Pot TBD (gang + value TBD) | Monitor "in front balance" | 1 | ~ |
-| Rotary switch 2-gang 4-pos (part TBD) | Routing post-pan + post-balance | 28 | ~ |
-| Pushbutton momentary w/ integrated LED (part TBD) | ACTIVE/SOLO/REC ARM — fader PCB | 72 | ✓ |
-| Pushbutton momentary no LED (part TBD) | Channel source, HPF/INS bypass, AUX/group/master controls | ~68 | ✓/~ |
-| Pushbutton latching DPDT (part TBD) | HPF, INSERT, PFL, PRE/POST, DIRECT/PROC, AUX mode | ~139 | ✓/~ |
-| Button cap (part TBD) | Per momentary no LED + latching | ~207 | ~ |
-| Knob (colore TBD) | 1 per pot + 1 per rotary | 256 | ~ |
-| Indicator LED (color mix — see §8) | Separate LEDs, non integrati nei tasti | ~315 | ✓/~ |
+| Part number / tipo | Descrizione | Qty | In possesso | Da comprare | Status |
+|---|---|---|---|---|---|
+| **AGQ210A03** | Relay DPDT latching 3 V (Panasonic) | 136 | 122 | 14 | ✓ |
+| **OPA1679** | Quad opamp SOIC-14 | ≥48 | — | ≥48 | ✓ mono ch; altre sez. TBD |
+| **NE5532** | Dual opamp SOIC-8 | ≥60 | — | ≥60 | ✓ mono ch; altre sez. TBD |
+| **TL072** | Dual opamp SOIC-8 | ≥24 | — | ≥24 | ✓ mono ch; altre sez. TBD |
+| **Alps RSA0N111900Q** | Fader mono lineare | 24 | 24 | 0 | ✓ |
+| Fader stereo (part TBD) | Fader stereo — groups + master | TBD | — | TBD | ~ |
+| **Rean RJ5VM** | Jack TRS 5-contact con switch | 154 | — | 154 | ✓/~ |
+| Pot single-gang 10 kΩ LOG — [Tayda](https://www.taydaelectronics.com/10k-ohm-logarithmic-taper-potentiometer-round-shaft-pcb-9mm.html) | Gain (Input A + B, mono ch) | 48 | — | 48 | ✓ |
+| Pot dual-gang 10 kΩ LIN — [Tayda](https://www.taydaelectronics.com/10k-ohm-linear-dual-taper-potentiometer-round-shaft-pcb-9mm.html) | Pan (mono ch) | 24 | — | 24 | ✓ |
+| Pot dual-gang (value TBD) | AUX send (96 ch + 12 gr) + CUE send (24 ch + 4 ret + 3 gr) + balance (4 ret + 3 gr) + CUE master (1) = 147 | 147 | — | 147 | ~ |
+| Pot single-gang (value TBD) | AUX master variable gain | 4 | — | 4 | ~ |
+| Pot TBD (gang + value TBD) | Monitor "in front balance" | 1 | — | 1 | ~ |
+| Rotary switch 2-gang 4-pos (part TBD) | Routing post-pan + post-balance | 28 | — | 28 | ~ |
+| Pushbutton momentary w/ integrated LED (part TBD) | ACTIVE/SOLO/REC ARM — fader PCB | 72 | — | 72 | ✓ |
+| Pushbutton momentary no LED (part TBD) | Channel source, HPF/INS bypass, AUX/group/master controls | ~68 | 300 | 0 | ✓/~ |
+| Pushbutton latching DPDT (part TBD) | HPF, INSERT, PFL, PRE/POST, DIRECT/PROC, AUX mode | ~139 | 300 | 0 | ✓/~ |
+| Button cap (part TBD) | Per momentary no LED + latching | ~207 | 300 | 0 | ~ |
+| Knob (colore TBD) — [Tayda](https://www.taydaelectronics.com/catalogsearch/result/?q=15x13mm+plastic+knob) | 1 per pot + 1 per rotary | 256 | — | 256 | ~ |
+| Indicator LED (color mix — see §8) | Separate LEDs, non integrati nei tasti | ~315 | — | ~315 | ✓/~ |
