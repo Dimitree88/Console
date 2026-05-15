@@ -52,21 +52,22 @@ The front-panel control is a **momentary pushbutton** (single
 contact). Firmware reads each press and issues either a set or
 reset pulse (≥ 10 ms) to the relay coil, toggling the relay's
 mechanically latched state. The relay's two form-C contact sets
-serve different purposes:
+both carry audio signals:
 
-- **Contact set 1** — switches the audio signal (A or B onto the
-  channel path).
-- **Contact set 2** — switches +3.3 V to one of two indicator LEDs
-  on the front panel:
-  - **A selected** (RESET state, NC contacts) → red LED on.
-  - **B selected** (SET state, NO contacts) → green LED on.
+- **Contact set 1** — switches the **active** audio signal (A or B
+  onto the channel path). NC = Receiver A (RESET default); NO =
+  Receiver B.
+- **Contact set 2** — switches the **inactive** receiver output to
+  the meter buffer (see §2.5.1 and Block 10). Wired complementary
+  to set 1: NC2 = Receiver B; NO2 = Receiver A; COM2 = inactive
+  meter buffer input. In RESET state (A active on channel), set 2
+  delivers Receiver B to the meter; in SET state (B active on
+  channel), set 2 delivers Receiver A.
 
-The LED supply and its return are on +3.3V / DGND, not on the audio
-±15V / AGND — see `00-conventions.md`. The boot-time default is
-A selected / red LED on — implemented by firmware driving every
-CHANNEL SOURCE relay to its RESET state at startup (a latching
-relay does not provide this guarantee through hardware alone; see
-"State at power-up is indeterminate" in `00-conventions.md`).
+Front-panel indicator LEDs (A-LED red, B-LED green) are driven by
+**MCU GPIO outputs** — firmware knows the relay state because it
+commands it, and updates the LEDs on each CHANNEL SOURCE toggle.
+Boot default: A-LED on, B-LED off (A selected, RESET state).
 
 ---
 
@@ -146,13 +147,23 @@ connector — see §2.10 Block 2 for pin assignment.
 The pre-MUTE mono signal (output of the HPF/INSERT bypass relay, COM2)
 feeds two parallel taps before reaching the MUTE switch.
 
-### 2.5.1 Meter buffer
+### 2.5.1 Meter buffers (dual bargraph)
 
-A high-Z buffer taps the signal and drives the LED meter of the
-channel via a 2-pin connector to a separate **meter bridge PCB**
-(rectifier, log amp, LED driver IC, and meter LEDs all live on the
-meter bridge, not on the channel PCB). Does not interrupt the main
-path.
+The channel feeds **two bargraph signals** to the meter bridge PCB:
+
+- **Active meter** (full brightness): taps the pre-MUTE node
+  (HPF/INSERT bypass relay COM2). Shows the signal currently in the
+  channel path, regardless of CHANNEL SOURCE selection.
+- **Inactive meter** (dimmed on the meter bridge): taps whichever
+  receiver output (A or B) is NOT currently selected by CHANNEL
+  SOURCE. A CMOS SPDT switch selects between Receiver A and Receiver B
+  outputs dynamically.
+
+Both signals are buffered by unity-gain opamps on the channel PCB
+and sent via a 3-pin connector to the meter bridge PCB (rectifier,
+log amp, LED driver ICs, and meter LEDs all on the meter bridge, not
+on the channel PCB). Neither tap interrupts the main path. Dimming
+of the inactive bargraph is a meter bridge design decision.
 
 ### 2.5.2 PFL switch
 
@@ -333,6 +344,8 @@ fixed, summing resistor values deferred to §08. Block 8 (Output
 PRE-POST switch + switchable Direct Out) in-progress — see
 `10-open-tbd.md`. Block 9 (HPF/INSERT chain bypass relay) in-progress
 — relay wiring established, logical modes and boot state TBD.
+Block 10 (dual meter buffers: TL072 dual buffer, CHANNEL SOURCE relay
+contact set 2 for inactive source selection) FINALIZED.
 
 ### Block 1 — Input stage, buffers, Direct Out, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
 
@@ -448,15 +461,19 @@ Op Amp Applications Handbook):
   press is read by firmware, which issues a set or reset pulse
   (≥ 10 ms) to the coil's bipolar driver, toggling the latched
   state.
-- Contact set 1 (audio): COM = onward channel path; NC = Receiver A
-  output (post-DC-block); NO = Receiver B output (post-DC-block).
-  In the RESET state, Receiver A is selected — this is the
-  firmware-initialized boot default.
-- Contact set 2 (LED): COM = +3.3 V; NC = A-LED (red) anode;
-  NO = B-LED (green) anode. LED cathodes return through their
-  current-limit resistors to DGND. Mechanically ganged with
-  contact set 1, so the lit LED always tracks the audio
-  selection.
+- Contact set 1 (audio — active channel): COM = onward channel
+  path; NC = Receiver A output (post-DC-block); NO = Receiver B
+  output (post-DC-block). In RESET state, Receiver A is selected
+  (firmware-initialized boot default).
+- Contact set 2 (audio — inactive meter): COM = inactive meter
+  buffer input (TL072 half 2 — see Block 10); NC = Receiver B
+  output (post-DC-block); NO = Receiver A output (post-DC-block).
+  Wired complementary to set 1: in RESET state (A active), COM2
+  delivers Receiver B to the meter; in SET state (B active), COM2
+  delivers Receiver A. No additional electronic switch needed.
+- A-LED (red) and B-LED (green): MCU GPIO outputs, updated by
+  firmware on each CHANNEL SOURCE toggle. Boot default: A-LED on,
+  B-LED off.
 - Coil drive: bipolar pulse from a 3 V coil supply per
   `00-conventions.md` "Standard signal relay". Driver IC and
   partitioning TBD — see `10-open-tbd.md`.
@@ -487,8 +504,8 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 - Gain pot: 10 kΩ log × 2 per channel (one per input, independent).
 - Pot minimum series: 100 Ω × 2 per channel.
 - A-LED (red) and B-LED (green) current-limit resistors on the
-  CHANNEL SOURCE indicator: TBD (depends on chosen LED Vf and
-  brightness target).
+  CHANNEL SOURCE indicator (MCU GPIO driven): TBD (depends on
+  chosen LED Vf and brightness target).
 - Coil protection (flyback / freewheeling network for bipolar
   drive): exact topology TBD with the coil driver choice.
 
@@ -542,17 +559,18 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 - **LED power on +3.3V / DGND**, galvanically separate from audio
   ±15V / AGND.
 - **CHANNEL SOURCE as relay-driven electronic switch** (AGQ210A03
-  latching signal relay, single contact set for audio + single
-  contact set for LED, ganged on one coil) instead of a direct
-  mechanical DPDT. Primary reason: the relay approach is directly
-  compatible with a **global master A/B flip** — firmware can toggle
-  every channel's CHANNEL SOURCE relay simultaneously, routing all
-  24 channels from DAW (B) to instruments (A) or vice versa in one
-  command. A secondary benefit is that state is held mechanically
-  (latch), keeping contact resistance ≤ 100 mΩ initial in the
-  signal path. Boot default = A (RESET state, NC contacts); this is
-  a firmware-init contract, not a hardware property — every CHANNEL
-  SOURCE relay is reset by firmware at startup. Per
+  latching signal relay, both contact sets for audio — set 1 for
+  active channel, set 2 for inactive meter — ganged on one coil)
+  instead of a direct mechanical DPDT. Primary reason: the relay
+  approach is directly compatible with a **global master A/B flip**
+  — firmware can toggle every channel's CHANNEL SOURCE relay
+  simultaneously, routing all 24 channels from DAW (B) to
+  instruments (A) or vice versa in one command. Contact set 2,
+  wired complementary to set 1, delivers the inactive receiver to
+  the meter buffer with no additional electronic switch. State is
+  held mechanically (latch), contact resistance ≤ 100 mΩ initial.
+  Boot default = A (RESET state, NC contacts); this is a
+  firmware-init contract, not a hardware property. Per
   `00-conventions.md` "Standard signal relay".
 
 ---
@@ -754,22 +772,21 @@ NO1 of that relay; the exit point is NO2.
 
 #### Topology chosen
 
-*Meter buffer (§2.5.1):*
+*Meter buffers (§2.5.1):*
 
-- Single opamp wired as unity-gain follower. Input is the
-  high-impedance tap at the pre-MUTE node (HPF/INSERT bypass relay
-  COM2). The signal is DC-free in both relay states: in the NC
-  (bypass) path the Block 1 post-receiver DC block provides the
-  coupling cap; in the NO (chain active) path C42 or C38 (Block 2)
-  do so. No input DC-block on the buffer.
-- Output: 75 Ω in series (build-out, for stability into cable
-  capacitance) → 2-pin connector to the meter bridge PCB.
-- Connector pinout: pin 1 = signal (post-build-out), pin 2 = AGND.
-  Single-ended unbalanced.
-- Meter bridge PCB carries a full **AGND pour** (it has no TRS jacks
-  whose sleeve would otherwise inject chassis currents into AGND —
-  the chassis-only pattern of the jack PCB does not apply here).
-  A separate DGND pour on the meter bridge serves the LEDs per §00.
+- Active meter buffer: unity-gain voltage follower. Input is the
+  pre-MUTE node (HPF/INSERT bypass relay COM2). DC-free in both
+  relay states: NC path — Block 1 post-receiver DC block; NO path —
+  C42 or C38 (Block 2). No input DC block.
+- Inactive meter buffer: unity-gain voltage follower. Input is the
+  output of a CMOS SPDT switch (DG419) selecting whichever receiver
+  output (A or B) is not currently on the channel path.
+- Each buffer output: 75 Ω build-out → 3-pin connector to meter
+  bridge PCB (pin 1 = active, pin 2 = inactive, pin 3 = AGND).
+- Meter bridge PCB carries a full **AGND pour** (no TRS jacks →
+  Muncy Pin 1 rule does not apply). Separate DGND pour for LEDs.
+- **See Block 10 for full implementation** (DG419, NE5532,
+  bypass caps, and connector details).
 
 *PFL switch (§2.5.2):*
 
@@ -819,9 +836,8 @@ NO1 of that relay; the exit point is NO2.
 
 #### Active devices
 
-- **Meter buffer opamp**: **NE5532** (one half used). Per global
-  default in `00-conventions.md`. The other half on this PCB is
-  unused unless reuse can be found in a later block.
+- **Meter buffer opamps**: **NE5532** (both halves used) — full
+  implementation in Block 10.
 - **AGQ210A03** × 1 per channel (DPDT 2 form C, 1-coil latching
   signal relay), used as the MUTE switch. Per `00-conventions.md`
   "Standard signal relay".
@@ -833,7 +849,7 @@ NO1 of that relay; the exit point is NO2.
 
 #### Key passive values
 
-- Meter buffer build-out: **75 Ω** (0603 1 %).
+- Meter buffer build-out: **75 Ω × 2** (0603 1 %) — see Block 10.
 - PFL series / summing resistor: **22 kΩ** (0603 1 %).
 - PFL LED current-limit resistor: TBD (depends on chosen LED Vf
   and desired brightness).
@@ -860,19 +876,14 @@ NO1 of that relay; the exit point is NO2.
 - **Meter detection chain on a separate PCB**: pattern matches the
   jack PCB and input PCB partitioning. Allows the meter LED bridge
   to be a separate mechanical sub-assembly (the visual "meter
-  bridge" at the top of a console). One mono signal per channel via
-  a 2-pin connector.
+  bridge" at the top of a console). Two signals per channel (active
+  + inactive) via a 3-pin connector.
 - **Unbalanced send to meter PCB** rather than impedance-balanced
   or fully balanced: cable run is short and internal, destination
   is a rectifier (not a hi-fi amp), saves pins and parts.
 - **Meter PCB AGND pour, not chassis-only**: no TRS jacks present
   on the meter PCB, so no Muncy "Pin 1" rationale to keep AGND
   isolated from chassis on that board.
-- **NE5532 for the meter buffer**: per global default. Bias-current
-  noise into the high-Z tap upstream is negligible thanks to the
-  47 kΩ bias return at the post-INSERT node (R22 in Block 2). The
-  buffer's sole purpose is to drive the meter rectifier — distortion
-  and noise budget trivially met by NE5532.
 - **PFL is pre-fader and pre-mute**, achieved by tapping upstream of
   the MUTE relay. PFL listen continues to work even when the
   channel is muted, matching live-sound semantics. Conceptually
@@ -1564,12 +1575,105 @@ Front-panel control:
 
 ---
 
+### Block 10 — Dual meter buffers (FINALIZED)
+
+**Status:** finalized
+
+#### Topology chosen
+
+*Active meter buffer (TL072 half 1):*
+
+- Input: pre-MUTE node (HPF/INSERT bypass relay COM2). DC-free in both
+  relay states per Block 3. No DC block at the TL072 input.
+- Bias return: 47 kΩ to AGND already present at the pre-MUTE node
+  (from Block 2 R22 / Block 1 post-receiver DC-block network, depending
+  on bypass relay state). TL072 JFET input bias current ≈ pA —
+  DC offset at input ≈ 0. No additional bias resistor needed.
+- Configuration: unity-gain voltage follower (inverting input
+  connected directly to output).
+- Output: 75 Ω build-out → pin 1 of 3-pin connector to meter bridge.
+
+*Inactive meter buffer (TL072 half 2):*
+
+- Input: CHANNEL SOURCE relay contact set 2, COM2 output. Set 2 is
+  wired complementary to set 1 (see Block 1): NC2 = Receiver B
+  (post-DC-block); NO2 = Receiver A (post-DC-block). In RESET state
+  (A active), COM2 delivers Receiver B; in SET state (B active), COM2
+  delivers Receiver A. Source selection is performed by the relay
+  itself — no additional electronic switch.
+- DC-free: 47 µF DC blocks in Block 1 are upstream of both receiver
+  outputs. No DC block at the TL072 input.
+- Bias return: 47 kΩ pull-down at each receiver output (Block 1
+  post-DC-block networks). TL072 JFET input bias current ≈ pA →
+  DC offset ≈ 0. No additional bias resistor needed.
+- Configuration: unity-gain voltage follower (inverting input
+  connected directly to output).
+- Output: 75 Ω build-out → pin 2 of 3-pin connector to meter bridge.
+
+*3-pin connector — channel PCB → meter bridge PCB:*
+
+- Pin 1: active meter signal (post-75 Ω). Full brightness.
+- Pin 2: inactive meter signal (post-75 Ω). Dimmed on meter bridge.
+- Pin 3: AGND.
+
+The meter bridge PCB carries a full AGND pour (no TRS jacks — Muncy
+Pin 1 rule does not apply). A separate DGND pour serves the LED driver
+ICs. Dimming of the inactive bargraph is a meter bridge design decision
+— the channel PCB delivers both signals at full amplitude.
+
+#### Active devices
+
+- **TL072** × 1 per channel (dual SOIC, JFET input): both halves used.
+  Half 1 = active meter buffer (pre-MUTE tap); half 2 = inactive meter
+  buffer (CHANNEL SOURCE relay contact set 2 output).
+
+#### Key passive values
+
+- Meter buffer build-out: **75 Ω × 2** (0603 1 %), one per TL072
+  half output.
+
+#### Design targets / expected performance
+
+- Both buffers: unity gain, DC–audio band. Output drives ≈ 100 pF
+  cable capacitance via 75 Ω build-out without ringing.
+- DC offset at both TL072 inputs: ≈ 0 (JFET bias current in pA range).
+
+#### Decisions and tradeoffs
+
+- **CHANNEL SOURCE relay contact set 2 for inactive meter switching**
+  (no additional electronic switch): contact set 2, wired with NC/NO
+  complementary to set 1, delivers the inactive receiver at all times
+  with relay-contact quality (Ron ≤ 100 mΩ, isolation > 80 dB at
+  1 MHz). Eliminates one IC per channel and all associated passives.
+- **TL072 over NE5532**: ~3× lower quiescent current (~2.5 mA/package
+  vs ~8 mA) and JFET inputs (bias current ≈ pA vs ~200 nA). For a
+  meter buffer — not in the critical audio chain, destination is a
+  rectifier — TL072 is preferable: lower power and zero DC offset at
+  the input. Higher voltage noise (18 nV/√Hz vs 5 nV/√Hz) is
+  irrelevant for this application.
+- **No bias resistors at TL072 inputs**: JFET inputs draw pA; upstream
+  47 kΩ pull-downs provide the return path. DC offset ≈ 0.
+- **3-pin connector (vs two separate 2-pin connectors)**: saves one
+  connector per channel; shared AGND adequate for this short internal
+  run to the meter bridge.
+- **Dimming on meter bridge, not on channel PCB**: channel PCB delivers
+  both signals at full amplitude; meter bridge applies different drive
+  conditions per input. Keeps channel PCB simple.
+
+#### Open issues for Block 10
+
+- **Connector type** for 3-pin to meter bridge PCB: TBD.
+- **Inactive bargraph dimming ratio**: LED drive threshold or current
+  ratio on meter bridge PCB — TBD when meter bridge is designed.
+
+---
+
 ## 2.11 Front-panel control buttons (Pattern C)
 
 Three momentary pushbuttons with integrated LEDs per channel (Pattern C),
 plus a fourth momentary pushbutton with three separate orange LEDs
-(HPF/INSERT BYPASS, described in §2.3.1). A fifth button (CHANNEL
-SOURCE, Pattern B) is described in §2.2.
+(HPF/INSERT BYPASS, described in §2.3.1). A fifth button (CHANNEL SOURCE) is described in §2.2; its indicator
+LEDs (A-LED red, B-LED green) are MCU GPIO driven.
 
 ### ACTIVE/MUTE (orange LED)
 

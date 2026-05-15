@@ -99,10 +99,11 @@ future Claude can immediately see where things stand.)
     Input A full-differential and channel PRE/POST impedance-
     balanced signal (see Block 8).
   - Block 2 (HPF + Insert Send/Return + jack PCB) FINALIZED.
-  - Block 3 (meter buffer + PFL switch + MUTE) FINALIZED — MUTE
-    relay (AGQ210A03) now configured **series + shunt** (contact
+  - Block 3 (meter buffer concept + PFL switch + MUTE) FINALIZED —
+    MUTE relay (AGQ210A03) now configured **series + shunt** (contact
     set 1 = series switch, contact set 2 = shunt PRE-FADER to AGND
     when muted), replacing the earlier paralleled-contacts approach.
+    Meter buffer implementation (NE5532 + DG419) finalized in Block 10.
   - Block 4 (pre-fader node + fader PCB + post-fader amp +10 dB +
     AUX/CUE pre & post sends) FINALIZED.
   - Block 5 (active pan, Self-style) FINALIZED — Self canonical
@@ -117,6 +118,13 @@ future Claude can immediately see where things stand.)
     mechanical PRE-POST selector; 2-pin connector to input PCB;
     DIRECT OUT SELECT relay on input PCB. Cold dummy network and
     LED colors TBD (see `10-open-tbd.md`).
+  - Block 10 (dual meter buffers) FINALIZED — CHANNEL SOURCE relay
+    contact set 2 (wired complementary to set 1) delivers the
+    inactive receiver directly to the meter buffer, no additional
+    electronic switch; TL072 dual JFET opamp buffers active
+    (pre-MUTE) and inactive meter signals; 3-pin connector to meter
+    bridge PCB. CHANNEL SOURCE LEDs now MCU GPIO driven (+2 GPIO
+    output per channel vs. relay-contact).
 - AUX returns: 4 channels, all identical, conceptual stage. ACTIVE
   and AFL switching elements fixed as AGQ210A03 (1 relay
   per function, handling L+R on its two contact sets).

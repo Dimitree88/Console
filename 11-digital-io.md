@@ -39,7 +39,7 @@ per `00-conventions.md` "Standard signal relay").
 
 | Switch | Color | Count | Drive | Pattern |
 |---|---|---|---|---|
-| CHANNEL SOURCE | red (A) / green (B) | 2 | relay contact set 2 | B |
+| CHANNEL SOURCE | red (A) / green (B) | 2 | MCU GPIO | — |
 | ACTIVE/MUTE | orange | 1 | MCU GPIO | C |
 | SOLO | red | 1 | MCU GPIO | C |
 | REC ARM | red | 1 | MCU GPIO | C |
@@ -106,9 +106,9 @@ per `00-conventions.md` "Standard signal relay").
 | Signal type | Per channel | × 24 channels | Note |
 |---|---|---|---|
 | GPIO input — buttons | 5 | 120 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS |
-| GPIO output — LEDs | 6 | 144 | ACTIVE/MUTE, SOLO, REC ARM (integrated), HPF/INSERT BYPASS × 3 (separate) |
+| GPIO output — LEDs | 8 | 192 | ACTIVE/MUTE, SOLO, REC ARM (integrated), HPF/INSERT BYPASS × 3 (separate), CHANNEL SOURCE A-LED + B-LED |
 | Relay coil control lines | 10 (5 relays × 2) | 240 | via dedicated driver ICs, not direct GPIO |
 
-CHANNEL SOURCE LEDs (red/green) are relay-contact-driven — no GPIO output needed.
+CHANNEL SOURCE LEDs (red/green) are MCU GPIO driven — firmware updates them on each CHANNEL SOURCE toggle.
 HPF, INSERT, PFL, PRE-POST LEDs are mech-switch-driven — no GPIO output needed.
 HPF/INSERT BYPASS mode LEDs (3× orange) are MCU GPIO driven — separate from the button.
