@@ -18,6 +18,9 @@ project. Project content (signal flow, conventions, decisions) lives in
    "summing amp topology" → `05-aux-master.md`, `06-cue-master.md`,
    `07-main-mix.md`.
 4. Check `10-open-tbd.md` if the topic might touch any open issue.
+5. When the user asks "qual è il prossimo step" / "cosa facciamo dopo" /
+   "what's next", read `TODO.md` first — it is the prioritized list of
+   next actions.
 
 All project context lives in this repo. Read the files you need with the
 file tools available; do not assume context that isn't in the files.

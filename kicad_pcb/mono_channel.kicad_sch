@@ -6314,7 +6314,7 @@
 		)
 		(uuid "2067fde1-7e62-4487-af4f-40d39a946c58")
 	)
-	(text "collegare\nmagari diretto al relay"
+	(text "non serve pilotarlo\nsu MCU, basta mandarlo\nsu quella pcb ma va diretto\nal h bridge senza passare\nper mcu"
 		(exclude_from_sim no)
 		(at 105.41 35.56 0)
 		(effects
