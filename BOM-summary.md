@@ -302,7 +302,7 @@ Single type throughout: **Rean RJ5VM** — TRS stereo-with-switch (5-contact). S
 
 | Part number / tipo | Descrizione | Qty | In possesso | Da comprare | Status |
 |---|---|---|---|---|---|
-| **AGQ210A03** | Relay DPDT latching 3 V (Panasonic) | 136 | 122 | 14 | ✓ |
+| **AGQ210A03** | Relay DPDT latching 3 V (Panasonic) | 136 | 121 | 15 | ✓ |
 | **OPA1679** | Quad opamp SOIC-14 | ≥48 | — | ≥48 | ✓ mono ch; altre sez. TBD |
 | **NE5532** | Dual opamp SOIC-8 | ≥60 | — | ≥60 | ✓ mono ch; altre sez. TBD |
 | **TL072** | Dual opamp SOIC-8 | ≥24 | — | ≥24 | ✓ mono ch; altre sez. TBD |
