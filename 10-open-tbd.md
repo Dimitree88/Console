@@ -152,11 +152,14 @@ SELECT relay. Topology is fixed; remaining open items:
 
 - **OUT-PRE/POST and DIR/PROC LED colors**: LED-PRE, LED-POST,
   LED-DIRECT — all orange. Resolved.
-- **DIRECT OUT SELECT front-panel control type**: relay-driven
-  (AGQ210A03) regardless. Whether the front-panel element is a
-  momentary pushbutton (Pattern B, always via MCU) or a mechanical
-  toggle routed through MCU is TBD pending inter-PCB wiring
-  decisions.
+- **DIR/PROC sec. 1 — MCU or direct-to-driver**: front-panel
+  element confirmed as latching DPDT pushbutton. Sec. 1 routes to
+  the digital/driver board like all other switches. TBD: whether
+  sec. 1 feeds an MCU GPIO (firmware-mediated, Pattern B) or
+  connects directly to the bipolar coil driver, bypassing the MCU.
+  The latching switch makes the hardware-bypass path viable without
+  toggle logic. Decision deferred to the relay driver IC /
+  architecture choice (see "Standard signal relay" open issue).
 - **DIRECT OUT SELECT relay boot state**: RESET (Input A default)
   is the expected choice; to be confirmed with the firmware
   boot-init spec.

@@ -109,7 +109,7 @@ Connection from fader PCB to digital logic PCB: TBD.
 | INSERT | blue | audio path direct | no | ✓ |
 | PFL | red | audio path direct | no | ✓ |
 | OUT-PRE/POST | TBD × 2 | audio path direct | no | ✓ |
-| DIR/PROC | 1 LED (DIRECT, TBD color) via sec. 2 NC; sec. 2 NO → PRE-POST sec. 2 COM (gates PRE/POST LEDs) | sec. 1 → MCU GPIO in; MCU fires Channel Output SELECT relay | yes | ~ |
+| DIR/PROC | 1 LED (DIRECT, TBD color) via sec. 2 NC; sec. 2 NO → PRE-POST sec. 2 COM (gates PRE/POST LEDs) | sec. 1 → digital/driver board; MCU GPIO or direct-to-driver TBD | TBD | ~ |
 
 **Mono channel subtotal: 10 × 24 = 240**
 
@@ -130,7 +130,7 @@ Connection from fader PCB to digital logic PCB: TBD.
 
 | Signal type | Per channel | × 24 channels | Note |
 |---|---|---|---|
-| GPIO input — buttons | 6 | 144 | SOURCE, ACTIVE, SOLO, REC, FX-FOLLOW, DIR/PROC (latching button sec. 1) |
+| GPIO input — buttons | 5 (+1 TBD) | 120 (+24 TBD) | SOURCE, ACTIVE, SOLO, REC, FX-FOLLOW confirmed; DIR/PROC sec. 1 TBD (may bypass MCU — direct to relay driver) |
 | GPIO output — LEDs | 8 | 192 | ACTIVE, SOLO, REC (integrated in button on fader PCB), LED-FX-FOLLOW-FOLLOW-PATH / -A / -B, LED-SOURCE-A + LED-SOURCE-B |
 | Relay coil control lines | 10 (5 relays × 2) | 240 | via dedicated driver ICs, not direct GPIO |
 

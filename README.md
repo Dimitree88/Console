@@ -116,10 +116,11 @@ future Claude can immediately see where things stand.)
   - Block 8 (OUT-PRE/POST switch + switchable Channel Output)
     IN-PROGRESS — 75R taps from pre-MUTE and POST-FADER nodes;
     mechanical PRE-POST selector; 2-pin connector to input PCB;
-    Channel Output SELECT relay on input PCB. Front-panel control
-    resolved: latching DPDT pushbutton ("DIR/PROC"),
-    sec. 1 → MCU GPIO, sec. 2 → indicator LED. Cold dummy network and
-    LED colors TBD (see `10-open-tbd.md`).
+    Channel Output SELECT relay on input PCB. Front-panel control:
+    latching DPDT pushbutton ("DIR/PROC"), sec. 2 → indicator LED
+    (LED chain confirmed). Sec. 1 → digital/driver board; MCU GPIO
+    or direct-to-driver TBD (see `10-open-tbd.md`). Cold dummy
+    network TBD.
   - Block 10 (dual meter buffers) FINALIZED — SOURCE relay
     contact set 2 (wired complementary to set 1) delivers the
     inactive receiver directly to the meter buffer, no additional

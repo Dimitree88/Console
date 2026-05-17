@@ -1443,11 +1443,16 @@ LED colors assigned (all orange); cold dummy network details TBD.
 *DIR/PROC button (on channel PCB, front-panel):*
 
 - **Latching DPDT pushbutton**, named "DIRECT / PROCESSED output".
-- **Section 1**: COM = MCU GPIO input. MCU reads the latched state
-  on each press and fires the Channel Output SELECT relay set or
-  reset pulse accordingly. The mechanical latch means the MCU
-  always reads the desired state directly — no toggle logic needed,
-  no sync ambiguity at boot.
+- **Section 1**: routes to the digital/driver board (same path as
+  all other front-panel switches). On the digital board the latched
+  contact state is used to command the Channel Output SELECT relay
+  coil. **TBD**: whether sec. 1 feeds an MCU GPIO (firmware-
+  mediated, Pattern B) or connects directly to the bipolar coil
+  driver bypassing the MCU. The latching switch makes the hardware-
+  bypass path viable: the driver can read the static contact state
+  and generate SET/RESET pulses without toggle logic or firmware
+  involvement. Decision deferred to the relay driver IC / architecture
+  choice (see `10-open-tbd.md`).
 - **Section 2**: COM = +3.3 V (DGND return). NC throw =
   LED-DIRECT (orange). NO throw = COM of OUT-PRE/POST switch
   Section 2. This chains the two switches so that LED-PRE and
