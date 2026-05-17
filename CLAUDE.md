@@ -51,6 +51,13 @@ Schematic / PCB files are managed separately from these Markdown design
 docs; the docs are the source of truth for design intent. If a doc-side
 question *seems* to need schematic verification, ask the user first.
 
+**Netlist location (when explicitly invited):**
+`kicad_pcb/Console.net` — KiCad E-format netlist, ~22 k lines.
+Generated from `kicad_pcb/Console.kicad_sch` (root sheet) with sub-sheets:
+`/input-jacks/`, `/send-return/`, `/mono_channel/`, `/fader/`, `/appunti/`.
+The `/appunti/` sheet is a scratchpad/sketchpad; its components are connected
+to real nets but are exploratory and not yet part of the finalized design.
+
 ### 3. Don't invent — ask when unclear
 
 The user has a strict "don't assume what isn't described" policy.

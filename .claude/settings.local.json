@@ -9,7 +9,8 @@
       "Bash(Select-Object Name, Length, LastWriteTime)",
       "Bash(python3 -c ' *)",
       "Bash(stat -c \"%y\" \"c:/Users/Dimitri/Dropbox/DIY/Cose mie/Console/Console/kicad_pcb/Console.net\" 2>/dev/null || echo \"stat not available\")",
-      "Read(//c/Users/Dimitri/Dropbox/DIY/Cose mie/Console/Console/**)"
+      "Read(//c/Users/Dimitri/Dropbox/DIY/Cose mie/Console/Console/**)",
+      "PowerShell(\\(Get-Item \"c:\\\\Users\\\\Dimitri\\\\Dropbox\\\\DIY\\\\Cose mie\\\\Console\\\\Console\\\\kicad_pcb\\\\Console.net\"\\).Length; \\(Get-Content \"c:\\\\Users\\\\Dimitri\\\\Dropbox\\\\DIY\\\\Cose mie\\\\Console\\\\Console\\\\kicad_pcb\\\\Console.net\" | Measure-Object -Line\\).Lines)"
     ]
   },
   "hooks": {

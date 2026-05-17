@@ -90,8 +90,8 @@ template and editing rules live in `CLAUDE.md`.
 future Claude can immediately see where things stand.)
 
 - Mono channel: signal flow conceptually complete. Implementation:
-  - Block 1 (input stage → CHANNEL SOURCE switch + DIRECT OUT
-    SELECT relay on input PCB) FINALIZED — CHANNEL SOURCE
+  - Block 1 (input stage → SOURCE switch + DIRECT OUT
+    SELECT relay on input PCB) FINALIZED — SOURCE
     relay-driven (AGQ210A03 latching) with momentary pushbutton +
     firmware bipolar pulse; primary motivation: enables global
     master A/B flip across all 24 channels. Channel Output SELECT
@@ -113,19 +113,19 @@ future Claude can immediately see where things stand.)
   - Block 7 (AFL switch) FINALIZED — tap at post-pan opamp output;
     NC to AGND (constant termination, click-free); NO to AFL bus.
     Summing resistor values deferred to §08.
-  - Block 8 (Output PRE-POST switch + switchable Channel Output)
+  - Block 8 (OUT-PRE/POST switch + switchable Channel Output)
     IN-PROGRESS — 75R taps from pre-MUTE and POST-FADER nodes;
     mechanical PRE-POST selector; 2-pin connector to input PCB;
     Channel Output SELECT relay on input PCB. Front-panel control
-    resolved: latching DPDT pushbutton ("DIRECT/PROCESSED output"),
+    resolved: latching DPDT pushbutton ("DIR/PROC"),
     sec. 1 → MCU GPIO, sec. 2 → indicator LED. Cold dummy network and
     LED colors TBD (see `10-open-tbd.md`).
-  - Block 10 (dual meter buffers) FINALIZED — CHANNEL SOURCE relay
+  - Block 10 (dual meter buffers) FINALIZED — SOURCE relay
     contact set 2 (wired complementary to set 1) delivers the
     inactive receiver directly to the meter buffer, no additional
     electronic switch; TL072 dual JFET opamp buffers active
     (pre-MUTE) and inactive meter signals; 3-pin connector to meter
-    bridge PCB. CHANNEL SOURCE LEDs now MCU GPIO driven (+2 GPIO
+    bridge PCB. SOURCE LEDs now MCU GPIO driven (+2 GPIO
     output per channel vs. relay-contact).
 - AUX returns: 4 channels, all identical, conceptual stage. ACTIVE
   and AFL switching elements fixed as AGQ210A03 (1 relay
@@ -154,9 +154,9 @@ future Claude can immediately see where things stand.)
 - Fader PCB partitioning: settled at **2 channels per fader PCB**
   (12 fader PCBs total). Input PCB partitioning still TBD.
 - Front-panel channel buttons (§2.11): defined — 4 pushbuttons per
-  channel: CHANNEL SOURCE (Pattern B, relay-contact LED), plus
-  ACTIVE/MUTE (orange), SOLO (red), REC ARM (red) all Pattern C
+  channel: SOURCE (Pattern B, relay-contact LED), plus
+  ACTIVE (orange), SOLO (red), REC (red) all Pattern C
   (integrated LED, MCU GPIO in + out). SOLO drives AFL relay + SIP
-  option; REC ARM MIDI-only, no audio relay. Per-channel digital
+  option; REC MIDI-only, no audio relay. Per-channel digital
   I/O: 4 GPIO inputs (buttons) + 3 GPIO outputs (LEDs) +
   relay coil drivers via dedicated ICs.

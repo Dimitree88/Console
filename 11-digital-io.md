@@ -18,11 +18,11 @@ per `00-conventions.md` "Standard signal relay").
 
 | Section | Function | Per unit | Units | Subtotal | Status |
 |---|---|---|---|---|---|
-| Mono channel | CHANNEL SOURCE (A/B select) | 1 | 24 | 24 | ✓ |
+| Mono channel | SOURCE (A/B select) | 1 | 24 | 24 | ✓ |
 | Mono channel | MUTE (ACTIVE/SOLO) | 1 | 24 | 24 | ✓ |
 | Mono channel | AFL | 1 | 24 | 24 | ✓ |
 | Mono channel | Channel Output SELECT | 1 | 24 | 24 | ✓ |
-| Mono channel | HPF/INSERT BYPASS | 1 | 24 | 24 | ✓ |
+| Mono channel | FX-FOLLOW | 1 | 24 | 24 | ✓ |
 | AUX return | ACTIVE | 1 | 4 | 4 | ✓ |
 | AUX return | AFL | 1 | 4 | 4 | ✓ |
 | Group | ACTIVE | 1 | 3 | 3 | ✓ |
@@ -37,22 +37,27 @@ per `00-conventions.md` "Standard signal relay").
 
 ### Per mono channel (× 24)
 
-> ACTIVE/MUTE (orange), SOLO (red), REC ARM (red) LEDs are **integrated
+> ACTIVE (orange), SOLO (red), REC (red) LEDs are **integrated
 > in their pushbutton bodies** (located on the fader PCB). They are MCU
 > GPIO driven but are **not listed here** as separate indicators —
 > they ship with the button.
 
-| Switch / button | Color | Count | Drive |
-|---|---|---|---|
-| CHANNEL SOURCE | red (A) / green (B) | 2 | MCU GPIO |
-| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / A / B) | 3 | MCU GPIO |
-| HPF | orange | 1 | latching button sec. 2 |
-| INSERT | blue | 1 | latching button sec. 2 |
-| PFL | red | 1 | latching button sec. 2 |
-| Output PRE-POST | TBD × 2 (one per position) | 2 | latching button sec. 2 |
-| **Per channel total** | | **10** | |
+| LED name | Color | Drive |
+|---|---|---|
+| LED-SOURCE-A | red | MCU GPIO |
+| LED-SOURCE-B | green | MCU GPIO |
+| LED-FX-FOLLOW-FOLLOW-PATH | orange | MCU GPIO |
+| LED-FX-FOLLOW-FOLLOW-A | orange | MCU GPIO |
+| LED-FX-FOLLOW-FOLLOW-B | orange | MCU GPIO |
+| LED-HPF | orange | HPF button sec. 2 |
+| LED-INSERT | blue | INSERT button sec. 2 |
+| LED-PFL | red | PFL button sec. 2 |
+| LED-PRE | orange | OUT-PRE/POST sec. 2, COM gated by DIR/PROC sec. 2 NO |
+| LED-POST | orange | OUT-PRE/POST sec. 2, COM gated by DIR/PROC sec. 2 NO |
+| LED-DIRECT | orange | DIR/PROC sec. 2 NC |
+| **Per channel total** | **11** | |
 
-**Mono channels subtotal: 10 × 24 = 240** ✓
+**Mono channels subtotal: 11 × 24 = 264** ✓
 
 ### Other sections (estimates — update as sections are finalized)
 
@@ -67,7 +72,7 @@ per `00-conventions.md` "Standard signal relay").
 
 **Estimated non-channel subtotal: ~66–84**
 
-**Console total indicator LEDs: ~378–396** (round estimate: ~386)
+**Console total indicator LEDs: ~402–420** (round estimate: ~410)
 
 > Meter bridge LEDs (signal-level meters) are driven by dedicated
 > LED driver ICs on the meter PCBs — counted separately when the
@@ -83,9 +88,9 @@ per `00-conventions.md` "Standard signal relay").
 
 | Button | LED color | Relay / action | LED drive | Status |
 |---|---|---|---|---|
-| ACTIVE/MUTE | orange (in button) | MUTE relay | MCU GPIO | ✓ |
+| ACTIVE | orange (in button) | MUTE relay | MCU GPIO | ✓ |
 | SOLO | red (in button) | AFL relay + others' MUTE (SIP opt.) | MCU GPIO | ✓ |
-| REC ARM | red (in button) | none — MIDI to DAW | MCU GPIO | ✓ |
+| REC | red (in button) | none — MIDI to DAW | MCU GPIO | ✓ |
 
 Connection from fader PCB to digital logic PCB: TBD.
 
@@ -93,8 +98,8 @@ Connection from fader PCB to digital logic PCB: TBD.
 
 | Button | Separate LEDs | Relay / action | LED drive | Status |
 |---|---|---|---|---|
-| CHANNEL SOURCE | red (A) + green (B), MCU GPIO | CHANNEL SOURCE relay | MCU GPIO | ✓ |
-| HPF/INSERT BYPASS | 3× orange, MCU GPIO | HPF/INSERT BYPASS relay (3 modes) | MCU GPIO | ✓ |
+| SOURCE | LED-SOURCE-A (red) + LED-SOURCE-B (green) | SOURCE relay | MCU GPIO | ✓ |
+| FX-FOLLOW | LED-FX-FOLLOW-FOLLOW-PATH / -A / -B (3× orange) | FX-FOLLOW relay (3 modes) | MCU GPIO | ✓ |
 
 **Latching DPDT (5 per channel):**
 
@@ -103,8 +108,8 @@ Connection from fader PCB to digital logic PCB: TBD.
 | HPF | orange | audio path direct | no | ✓ |
 | INSERT | blue | audio path direct | no | ✓ |
 | PFL | red | audio path direct | no | ✓ |
-| Output PRE-POST | TBD × 2 | audio path direct | no | ✓ |
-| DIRECT/PROCESSED output | TBD | sec. 1 → MCU GPIO in; MCU fires Channel Output SELECT relay | yes | ~ |
+| OUT-PRE/POST | TBD × 2 | audio path direct | no | ✓ |
+| DIR/PROC | 1 LED (DIRECT, TBD color) via sec. 2 NC; sec. 2 NO → PRE-POST sec. 2 COM (gates PRE/POST LEDs) | sec. 1 → MCU GPIO in; MCU fires Channel Output SELECT relay | yes | ~ |
 
 **Mono channel subtotal: 10 × 24 = 240**
 
@@ -125,11 +130,12 @@ Connection from fader PCB to digital logic PCB: TBD.
 
 | Signal type | Per channel | × 24 channels | Note |
 |---|---|---|---|
-| GPIO input — buttons | 6 | 144 | CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS, DIRECT/PROCESSED output (latching button sec. 1) |
-| GPIO output — LEDs | 8 | 192 | ACTIVE/MUTE, SOLO, REC ARM (integrated in button on fader PCB), HPF/INSERT BYPASS × 3 (separate), CHANNEL SOURCE A-LED + B-LED |
+| GPIO input — buttons | 6 | 144 | SOURCE, ACTIVE, SOLO, REC, FX-FOLLOW, DIR/PROC (latching button sec. 1) |
+| GPIO output — LEDs | 8 | 192 | ACTIVE, SOLO, REC (integrated in button on fader PCB), LED-FX-FOLLOW-FOLLOW-PATH / -A / -B, LED-SOURCE-A + LED-SOURCE-B |
 | Relay coil control lines | 10 (5 relays × 2) | 240 | via dedicated driver ICs, not direct GPIO |
 
-CHANNEL SOURCE LEDs (red/green): MCU GPIO driven — updated on each CHANNEL SOURCE toggle.
-ACTIVE/MUTE, SOLO, REC ARM LEDs: MCU GPIO driven — integrated in button body (fader PCB); GPIO wire routes fader PCB → digital logic PCB (TBD).
-HPF/INSERT BYPASS mode LEDs (3× orange): MCU GPIO driven — separate from the button.
-HPF, INSERT, PFL, PRE-POST, DIRECT/PROCESSED LEDs: latching button sec. 2 driven — no MCU GPIO output needed.
+LED-SOURCE-A and LED-SOURCE-B: MCU GPIO driven — updated on each SOURCE toggle.
+ACTIVE, SOLO, REC: MCU GPIO driven — integrated in button body (fader PCB); GPIO wire routes fader PCB → digital logic PCB (TBD).
+LED-FX-FOLLOW-FOLLOW-PATH, LED-FX-FOLLOW-FOLLOW-A, LED-FX-FOLLOW-FOLLOW-B: MCU GPIO driven — separate from the button.
+LED-HPF, LED-INSERT, LED-PFL: latching button sec. 2 driven directly — no MCU GPIO output needed.
+LED-DIRECT, LED-PRE, LED-POST: chained — DIR/PROC sec. 2 NC drives LED-DIRECT; sec. 2 NO feeds OUT-PRE/POST sec. 2 COM which drives LED-PRE or LED-POST depending on OUT-PRE/POST switch position. No MCU GPIO output needed for any of the three LEDs.

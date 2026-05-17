@@ -21,7 +21,7 @@ section's Implementation details.
 - **Bipolar electrolytic brand / series** for signal-path coupling
   (candidates: Nichicon Muse ES, Panasonic SU, Elna Silmic bipolar).
 - **DPDT mechanical switch** part selection for HPF / INSERT.
-  (CHANNEL SOURCE is no longer a mechanical DPDT — it is a
+  (SOURCE is no longer a mechanical DPDT — it is a
   momentary pushbutton + firmware-driven AGQ210A03 latching relay
   per `00-conventions.md`; the front-panel pushbutton part is
   itself TBD.)
@@ -134,15 +134,15 @@ Still to be decided:
   processing); SET is the "always insert" default.
 - **Mode cycling logic**: the button cycles FOLLOW PATH → FOLLOW A →
   FOLLOW B → FOLLOW PATH. Firmware must track current mode and
-  synchronize relay state to the CHANNEL SOURCE relay state in FOLLOW A
-  and FOLLOW B modes (i.e., respond to CHANNEL SOURCE changes even
+  synchronize relay state to the SOURCE relay state in FOLLOW A
+  and FOLLOW B modes (i.e., respond to SOURCE changes even
   without a button press). Details TBD.
 - **Front-panel button part** (momentary, single contact, no integrated
   LED): TBD.
 
 ---
 
-### Mono channel — Block 8 (Output PRE-POST switch + switchable Direct Out) — in-progress
+### Mono channel — Block 8 (OUT-PRE/POST switch + switchable Direct Out) — in-progress
 
 `02-mono-channel.md` §2.9 (e) and Block 8. The standalone
 Post-Fader Output dedicated jack (original §2.9 (e)) is superseded:
@@ -150,9 +150,8 @@ channel signal is now routed to the input PCB via a 2-pin connector,
 and the Direct Out TRS jack is made switchable via the DIRECT OUT
 SELECT relay. Topology is fixed; remaining open items:
 
-- **Output PRE-POST LED color assignment**: two LEDs, one per
-  position (PRE / POST). Colors not yet assigned — to be decided
-  together with the full front-panel LED color scheme.
+- **OUT-PRE/POST and DIR/PROC LED colors**: LED-PRE, LED-POST,
+  LED-DIRECT — all orange. Resolved.
 - **DIRECT OUT SELECT front-panel control type**: relay-driven
   (AGQ210A03) regardless. Whether the front-panel element is a
   momentary pushbutton (Pattern B, always via MCU) or a mechanical
@@ -170,12 +169,12 @@ SELECT relay. Topology is fixed; remaining open items:
   protection.** The standard electronic switch in CONSOLE is the
   **AGQ210A03** (1-coil latching, 3 V coil, per
   `00-conventions.md`). Approximately 112 relays total across the
-  console (24 mono channels × 4 positions — CHANNEL SOURCE, MUTE,
+  console (24 mono channels × 4 positions — SOURCE, MUTE,
   AFL, DIRECT OUT SELECT — + 4 AUX returns × 2 + 3 groups × 2 +
   2 in master monitor).
   Open items (relay count updated: 136 total — 24 mono channels × 5
-  positions CHANNEL SOURCE, MUTE, AFL, DIRECT OUT SELECT, HPF/INSERT
-  BYPASS + 4 AUX returns × 2 + 3 groups × 2 + 2 monitor):
+  positions SOURCE, MUTE, AFL, DIRECT OUT SELECT, FX-FOLLOW +
+  4 AUX returns × 2 + 3 groups × 2 + 2 monitor):
   - **Coil driver IC**: bipolar / half-H-bridge per relay
     (set-pulse and reset-pulse drive). Candidates: Toshiba
     TBD62783A high-side + TBD62083A low-side pair sharing 8

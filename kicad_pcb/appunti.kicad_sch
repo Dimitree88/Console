@@ -10207,6 +10207,145 @@
 	)
 	(symbol
 		(lib_id "0_ED-Sounds:POTENTIOMETER_DUAL")
+		(at 156.21 123.19 0)
+		(unit 2)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "97ad8939-c30c-49b6-9a08-4bcc6bf19a29")
+		(property "Reference" "BLEND1"
+			(at 151.384 128.2954 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 1.016 1.016)
+					(thickness 0.127)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10K-LIN"
+			(at 153.162 128.27 90)
+			(show_name no)
+			(do_not_autoplace yes)
+			(effects
+				(font
+					(size 0.889 0.889)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Footprint" "0_Potentiometers:POTENTIOMETER-9MM"
+			(at 156.21 120.396 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 156.21 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor (variable)"
+			(at 156.718 118.364 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Device" "R"
+			(at 156.21 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Type" "POT"
+			(at 156.21 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Pins" "1=r0 2=wiper 3=r1"
+			(at 156.21 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Sim.Params" "r=\"\""
+			(at 156.21 123.19 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "4"
+			(uuid "f074045e-4426-48bb-88ba-58b1711ab257")
+		)
+		(pin "5"
+			(uuid "b4620fe1-5102-45d6-9eb1-29cb5a72f6bc")
+		)
+		(pin "6"
+			(uuid "b715b368-919a-47d2-9b9f-d986a6e39564")
+		)
+		(pin "1"
+			(uuid "228df444-90eb-4e66-ae21-bacebdda9c8d")
+		)
+		(pin "2"
+			(uuid "98a6cd16-7758-4f07-8ee5-3ccfe9a79d35")
+		)
+		(pin "3"
+			(uuid "0eb3fe23-88e5-4634-b8e2-7d254f7984c9")
+		)
+		(instances
+			(project "Console"
+				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/b833796d-8766-4e88-a7f0-c319ee501070"
+					(reference "BLEND1")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "0_ED-Sounds:POTENTIOMETER_DUAL")
 		(at 158.75 96.52 0)
 		(unit 1)
 		(body_style 1)
@@ -10215,7 +10354,7 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(uuid "97ad8939-c30c-49b6-9a08-4bcc6bf19a29")
+		(uuid "97ad8939-c30c-49b6-9a08-4bcc6bf19a2a")
 		(property "Reference" "BLEND1"
 			(at 153.924 101.6254 90)
 			(show_name no)
@@ -10317,22 +10456,22 @@
 			)
 		)
 		(pin "4"
-			(uuid "f074045e-4426-48bb-88ba-58b1711ab257")
+			(uuid "f074045e-4426-48bb-88ba-58b1711ab258")
 		)
 		(pin "5"
-			(uuid "b4620fe1-5102-45d6-9eb1-29cb5a72f6bc")
+			(uuid "b4620fe1-5102-45d6-9eb1-29cb5a72f6bd")
 		)
 		(pin "6"
-			(uuid "b715b368-919a-47d2-9b9f-d986a6e39564")
+			(uuid "b715b368-919a-47d2-9b9f-d986a6e39565")
 		)
 		(pin "1"
-			(uuid "228df444-90eb-4e66-ae21-bacebdda9c8d")
+			(uuid "228df444-90eb-4e66-ae21-bacebdda9c8e")
 		)
 		(pin "2"
-			(uuid "98a6cd16-7758-4f07-8ee5-3ccfe9a79d35")
+			(uuid "98a6cd16-7758-4f07-8ee5-3ccfe9a79d36")
 		)
 		(pin "3"
-			(uuid "0eb3fe23-88e5-4634-b8e2-7d254f7984c9")
+			(uuid "0eb3fe23-88e5-4634-b8e2-7d254f7984ca")
 		)
 		(instances
 			(project "Console"

@@ -12,11 +12,11 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 
 | Function | Per unit | Units | Total | Status |
 |---|---|---|---|---|
-| CHANNEL SOURCE (Input A / B select) | 1 | 24 mono ch | 24 | ✓ |
+| SOURCE (Input A / B select) | 1 | 24 mono ch | 24 | ✓ |
 | MUTE (series + shunt) | 1 | 24 mono ch | 24 | ✓ |
 | AFL (post-pan stereo tap) | 1 | 24 mono ch | 24 | ✓ |
 | DIRECT OUT SELECT (Input A / channel signal) | 1 | 24 mono ch | 24 | ✓ |
-| HPF / INSERT BYPASS | 1 | 24 mono ch | 24 | ✓ |
+| FX-FOLLOW | 1 | 24 mono ch | 24 | ✓ |
 | ACTIVE (stereo, both gangs on one coil) | 1 | 4 AUX return | 4 | ✓ |
 | AFL (stereo, both gangs on one coil) | 1 | 4 AUX return | 4 | ✓ |
 | ACTIVE (stereo, both gangs on one coil) | 1 | 3 groups | 3 | ✓ |
@@ -38,7 +38,7 @@ Single type throughout: **AGQ210A03** (Panasonic, DPDT 2 form C, 1-coil latching
 | NE5532 | Dual SOIC | HPF (Sallen-Key 2nd order) + Insert Return receiver | 1 | 24 | ✓ |
 | NE5532 | Dual SOIC | Post-fader amp +10 dB — 1 IC shared by 2 ch on fader PCB | 0.5 | 12 | ✓ |
 | NE5532 | Dual SOIC | Active pan L + R (Self-style, both halves used) | 1 | 24 | ✓ |
-| TL072 | Dual SOIC | Dual meter buffer — active (pre-MUTE) + inactive (CHANNEL SOURCE relay set 2) | 1 | 24 | ✓ |
+| TL072 | Dual SOIC | Dual meter buffer — active (pre-MUTE) + inactive (SOURCE relay set 2) | 1 | 24 | ✓ |
 | **Mono channel subtotal** | | | | **132** | ✓ |
 
 **Per tipo IC — mono ch (per l'ordine; altre sezioni ancora TBD):**
@@ -156,17 +156,17 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 
 | Function | LED color | Per ch | Total | Status |
 |---|---|---|---|---|
-| ACTIVE / MUTE | Orange | 1 | 24 | ✓ |
+| ACTIVE | Orange | 1 | 24 | ✓ |
 | SOLO | Red | 1 | 24 | ✓ |
-| REC ARM (MIDI only — no audio relay) | Red | 1 | 24 | ✓ |
+| REC (MIDI only — no audio relay) | Red | 1 | 24 | ✓ |
 | **Subtotal momentary w/ LED** | | **3 / ch** | **72** | ✓ |
 
 ### 6b. Momentary — without integrated LED
 
 | Function | Separate LEDs | Per unit | Section | Total | Status |
 |---|---|---|---|---|---|
-| CHANNEL SOURCE (A/B toggle) | 2 sep. (red A + green B), MCU GPIO | 1 | 24 mono ch | 24 | ✓ |
-| HPF / INSERT BYPASS (cycles 3 modes) | 3 sep. orange, MCU GPIO | 1 | 24 mono ch | 24 | ✓ |
+| SOURCE (A/B toggle) | 2 sep. (red A + green B), MCU GPIO | 1 | 24 mono ch | 24 | ✓ |
+| FX-FOLLOW (cycles 3 modes) | 3 sep. orange, MCU GPIO | 1 | 24 mono ch | 24 | ✓ |
 | ACTIVE | TBD | 1 | 4 AUX return | 4 | ~ |
 | AFL | TBD | 1 | 4 AUX return | 4 | ~ |
 | ACTIVE | TBD | 1 | 3 groups | 3 | ~ |
@@ -185,8 +185,8 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | HPF in / bypass | Orange | 1 | 24 | ✓ |
 | INSERT in / bypass | Blue | 1 | 24 | ✓ |
 | PFL on / off | Red | 1 | 24 | ✓ |
-| Output PRE / POST select (2-position) | TBD ×2 | 1 | 24 | ✓ |
-| DIRECT / PROCESSED output (controls DIRECT OUT SELECT relay on input PCB) | TBD | 1 | 24 | ~ |
+| OUT-PRE/POST select (2-position) | TBD ×2 | 1 | 24 | ✓ |
+| DIR/PROC (controls DIRECT OUT SELECT relay on input PCB) | TBD | 1 | 24 | ~ |
 | **Mono channel subtotal** | | **5 / ch** | **120** | |
 
 #### Other sections
@@ -220,31 +220,31 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 
 ### 8a. Mono channels (×24) — confirmed
 
-> ACTIVE/MUTE, SOLO, REC ARM LEDs are integrated in their pushbutton bodies — **not listed here** (see §6a).
+> ACTIVE, SOLO, REC LEDs are integrated in their pushbutton bodies — **not listed here** (see §6a).
 
 | Function | Color | Drive source | Per ch | Total | Status |
 |---|---|---|---|---|---|
-| CHANNEL SOURCE — Input A active | Red | MCU GPIO | 1 | 24 | ✓ |
-| CHANNEL SOURCE — Input B active | Green | MCU GPIO | 1 | 24 | ✓ |
-| HPF/INS BYPASS — FOLLOW PATH mode | Orange | MCU GPIO | 1 | 24 | ✓ |
-| HPF/INS BYPASS — FOLLOW A mode | Orange | MCU GPIO | 1 | 24 | ✓ |
-| HPF/INS BYPASS — FOLLOW B mode | Orange | MCU GPIO | 1 | 24 | ✓ |
-| HPF in | Orange | Latching button sec. 2 | 1 | 24 | ✓ |
-| INSERT in | Blue | Latching button sec. 2 | 1 | 24 | ✓ |
-| PFL active | Red | Latching button sec. 2 | 1 | 24 | ✓ |
-| Output PRE-POST — position 1 | TBD | Latching button sec. 2 | 1 | 24 | ~ |
-| Output PRE-POST — position 2 | TBD | Latching button sec. 2 | 1 | 24 | ~ |
-| **Mono channel subtotal** | | | **10 / ch** | **240** | ✓ |
+| LED-SOURCE-A | Red | MCU GPIO | 1 | 24 | ✓ |
+| LED-SOURCE-B | Green | MCU GPIO | 1 | 24 | ✓ |
+| LED-FX-FOLLOW-FOLLOW-PATH | Orange | MCU GPIO | 1 | 24 | ✓ |
+| LED-FX-FOLLOW-FOLLOW-A | Orange | MCU GPIO | 1 | 24 | ✓ |
+| LED-FX-FOLLOW-FOLLOW-B | Orange | MCU GPIO | 1 | 24 | ✓ |
+| LED-HPF | Orange | HPF button sec. 2 | 1 | 24 | ✓ |
+| LED-INSERT | Blue | INSERT button sec. 2 | 1 | 24 | ✓ |
+| LED-PFL | Red | PFL button sec. 2 | 1 | 24 | ✓ |
+| LED-PRE | Orange | OUT-PRE/POST sec. 2, gated by DIR/PROC | 1 | 24 | ✓ |
+| LED-POST | Orange | OUT-PRE/POST sec. 2, gated by DIR/PROC | 1 | 24 | ✓ |
+| LED-DIRECT | Orange | DIR/PROC sec. 2 NC | 1 | 24 | ✓ |
+| **Mono channel subtotal** | | | **11 / ch** | **264** | ✓ |
 
 **By color — mono channels only:**
 
 | Color | Count | Notes |
 |---|---|---|
-| Red | 48 | CHANNEL SOURCE A (24) + PFL (24) |
-| Green | 24 | CHANNEL SOURCE B |
-| Orange | 96 | HPF/INSERT BYPASS ×3 (72) + HPF (24) |
-| Blue | 24 | INSERT |
-| TBD | 48 | Output PRE-POST ×2 per channel |
+| Red | 48 | LED-SOURCE-A (24) + LED-PFL (24) |
+| Green | 24 | LED-SOURCE-B |
+| Orange | 168 | LED-FX-FOLLOW ×3 (72) + LED-HPF (24) + LED-PRE + LED-POST + LED-DIRECT (72) |
+| Blue | 24 | LED-INSERT |
 
 ### 8b. Other sections — estimated
 
@@ -258,7 +258,7 @@ All front-panel controls share the same physical pushbutton body. Three sub-cate
 | Monitor section | **~3–5** | ~ |
 | **Other sections subtotal** | **~66–84** | ~ |
 
-### Indicator LED total: **~306–324** (mid estimate ~315)
+### Indicator LED total: **~330–348** (mid estimate ~339)
 
 ---
 
@@ -315,9 +315,9 @@ Single type throughout: **Rean RJ5VM** — TRS stereo-with-switch (5-contact). S
 | Pot single-gang (value TBD) | AUX master variable gain | 4 | — | 4 | ~ |
 | Pot TBD (gang + value TBD) | Monitor "in front balance" | 1 | — | 1 | ~ |
 | Rotary switch 2-gang 4-pos (part TBD) | Routing post-pan + post-balance | 28 | — | 28 | ~ |
-| Pushbutton momentary w/ integrated LED (part TBD) | ACTIVE/SOLO/REC ARM — fader PCB | 72 | — | 72 | ✓ |
+| Pushbutton momentary w/ integrated LED (part TBD) | ACTIVE/SOLO/REC — fader PCB | 72 | — | 72 | ✓ |
 | Pushbutton momentary no LED (part TBD) | Channel source, HPF/INS bypass, AUX/group/master controls | ~68 | 300 | 0 | ✓/~ |
-| Pushbutton latching DPDT (part TBD) | HPF, INSERT, PFL, PRE/POST, DIRECT/PROC, AUX mode | ~139 | 300 | 0 | ✓/~ |
+| Pushbutton latching DPDT (part TBD) | HPF, INSERT, PFL, PRE/POST, DIR/PROC, AUX mode | ~139 | 300 | 0 | ✓/~ |
 | Button cap (part TBD) | Per momentary no LED + latching | ~207 | 300 | 0 | ~ |
 | Knob (colore TBD) — [Tayda](https://www.taydaelectronics.com/catalogsearch/result/?q=15x13mm+plastic+knob) | 1 per pot + 1 per rotary | 256 | — | 256 | ~ |
 | Indicator LED (color mix — see §8) | Separate LEDs, non integrati nei tasti | ~315 | — | ~315 | ✓/~ |

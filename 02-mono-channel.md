@@ -28,7 +28,7 @@ full-differential signal from the two Input A buffers (before the
 unbalancing stage). A firmware-controlled relay (**Channel Output SELECT**,
 on the input PCB) can switch this jack to instead output an
 impedance-balanced signal from the channel PCB — either pre-MUTE or
-post-fader, depending on the **Output PRE-POST** mechanical switch on
+post-fader, depending on the **OUT-PRE/POST** mechanical switch on
 the channel strip (see §2.9 (e)).
 
 Note: in the Input-A state (RESET / default), the Channel Output is fully
@@ -40,12 +40,12 @@ details.
 
 ---
 
-## 2.2 CHANNEL SOURCE switch (A / B select)
+## 2.2 SOURCE switch (A / B select)
 
 A **relay-driven electronic switch** (DPDT 2 form C, **1-coil
 latching**, standard signal relay per `00-conventions.md`) selects
 which of the two unbalanced-and-gained signals continues down the
-channel. Only one at a time. Named **CHANNEL SOURCE** to avoid
+channel. Only one at a time. Named **SOURCE** to avoid
 confusion with the master Monitor section (`08-monitor.md`).
 
 The front-panel control is a **momentary pushbutton** (single
@@ -66,7 +66,7 @@ both carry audio signals:
 
 Front-panel indicator LEDs (A-LED red, B-LED green) are driven by
 **MCU GPIO outputs** — firmware knows the relay state because it
-commands it, and updates the LEDs on each CHANNEL SOURCE toggle.
+commands it, and updates the LEDs on each SOURCE toggle.
 Boot default: A-LED on, B-LED off (A selected, RESET state).
 
 ---
@@ -74,19 +74,19 @@ Boot default: A-LED on, B-LED off (A selected, RESET state).
 ## 2.3 HPF / INSERT chain
 
 The HPF and INSERT stages form a switchable chain that can be bypassed
-as a unit by the **HPF/INSERT BYPASS relay** (§2.3.1 below). The
+as a unit by the **FX-FOLLOW relay** (§2.3.1 below). The
 individual HPF switch (§2.3.2) and INSERT switch (§2.3.3) remain and
 operate independently within the chain.
 
 ### 2.3.1 HPF / INSERT bypass relay
 
 A **DPDT relay** (standard AGQ210A03, firmware-controlled, per
-`00-conventions.md`) is interposed between the CHANNEL SOURCE relay
+`00-conventions.md`) is interposed between the SOURCE relay
 output and the rest of the channel. It either routes the signal through
 the HPF / INSERT chain (NO contacts) or bypasses it entirely
 (NC contacts):
 
-- **COM1** — CHANNEL SOURCE relay output.
+- **COM1** — SOURCE relay output.
 - **NC1 ↔ NC2** — hard-wired together. In the RESET / NC state the
   signal passes COM1 → NC1 → NC2 → COM2, bypassing the chain.
 - **COM2** — the pre-MUTE node: feeds the meter buffer, PFL tap, and
@@ -108,8 +108,8 @@ cycles through three modes, each indicated by one of three separate
 | LED | Mode | Relay behaviour |
 |---|---|---|
 | FOLLOW PATH (center) | Chain always in path | Relay always SET (NO) |
-| FOLLOW A | Chain follows source A | SET when CHANNEL SOURCE = A; RESET when B |
-| FOLLOW B | Chain follows source B | SET when CHANNEL SOURCE = B; RESET when A |
+| FOLLOW A | Chain follows source A | SET when SOURCE = A; RESET when B |
+| FOLLOW B | Chain follows source B | SET when SOURCE = B; RESET when A |
 
 Mode cycling logic and boot state are firmware decisions — TBD, see
 `10-open-tbd.md`.
@@ -153,7 +153,7 @@ The channel feeds **two bargraph signals** to the meter bridge PCB:
 
 - **Active meter** (full brightness): taps the pre-MUTE node
   (HPF/INSERT bypass relay COM2). Shows the signal currently in the
-  channel path, regardless of CHANNEL SOURCE selection.
+  channel path, regardless of SOURCE selection.
 - **Inactive meter** (dimmed on the meter bridge): taps whichever
   receiver output (A or B) is NOT currently selected by CHANNEL
   SOURCE. A CMOS SPDT switch selects between Receiver A and Receiver B
@@ -197,7 +197,7 @@ PRE-FADER node to AGND. Referred to as the **MUTE relay**.
 
 This relay is commanded by three sources:
 
-- **ACTIVE/MUTE button** on this channel (Pattern C, orange LED —
+- **ACTIVE button** on this channel (Pattern C, orange LED —
   see §2.11): toggles this channel between ACTIVE (relay RESET) and
   MUTED (relay SET).
 - **SOLO logic** from any other channel: when another channel's
@@ -291,7 +291,7 @@ Similar to an AUX send, but:
   (essentially a mono pan-center contribution into the stereo CUE
   bus).
 
-### (e) PRE-POST output tap and Output PRE-POST switch
+### (e) PRE-POST output tap and OUT-PRE/POST switch
 
 Two signal taps are taken from the channel PCB for routing to the input
 PCB (to feed the switchable Channel Output — see §2.1):
@@ -302,7 +302,7 @@ PCB (to feed the switchable Channel Output — see §2.1):
 - **POST tap**: POST-FADER node (after post-fader amp, before pan),
   through a **75 Ω** series resistor (branch tap).
 
-A front-panel **DPDT mechanical switch** named **Output PRE-POST**
+A front-panel **DPDT mechanical switch** named **OUT-PRE/POST**
 selects which of the two 75 Ω outputs continues to the input PCB:
 
 - Section 1 (signal): common feeds the 2-pin connector (below);
@@ -333,7 +333,7 @@ not post-mute.)*
 
 ## 2.10 Implementation details
 
-Status: **in-progress** — Block 1 (input stage to CHANNEL SOURCE
+Status: **in-progress** — Block 1 (input stage to SOURCE
 switch + Channel Output SELECT relay on input PCB) FINALIZED. Block 2
 (HPF + Insert Send/Return + jack PCB — now in the NO loop of Block 9),
 Block 3 (meter buffer + PFL switch + MUTE, now series+shunt), Block 4
@@ -344,10 +344,10 @@ fixed, summing resistor values deferred to §08. Block 8 (Output
 PRE-POST switch + switchable Channel Output) in-progress — see
 `10-open-tbd.md`. Block 9 (HPF/INSERT chain bypass relay) in-progress
 — relay wiring established, logical modes and boot state TBD.
-Block 10 (dual meter buffers: TL072 dual buffer, CHANNEL SOURCE relay
+Block 10 (dual meter buffers: TL072 dual buffer, SOURCE relay
 contact set 2 for inactive source selection) FINALIZED.
 
-### Block 1 — Input stage, buffers, Channel Output, balanced receivers, CHANNEL SOURCE switch (FINALIZED)
+### Block 1 — Input stage, buffers, Channel Output, balanced receivers, SOURCE switch (FINALIZED)
 
 **Status:** finalized
 
@@ -453,7 +453,7 @@ Op Amp Applications Handbook):
   the unselected branch, avoiding click on A↔B switching).
 - fc ≈ 0.072 Hz — effectively just a DC block in audio band.
 
-*CHANNEL SOURCE switch:*
+*SOURCE switch:*
 
 - **AGQ210A03** (DPDT 2 form C, 1-coil latching signal relay,
   standard signal relay per `00-conventions.md`). See §2.2.
@@ -472,7 +472,7 @@ Op Amp Applications Handbook):
   delivers Receiver B to the meter; in SET state (B active), COM2
   delivers Receiver A. No additional electronic switch needed.
 - A-LED (red) and B-LED (green): MCU GPIO outputs, updated by
-  firmware on each CHANNEL SOURCE toggle. Boot default: A-LED on,
+  firmware on each SOURCE toggle. Boot default: A-LED on,
   B-LED off.
 - Coil drive: bipolar pulse from a 3 V coil supply per
   `00-conventions.md` "Standard signal relay". Driver IC and
@@ -486,7 +486,7 @@ Op Amp Applications Handbook):
 - 1× for balanced receivers (4 opamps used).
 
 **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
-signal relay): CHANNEL SOURCE A/B select. Per `00-conventions.md`
+signal relay): SOURCE A/B select. Per `00-conventions.md`
 "Standard signal relay".
 
 **AGQ210A03 × 1 per channel** (DPDT 2 form C, 1-coil latching
@@ -504,7 +504,7 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
 - Gain pot: 10 kΩ log × 2 per channel (one per input, independent).
 - Pot minimum series: 100 Ω × 2 per channel.
 - A-LED (red) and B-LED (green) current-limit resistors on the
-  CHANNEL SOURCE indicator (MCU GPIO driven): TBD (depends on
+  SOURCE indicator (MCU GPIO driven): TBD (depends on
   chosen LED Vf and brightness target).
 - Coil protection (flyback / freewheeling network for bipolar
   drive): exact topology TBD with the coil driver choice.
@@ -558,12 +558,12 @@ Per `00-conventions.md` "Standard signal relay". See Block 8.
   See *Input jack idle-noise scheme* in Topology chosen.
 - **LED power on +3.3V / DGND**, galvanically separate from audio
   ±15V / AGND.
-- **CHANNEL SOURCE as relay-driven electronic switch** (AGQ210A03
+- **SOURCE as relay-driven electronic switch** (AGQ210A03
   latching signal relay, both contact sets for audio — set 1 for
   active channel, set 2 for inactive meter — ganged on one coil)
   instead of a direct mechanical DPDT. Primary reason: the relay
   approach is directly compatible with a **global master A/B flip**
-  — firmware can toggle every channel's CHANNEL SOURCE relay
+  — firmware can toggle every channel's SOURCE relay
   simultaneously, routing all 24 channels from DAW (B) to
   instruments (A) or vice versa in one command. Contact set 2,
   wired complementary to set 1, delivers the inactive receiver to
@@ -990,7 +990,7 @@ Hosts **2 channels per PCB** (12 fader PCBs total for the 24 mono
 channels). Each channel uses one half of an NE5532 dual.
 
 The fader PCB also hosts the **3 momentary pushbuttons with integrated
-LEDs** for this channel: ACTIVE/MUTE (orange), SOLO (red), REC ARM
+LEDs** for this channel: ACTIVE (orange), SOLO (red), REC
 (red). Physical co-location with the fader is confirmed; electrical
 connection to the digital logic PCB (GPIO routing) is TBD.
 
@@ -1392,10 +1392,10 @@ console-wide firmware boot-init contract.
 
 ---
 
-### Block 8 — Output PRE-POST switch + switchable Channel Output (IN-PROGRESS)
+### Block 8 — OUT-PRE/POST switch + switchable Channel Output (IN-PROGRESS)
 
 **Status:** in-progress — signal flow and relay topology fixed;
-cold dummy network details and LED color assignments TBD.
+LED colors assigned (all orange); cold dummy network details TBD.
 
 #### Topology chosen
 
@@ -1405,28 +1405,31 @@ cold dummy network details and LED color assignments TBD.
   relay COM2 output — which is the same node that feeds the meter
   buffer (Block 3) and the MUTE relay COM1. This is a branch tap, not
   in series with the main path. The far end of this 75 Ω is one input
-  to the Output PRE-POST switch.
+  to the OUT-PRE/POST switch.
 
 *Post-fader signal tap (on channel PCB):*
 
 - A **75 Ω** resistor taps the POST-FADER node (after the
   post-fader amp, before pan). Branch tap. Far end = other input
-  to the Output PRE-POST switch.
+  to the OUT-PRE/POST switch.
 
-*Output PRE-POST switch (on channel PCB, front-panel):*
+*OUT-PRE/POST switch (on channel PCB, front-panel):*
 
 - **DPDT mechanical switch, front-panel.** Pattern A per
   `00-conventions.md`.
 - Section 1 (signal): common feeds pin 1 of the 2-pin connector
   (below). Throws select between the pre-mute 75 Ω output (PRE)
   and the post-fader 75 Ω output (POST).
-- Section 2 (indicator): drives two front-panel LEDs (one per
-  position) from +3.3V / DGND. Colors TBD —
-  see `10-open-tbd.md`.
+- Section 2 (indicator): COM connected to the NO throw of
+  DIR/PROC button Section 2 (powered only when PROCESSED is
+  selected). Throws: NC = LED-PRE (orange), NO = LED-POST
+  (orange). Both LEDs are dark when DIRECT is selected; only
+  the appropriate one lights when the channel output is in
+  PROCESSED mode.
 
 *2-pin connector — channel PCB → input PCB:*
 
-- **Pin 1 (hot)**: the signal selected by the Output PRE-POST
+- **Pin 1 (hot)**: the signal selected by the OUT-PRE/POST
   switch (already through the chosen 75 Ω build-out).
 - **Pin 2 (cold dummy)**: a dedicated **75 Ω to AGND** only — no
   47 µF ‖ 47 kΩ completion. The two source paths have incompatible
@@ -1436,6 +1439,23 @@ cold dummy network details and LED color assignments TBD.
   network cannot suit both positions. A simple 75 Ω to AGND gives
   frequency-independent impedance balance over this short internal
   run and is the correct compromise.
+
+*DIR/PROC button (on channel PCB, front-panel):*
+
+- **Latching DPDT pushbutton**, named "DIRECT / PROCESSED output".
+- **Section 1**: COM = MCU GPIO input. MCU reads the latched state
+  on each press and fires the Channel Output SELECT relay set or
+  reset pulse accordingly. The mechanical latch means the MCU
+  always reads the desired state directly — no toggle logic needed,
+  no sync ambiguity at boot.
+- **Section 2**: COM = +3.3 V (DGND return). NC throw =
+  LED-DIRECT (orange). NO throw = COM of OUT-PRE/POST switch
+  Section 2. This chains the two switches so that LED-PRE and
+  LED-POST are powered only when PROCESSED is selected. Three
+  mutually exclusive LED states, zero MCU GPIO:
+    - DIRECT selected (NC): LED-DIRECT ON; LED-PRE and LED-POST dark.
+    - PROCESSED + PRE: LED-DIRECT off; LED-PRE ON; LED-POST off.
+    - PROCESSED + POST: LED-DIRECT off; LED-PRE off; LED-POST ON.
 
 *Channel Output SELECT relay (on input PCB):*
 
@@ -1470,7 +1490,8 @@ cold dummy network details and LED color assignments TBD.
 - Post-fader 75 Ω tap: **75 Ω** (0603 1 %), on channel PCB.
 - Cold dummy 75 Ω: **75 Ω** (0603 1 %), on channel PCB.
 - Cold dummy bypass / load network (47 µF ‖ 47 kΩ): TBD.
-- Output PRE-POST switch LED current-limit resistors: TBD.
+- OUT-PRE/POST switch LED current-limit resistors (PRE + POST): TBD.
+- DIR/PROC button DIRECT LED current-limit resistor: TBD.
 
 #### Design targets / expected performance
 
@@ -1488,7 +1509,7 @@ cold dummy network details and LED color assignments TBD.
   channel-signal output (pre-mute or post-fader). Eliminates the
   need for a separate rear-panel "Post-Fader Output" jack
   (original §2.9 (e) concept), reducing jack and connector count.
-- **Output PRE-POST as a mechanical switch (not firmware-
+- **OUT-PRE/POST as a mechanical switch (not firmware-
   controlled)**: set directly by the operator, appropriate for
   a per-session configuration choice (recording pre vs post fader).
   No firmware needed for this selection.
@@ -1513,15 +1534,7 @@ cold dummy network details and LED color assignments TBD.
 
 #### Open issues for Block 8
 
-- **Output PRE-POST LED color assignment**: two LEDs, one per
-  position (PRE / POST). Colors TBD.
-- **Channel Output SELECT front-panel control**: latching DPDT
-  pushbutton, named "DIRECT / PROCESSED output". Section 1
-  connects to MCU GPIO input (MCU reads state change and fires
-  the relay set/reset pulse accordingly). Section 2 drives an
-  indicator LED (TBD color). The button's mechanical latch means
-  the MCU always reads the desired state directly — no toggle
-  logic needed, no sync ambiguity at boot.
+- **LED-PRE, LED-POST, LED-DIRECT colors**: all orange. Resolved.
 - **Channel Output SELECT relay boot state**: RESET (Input A /
   direct default) is the expected choice; to be confirmed and
   recorded in the firmware boot-init spec.
@@ -1540,7 +1553,7 @@ Standard **AGQ210A03** DPDT 1-coil latching signal relay per
 
 | Contact | Connection |
 |---|---|
-| COM1 | CHANNEL SOURCE relay output |
+| COM1 | SOURCE relay output |
 | NC1 | Hard-wired to NC2 |
 | NC2 | Hard-wired to NC1 |
 | COM2 | Pre-MUTE node (meter buffer + PFL tap + MUTE relay COM1) |
@@ -1566,7 +1579,7 @@ Front-panel control:
 
 #### Key passive values
 
-- HPF/INSERT BYPASS LED current-limit resistors (× 3 per channel):
+- FX-FOLLOW LED current-limit resistors (× 3 per channel):
   TBD (depends on chosen LED Vf and brightness target).
 - Coil drive: bipolar pulse from +3.3 V per `00-conventions.md`
   "Standard signal relay". Driver IC TBD.
@@ -1575,7 +1588,7 @@ Front-panel control:
 
 - **Boot state**: RESET (chain bypassed by default) or SET (chain
   in path by default) — TBD. See `10-open-tbd.md`.
-- **Mode cycling logic and CHANNEL SOURCE synchronization**:
+- **Mode cycling logic and SOURCE synchronization**:
   firmware decision — TBD. See `10-open-tbd.md`.
 - **Front-panel button part** (momentary, single contact, no
   integrated LED): TBD.
@@ -1602,7 +1615,7 @@ Front-panel control:
 
 *Inactive meter buffer (TL072 half 2):*
 
-- Input: CHANNEL SOURCE relay contact set 2, COM2 output. Set 2 is
+- Input: SOURCE relay contact set 2, COM2 output. Set 2 is
   wired complementary to set 1 (see Block 1): NC2 = Receiver B
   (post-DC-block); NO2 = Receiver A (post-DC-block). In RESET state
   (A active), COM2 delivers Receiver B; in SET state (B active), COM2
@@ -1632,7 +1645,7 @@ ICs. Dimming of the inactive bargraph is a meter bridge design decision
 
 - **TL072** × 1 per channel (dual SOIC, JFET input): both halves used.
   Half 1 = active meter buffer (pre-MUTE tap); half 2 = inactive meter
-  buffer (CHANNEL SOURCE relay contact set 2 output).
+  buffer (SOURCE relay contact set 2 output).
 
 #### Key passive values
 
@@ -1647,7 +1660,7 @@ ICs. Dimming of the inactive bargraph is a meter bridge design decision
 
 #### Decisions and tradeoffs
 
-- **CHANNEL SOURCE relay contact set 2 for inactive meter switching**
+- **SOURCE relay contact set 2 for inactive meter switching**
   (no additional electronic switch): contact set 2, wired with NC/NO
   complementary to set 1, delivers the inactive receiver at all times
   with relay-contact quality (Ron ≤ 100 mΩ, isolation > 80 dB at
@@ -1680,20 +1693,20 @@ ICs. Dimming of the inactive bargraph is a meter bridge design decision
 Per mono channel there are **10 pushbuttons** in three categories:
 
 **Momentary with integrated LED (3) — physically on the fader PCB:**
-ACTIVE/MUTE (orange), SOLO (red), REC ARM (red). LED is inside the
+ACTIVE (orange), SOLO (red), REC (red). LED is inside the
 button body; not listed separately in the LED inventory. Connection
 from fader PCB to digital logic PCB: TBD.
 
 **Momentary without integrated LED (2) — on channel/input PCB:**
-CHANNEL SOURCE (§2.2) and HPF/INSERT BYPASS (§2.3.1).
+SOURCE (§2.2) and FX-FOLLOW (§2.3.1).
 
 **Latching DPDT (5) — on channel/input PCB:**
 HPF (§2.3.2), INSERT (§2.3.3), PFL (§2.5.2), Output PRE/POST
-(§2.9 (e)), DIRECT/PROCESSED output (§2.9 (e) / Block 8). For
+(§2.9 (e)), DIR/PROC (§2.9 (e) / Block 8). For
 each: section 1 carries the signal or GPIO-to-MCU control line;
 section 2 drives an indicator LED.
 
-### ACTIVE/MUTE (orange LED)
+### ACTIVE (orange LED)
 
 - Button press → firmware toggles the **MUTE relay** (AGQ210A03,
   §2.6) between ACTIVE (SET) and MUTED (RESET).
@@ -1714,9 +1727,9 @@ section 2 drives an indicator LED.
 - AFL-only vs. SIP mode and multi-SOLO priority: firmware
   decisions, TBD.
 
-### REC ARM (red LED)
+### REC (red LED)
 
-- Button press → firmware toggles the REC ARM state of this channel.
+- Button press → firmware toggles the REC state of this channel.
 - No audio relay involved. Firmware signals armed/unarmed state
   toward the DAW via MIDI (exact protocol TBD).
 - Red LED on = channel armed for recording. Driven by MCU GPIO.

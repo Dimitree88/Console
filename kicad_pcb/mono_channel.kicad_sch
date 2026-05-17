@@ -6314,9 +6314,9 @@
 		)
 		(uuid "2067fde1-7e62-4487-af4f-40d39a946c58")
 	)
-	(text "collegare"
+	(text "collegare\nmagari diretto al relay"
 		(exclude_from_sim no)
-		(at 74.93 59.69 0)
+		(at 105.41 35.56 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8012,7 +8012,7 @@
 	)
 	(wire
 		(pts
-			(xy 80.01 72.39) (xy 78.74 72.39)
+			(xy 119.38 46.99) (xy 118.11 46.99)
 		)
 		(stroke
 			(width 0)
@@ -8079,6 +8079,16 @@
 			(type default)
 		)
 		(uuid "61c267a4-063f-4190-b42f-f7c7584acd2c")
+	)
+	(wire
+		(pts
+			(xy 127 44.45) (xy 187.96 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "621c56cd-71fc-4465-8fa8-9627d097d7de")
 	)
 	(wire
 		(pts
@@ -8162,7 +8172,7 @@
 	)
 	(wire
 		(pts
-			(xy 205.74 49.53) (xy 205.74 54.61)
+			(xy 205.74 49.53) (xy 205.74 50.8)
 		)
 		(stroke
 			(width 0)
@@ -8292,7 +8302,7 @@
 	)
 	(wire
 		(pts
-			(xy 214.63 44.45) (xy 214.63 54.61)
+			(xy 214.63 44.45) (xy 214.63 50.8)
 		)
 		(stroke
 			(width 0)
@@ -8652,7 +8662,7 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 46.99) (xy 187.96 45.72)
+			(xy 187.96 44.45) (xy 187.96 46.99)
 		)
 		(stroke
 			(width 0)
@@ -8759,16 +8769,6 @@
 			(type default)
 		)
 		(uuid "9d5efa64-2aed-4507-9971-afea37c1d34e")
-	)
-	(wire
-		(pts
-			(xy 105.41 69.85) (xy 105.41 80.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d9c7a6b-d094-4c17-8848-26cddf6f24ff")
 	)
 	(wire
 		(pts
@@ -8929,16 +8929,6 @@
 			(type default)
 		)
 		(uuid "a9109516-6ff9-4e2b-81a2-a65f3aa10fd2")
-	)
-	(wire
-		(pts
-			(xy 87.63 69.85) (xy 105.41 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "aac306be-b6cd-4aba-864c-c5f1f11e659b")
 	)
 	(wire
 		(pts
@@ -9222,7 +9212,7 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 74.93) (xy 96.52 74.93)
+			(xy 127 49.53) (xy 135.89 49.53)
 		)
 		(stroke
 			(width 0)
@@ -9502,7 +9492,7 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 72.39) (xy 78.74 71.12)
+			(xy 118.11 46.99) (xy 118.11 45.72)
 		)
 		(stroke
 			(width 0)
@@ -9752,7 +9742,7 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 74.93) (xy 96.52 80.01)
+			(xy 135.89 49.53) (xy 135.89 50.8)
 		)
 		(stroke
 			(width 0)
@@ -10208,7 +10198,7 @@
 			)
 		)
 	)
-	(global_label "BUS_PFL"
+	(global_label "BUS-PFL"
 		(shape input)
 		(at 252.73 187.96 0)
 		(fields_autoplaced yes)
@@ -10220,7 +10210,7 @@
 		)
 		(uuid "86b464d3-bb35-4a1a-8f93-5f6f2c5f864c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 263.8795 187.96 0)
+			(at 264.4843 187.96 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12753,7 +12743,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "1b3e2fc9-4027-4acf-8ed4-836894336bd7")
-		(property "Reference" "MON/MIX-CH1"
+		(property "Reference" "SOURCE-CH1"
 			(at 55.825 76.636 0)
 			(show_name no)
 			(do_not_autoplace yes)
@@ -12830,7 +12820,7 @@
 		(instances
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "MON/MIX-CH1")
+					(reference "SOURCE-CH1")
 					(unit 2)
 				)
 			)
@@ -13641,7 +13631,7 @@
 	)
 	(symbol
 		(lib_id "0_ED-Sounds:SWITCH-PUSH-LATCHING")
-		(at 85.09 59.69 0)
+		(at 124.46 34.29 0)
 		(mirror x)
 		(unit 1)
 		(body_style 1)
@@ -13652,7 +13642,7 @@
 		(dnp no)
 		(uuid "27f87676-1c59-4122-90fe-f87cd5a7fe97")
 		(property "Reference" "DIR/PROC-CH1"
-			(at 81.225 63.936 0)
+			(at 120.595 38.536 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -13664,7 +13654,7 @@
 			)
 		)
 		(property "Value" ""
-			(at 85.09 59.69 0)
+			(at 124.46 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13675,7 +13665,7 @@
 			)
 		)
 		(property "Footprint" "0_Switches:SWITCH_PUSH_7X7-POLARIZED"
-			(at 85.09 66.548 0)
+			(at 124.46 41.148 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13686,7 +13676,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 85.09 59.69 0)
+			(at 124.46 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13697,7 +13687,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 85.09 59.69 0)
+			(at 124.46 34.29 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15454,7 +15444,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 205.74 69.85 0)
+		(at 205.74 66.04 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -15466,7 +15456,7 @@
 		(fields_autoplaced yes)
 		(uuid "3b1077f5-d33f-43ff-8c14-ec2f0343f9ec")
 		(property "Reference" "#PWR0137"
-			(at 205.74 76.2 0)
+			(at 205.74 72.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15477,7 +15467,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 205.74 73.025 0)
+			(at 205.74 69.215 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15488,7 +15478,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 205.74 69.85 0)
+			(at 205.74 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15499,7 +15489,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 205.74 69.85 0)
+			(at 205.74 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15510,7 +15500,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 205.74 69.85 0)
+			(at 205.74 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -16582,7 +16572,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "46f24247-8ca7-4845-9645-ccbff3aa59b8")
-		(property "Reference" "LED-MONITOR-A-CH1"
+		(property "Reference" "LED-SOURCE-A-CH1"
 			(at 66.929 34.29 0)
 			(show_name no)
 			(do_not_autoplace yes)
@@ -16655,7 +16645,7 @@
 		(instances
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "LED-MONITOR-A-CH1")
+					(reference "LED-SOURCE-A-CH1")
 					(unit 1)
 				)
 			)
@@ -17065,87 +17055,6 @@
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
 					(reference "J6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:R")
-		(at 105.41 91.44 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "4a25be18-543b-4ef8-bf84-edbdb2e1e28d")
-		(property "Reference" "R98"
-			(at 106.68 94.234 90)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Value" "R"
-			(at 105.41 91.44 90)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 0.889 0.889)
-				)
-			)
-		)
-		(property "Footprint" "0_Resistors:0603"
-			(at 107.188 91.44 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 105.41 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 105.41 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "82c1caed-2307-4b31-91c0-0bf6e6489a2a")
-		)
-		(pin "2"
-			(uuid "50155f30-463d-4c5c-a791-d302deb5da29")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "R98")
 					(unit 1)
 				)
 			)
@@ -17723,7 +17632,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 96.52 95.25 0)
+		(at 135.89 66.04 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -17735,7 +17644,7 @@
 		(fields_autoplaced yes)
 		(uuid "4ecee1b1-69a1-4d44-becd-c23b093f9277")
 		(property "Reference" "#PWR0106"
-			(at 96.52 101.6 0)
+			(at 135.89 72.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17746,7 +17655,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 96.52 98.425 0)
+			(at 135.89 69.215 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17757,7 +17666,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 96.52 95.25 0)
+			(at 135.89 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17768,7 +17677,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 96.52 95.25 0)
+			(at 135.89 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17779,7 +17688,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 96.52 95.25 0)
+			(at 135.89 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17960,7 +17869,7 @@
 	)
 	(symbol
 		(lib_id "0_ED-Sounds:SWITCH-PUSH-LATCHING")
-		(at 85.09 72.39 0)
+		(at 124.46 46.99 0)
 		(mirror x)
 		(unit 2)
 		(body_style 1)
@@ -17971,7 +17880,7 @@
 		(dnp no)
 		(uuid "5193a49f-ab61-4453-992d-986af92a483f")
 		(property "Reference" "DIR/PROC-CH1"
-			(at 81.225 76.636 0)
+			(at 120.595 51.236 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -17983,7 +17892,7 @@
 			)
 		)
 		(property "Value" ""
-			(at 85.09 72.39 0)
+			(at 124.46 46.99 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17994,7 +17903,7 @@
 			)
 		)
 		(property "Footprint" "0_Switches:SWITCH_PUSH_7X7-POLARIZED"
-			(at 85.09 79.248 0)
+			(at 124.46 53.848 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18005,7 +17914,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 85.09 72.39 0)
+			(at 124.46 46.99 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18016,7 +17925,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 85.09 72.39 0)
+			(at 124.46 46.99 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -18127,98 +18036,6 @@
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
 					(reference "#PWR060")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:LED")
-		(at 105.41 83.82 270)
-		(mirror x)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "521ff7c3-419b-4d29-9b70-2672cfdf7dbf")
-		(property "Reference" "LED-OUT-PROC-CH1"
-			(at 110.109 83.82 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 1.016 1.016)
-				)
-			)
-		)
-		(property "Value" "orange"
-			(at 108.585 83.82 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 0.889 0.889)
-				)
-			)
-		)
-		(property "Footprint" "0_Leds:LED3MM"
-			(at 105.41 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 105.41 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Light emitting diode"
-			(at 105.41 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 105.41 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d204c77c-821d-45cb-827e-f9369bc13441")
-		)
-		(pin "2"
-			(uuid "f3405437-a95d-4aa6-878d-dc2344887184")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "LED-OUT-PROC-CH1")
 					(unit 1)
 				)
 			)
@@ -19479,7 +19296,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:R")
-		(at 214.63 66.04 0)
+		(at 214.63 62.23 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -19490,7 +19307,7 @@
 		(dnp no)
 		(uuid "69c8903d-ed2b-44f4-92a1-a9508f0f3f25")
 		(property "Reference" "R101"
-			(at 215.9 68.834 90)
+			(at 215.9 65.024 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -19501,7 +19318,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 214.63 66.04 90)
+			(at 214.63 62.23 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -19511,7 +19328,7 @@
 			)
 		)
 		(property "Footprint" "0_Resistors:0603"
-			(at 216.408 66.04 90)
+			(at 216.408 62.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19522,7 +19339,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 214.63 66.04 0)
+			(at 214.63 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -19533,7 +19350,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 214.63 66.04 0)
+			(at 214.63 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20791,7 +20608,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:R")
-		(at 96.52 91.44 0)
+		(at 135.89 62.23 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -20802,7 +20619,7 @@
 		(dnp no)
 		(uuid "7d731668-239b-4134-a4a9-f2dbb908c25f")
 		(property "Reference" "R99"
-			(at 97.79 94.234 90)
+			(at 137.16 65.024 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -20813,7 +20630,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 96.52 91.44 90)
+			(at 135.89 62.23 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -20823,7 +20640,7 @@
 			)
 		)
 		(property "Footprint" "0_Resistors:0603"
-			(at 98.298 91.44 90)
+			(at 137.668 62.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20834,7 +20651,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 96.52 91.44 0)
+			(at 135.89 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20845,7 +20662,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 96.52 91.44 0)
+			(at 135.89 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20872,7 +20689,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:VD")
-		(at 87.63 57.15 0)
+		(at 127 31.75 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -20883,7 +20700,7 @@
 		(fields_autoplaced yes)
 		(uuid "7e1486d8-70bc-486c-921c-444d6837dc6b")
 		(property "Reference" "#PWR020"
-			(at 87.63 60.96 0)
+			(at 127 35.56 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20894,7 +20711,7 @@
 			)
 		)
 		(property "Value" "VD"
-			(at 87.63 53.848 0)
+			(at 127 28.448 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -20904,7 +20721,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 87.63 57.15 0)
+			(at 127 31.75 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20915,7 +20732,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 87.63 57.15 0)
+			(at 127 31.75 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20926,7 +20743,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5VD\""
-			(at 87.63 57.15 0)
+			(at 127 31.75 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20943,86 +20760,6 @@
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
 					(reference "#PWR020")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:GNDD")
-		(at 105.41 95.25 0)
-		(mirror y)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7e398217-4ad5-42a6-8621-695940e1ed0d")
-		(property "Reference" "#PWR062"
-			(at 105.41 101.6 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GNDD"
-			(at 105.41 98.425 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 105.41 95.25 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 105.41 95.25 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 105.41 95.25 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fe9a310f-4f67-451e-b0a8-0c1ee0c6d032")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "#PWR062")
 					(unit 1)
 				)
 			)
@@ -21809,7 +21546,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:LED")
-		(at 214.63 58.42 270)
+		(at 214.63 54.61 270)
 		(mirror x)
 		(unit 1)
 		(body_style 1)
@@ -21821,7 +21558,7 @@
 		(fields_autoplaced yes)
 		(uuid "86191521-8be4-40d2-87f6-b22dcbeb3719")
 		(property "Reference" "LED-OUT-PROC-CH2"
-			(at 219.329 58.42 0)
+			(at 219.329 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -21831,7 +21568,7 @@
 			)
 		)
 		(property "Value" "orange"
-			(at 217.805 58.42 0)
+			(at 217.805 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -21841,7 +21578,7 @@
 			)
 		)
 		(property "Footprint" "0_Leds:LED3MM"
-			(at 214.63 58.42 0)
+			(at 214.63 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21852,7 +21589,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 214.63 58.42 0)
+			(at 214.63 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21863,7 +21600,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 214.63 58.42 0)
+			(at 214.63 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21874,7 +21611,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 214.63 58.42 0)
+			(at 214.63 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -21972,84 +21709,6 @@
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
 					(reference "#PWR047")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "0_Basics:VD")
-		(at 187.96 45.72 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "88173b5e-10c7-4788-aff7-42725168c3a5")
-		(property "Reference" "#PWR021"
-			(at 187.96 49.53 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "VD"
-			(at 187.96 42.418 0)
-			(show_name no)
-			(do_not_autoplace yes)
-			(effects
-				(font
-					(size 0.762 0.762)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 187.96 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 187.96 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5VD\""
-			(at 187.96 45.72 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2fa769cc-3da0-4ee5-84b8-e2f455f2f6ba")
-		)
-		(instances
-			(project "Console"
-				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "#PWR021")
 					(unit 1)
 				)
 			)
@@ -22799,7 +22458,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "96f3f7fd-fbe8-48e5-a158-8eb7140fe42c")
-		(property "Reference" "LED-MONITOR-B-CH1"
+		(property "Reference" "LED-SOURCE-B-CH1"
 			(at 58.039 34.29 0)
 			(show_name no)
 			(do_not_autoplace yes)
@@ -22872,7 +22531,7 @@
 		(instances
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "LED-MONITOR-B-CH1")
+					(reference "LED-SOURCE-B-CH1")
 					(unit 1)
 				)
 			)
@@ -26811,7 +26470,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "c4d9224b-ddc8-4ca0-a605-322f21bb1fb4")
-		(property "Reference" "MON/MIX-CH1"
+		(property "Reference" "SOURCE-CH1"
 			(at 55.825 63.936 0)
 			(show_name no)
 			(do_not_autoplace yes)
@@ -26888,7 +26547,7 @@
 		(instances
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "MON/MIX-CH1")
+					(reference "SOURCE-CH1")
 					(unit 1)
 				)
 			)
@@ -27291,7 +26950,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:R")
-		(at 205.74 66.04 0)
+		(at 205.74 62.23 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -27302,7 +26961,7 @@
 		(dnp no)
 		(uuid "c93700cc-de90-4ece-b07a-9efe01fd83e0")
 		(property "Reference" "R100"
-			(at 207.01 68.834 90)
+			(at 207.01 65.024 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -27313,7 +26972,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 205.74 66.04 90)
+			(at 205.74 62.23 90)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -27323,7 +26982,7 @@
 			)
 		)
 		(property "Footprint" "0_Resistors:0603"
-			(at 207.518 66.04 90)
+			(at 207.518 62.23 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27334,7 +26993,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 205.74 66.04 0)
+			(at 205.74 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27345,7 +27004,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 205.74 66.04 0)
+			(at 205.74 62.23 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27528,7 +27187,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:LED")
-		(at 205.74 58.42 270)
+		(at 205.74 54.61 270)
 		(mirror x)
 		(unit 1)
 		(body_style 1)
@@ -27538,8 +27197,8 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "ca8421e8-807a-4314-943d-3c868ae5ecc6")
-		(property "Reference" "LED-OUT-DIR-CH2"
-			(at 210.439 58.42 0)
+		(property "Reference" "LED-OUT-PRE-CH2"
+			(at 210.439 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -27549,7 +27208,7 @@
 			)
 		)
 		(property "Value" "orange"
-			(at 208.915 58.42 0)
+			(at 208.915 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -27559,7 +27218,7 @@
 			)
 		)
 		(property "Footprint" "0_Leds:LED3MM"
-			(at 205.74 58.42 0)
+			(at 205.74 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27570,7 +27229,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 205.74 58.42 0)
+			(at 205.74 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27581,7 +27240,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 205.74 58.42 0)
+			(at 205.74 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27592,7 +27251,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 205.74 58.42 0)
+			(at 205.74 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -27611,7 +27270,7 @@
 		(instances
 			(project "Console"
 				(path "/1fbbd2a3-bb57-473e-beb7-4110a7f2d116/5d2e813f-2ae0-41f2-b482-97c91e559b6f"
-					(reference "LED-OUT-DIR-CH2")
+					(reference "LED-OUT-PRE-CH2")
 					(unit 1)
 				)
 			)
@@ -29105,7 +28764,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 214.63 69.85 0)
+		(at 214.63 66.04 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -29117,7 +28776,7 @@
 		(fields_autoplaced yes)
 		(uuid "d9f69528-69fd-4e49-b42f-530664f406ed")
 		(property "Reference" "#PWR063"
-			(at 214.63 76.2 0)
+			(at 214.63 72.39 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29128,7 +28787,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 214.63 73.025 0)
+			(at 214.63 69.215 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29139,7 +28798,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 214.63 69.85 0)
+			(at 214.63 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29150,7 +28809,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 214.63 69.85 0)
+			(at 214.63 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29161,7 +28820,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 214.63 69.85 0)
+			(at 214.63 66.04 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30135,7 +29794,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:LED")
-		(at 96.52 83.82 270)
+		(at 135.89 54.61 270)
 		(mirror x)
 		(unit 1)
 		(body_style 1)
@@ -30146,7 +29805,7 @@
 		(dnp no)
 		(uuid "e7cb0f88-d448-47e7-9fb4-0d553cc69b7a")
 		(property "Reference" "LED-OUT-DIR-CH1"
-			(at 101.219 83.82 0)
+			(at 140.589 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -30156,7 +29815,7 @@
 			)
 		)
 		(property "Value" "orange"
-			(at 99.695 83.82 0)
+			(at 139.065 54.61 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -30166,7 +29825,7 @@
 			)
 		)
 		(property "Footprint" "0_Leds:LED3MM"
-			(at 96.52 83.82 0)
+			(at 135.89 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30177,7 +29836,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 96.52 83.82 0)
+			(at 135.89 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30188,7 +29847,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 96.52 83.82 0)
+			(at 135.89 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -30199,7 +29858,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 96.52 83.82 0)
+			(at 135.89 54.61 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31332,7 +30991,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:VD")
-		(at 78.74 71.12 0)
+		(at 118.11 45.72 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -31343,7 +31002,7 @@
 		(fields_autoplaced yes)
 		(uuid "f3d8f085-28a0-43a3-9dca-cc20dd552b9d")
 		(property "Reference" "#PWR019"
-			(at 78.74 74.93 0)
+			(at 118.11 49.53 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31354,7 +31013,7 @@
 			)
 		)
 		(property "Value" "VD"
-			(at 78.74 67.818 0)
+			(at 118.11 42.418 0)
 			(show_name no)
 			(do_not_autoplace yes)
 			(effects
@@ -31364,7 +31023,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 78.74 71.12 0)
+			(at 118.11 45.72 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31375,7 +31034,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 78.74 71.12 0)
+			(at 118.11 45.72 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31386,7 +31045,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5VD\""
-			(at 78.74 71.12 0)
+			(at 118.11 45.72 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31653,7 +31312,7 @@
 	)
 	(symbol
 		(lib_id "0_Basics:GNDD")
-		(at 87.63 62.23 0)
+		(at 127 36.83 0)
 		(mirror y)
 		(unit 1)
 		(body_style 1)
@@ -31665,7 +31324,7 @@
 		(fields_autoplaced yes)
 		(uuid "fee040dd-8944-4656-bc34-5a1bc9b24a5d")
 		(property "Reference" "#PWR0107"
-			(at 87.63 68.58 0)
+			(at 127 43.18 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31676,7 +31335,7 @@
 			)
 		)
 		(property "Value" "GNDD"
-			(at 87.63 65.405 0)
+			(at 127 40.005 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31687,7 +31346,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 87.63 62.23 0)
+			(at 127 36.83 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31698,7 +31357,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 87.63 62.23 0)
+			(at 127 36.83 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -31709,7 +31368,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDD\" , digital ground"
-			(at 87.63 62.23 0)
+			(at 127 36.83 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)

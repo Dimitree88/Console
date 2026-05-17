@@ -139,7 +139,7 @@ or rerouted under digital control:
 
 - ACTIVE / SOLO mute (mono channels, AUX returns, groups);
 - AFL enable (mono channels, AUX returns, groups);
-- CHANNEL SOURCE A/B select on mono channels (replaces the
+- SOURCE A/B select on mono channels (replaces the
   mechanical DPDT — see §2.2);
 - master monitor source-select (Main vs Solo summer, §8.1) and
   Solo summer AFL/PFL alternation (§8.2).
@@ -226,7 +226,7 @@ Topology and drive:
   pulses to drive each one to a known state. The desired boot
   state of each relay is the same "safe" state that a
   non-latching design would have produced via NC contacts:
-  channel muted, AFL off, monitor on Main Mix, CHANNEL SOURCE
+  channel muted, AFL off, monitor on Main Mix, SOURCE
   on Input A — see per-block details. Boot-init is a firmware
   contract, not a hardware-guaranteed property.
 - **Master-output hard-mute during firmware init**: until
@@ -237,8 +237,8 @@ Topology and drive:
   `10-open-tbd.md`).
 
 Power-budget note: full count is approximately 136 relays
-across the console (24 mono channels × 5 — CHANNEL SOURCE, MUTE,
-AFL, DIRECT OUT SELECT, HPF/INSERT BYPASS — + 4 AUX returns × 2 +
+across the console (24 mono channels × 5 — SOURCE, MUTE,
+AFL, DIRECT OUT SELECT, FX-FOLLOW — + 4 AUX returns × 2 +
 3 groups × 2 + 2 in master monitor). Pulse energy per state
 change ≈ 1.2 mJ (3.3 V × 37 mA × 10 ms, with the 3 V coil
 tolerated at +3.3 V per "Coil supply rail" above). Average
@@ -266,38 +266,39 @@ driver, toggling the relay's mechanically latched state. The
 relay's two form-C contact sets commute respectively the audio
 signal and the +3.3 V LED indicator current — the LED tracks the
 latched contact position regardless of coil energization. Used
-for CHANNEL SOURCE A/B (see §2.2).
+for SOURCE A/B (see §2.2).
 
 **Pattern C — momentary pushbutton with integrated LED + MCU GPIO.**
 A front-panel pushbutton with an integrated LED. The button press is
 read by firmware as a GPIO input; the integrated LED is driven
 directly by a firmware GPIO output — not by a relay contact set.
 May additionally command a relay coil as a secondary action:
-ACTIVE/MUTE (orange) commands the MUTE relay; SOLO (red) commands
+ACTIVE (orange) commands the MUTE relay; SOLO (red) commands
 the AFL relay of this channel and optionally the MUTE relays of other
-channels (SIP mode); REC ARM (red) does not command any audio relay —
+channels (SIP mode); REC (red) does not command any audio relay —
 it generates a MIDI or equivalent signal toward the DAW. See §2.11.
 
 LEDs are low-current standard parts in all patterns.
 
 Color assignments per channel:
 
-| Switch | LED color | Count | LED drive | Pattern |
-|---|---|---|---|---|
-| CHANNEL SOURCE | red (A) / green (B) | 2 | relay contact set 2 | B |
-| ACTIVE/MUTE | orange (active) | 1 | MCU GPIO | C |
-| SOLO | red (solo active) | 1 | MCU GPIO | C |
-| REC ARM | red (armed) | 1 | MCU GPIO | C |
-| HPF/INSERT BYPASS | orange × 3 (FOLLOW PATH / FOLLOW A / FOLLOW B) | 3 | MCU GPIO | — |
-| HPF | orange (IN) | 1 | mech switch sec.2 | A |
-| INSERT | blue (IN) | 1 | mech switch sec.2 | A |
-| PFL | red (IN) | 1 | mech switch sec.2 | A |
-| Output PRE-POST | TBD (one per position) | 2 | mech switch sec.2 | A |
+| Switch | LED name | LED color | Count | LED drive | Pattern |
+|---|---|---|---|---|---|
+| SOURCE | LED-SOURCE-A / LED-SOURCE-B | red / green | 2 | MCU GPIO | B |
+| ACTIVE | — (integrated) | orange | 1 | MCU GPIO | C |
+| SOLO | — (integrated) | red | 1 | MCU GPIO | C |
+| REC | — (integrated) | red | 1 | MCU GPIO | C |
+| FX-FOLLOW | LED-FX-FOLLOW-FOLLOW-PATH / -A / -B | orange | 3 | MCU GPIO | — |
+| HPF | LED-HPF | orange | 1 | HPF button sec.2 | A |
+| INSERT | LED-INSERT | blue | 1 | INSERT button sec.2 | A |
+| PFL | LED-PFL | red | 1 | PFL button sec.2 | A |
+| OUT-PRE/POST | LED-PRE / LED-POST | orange | 2 | OUT-PRE/POST sec.2, COM gated by DIR/PROC sec.2 NO | A |
+| DIR/PROC | LED-DIRECT | orange | 1 | DIR/PROC sec.2 NC | A |
 
-Per-channel LED total: **13** (2 relay-contact + 6 MCU GPIO + 5 mech-switch).
-Per-channel MCU GPIO LED outputs: **6** (ACTIVE/MUTE, SOLO, REC ARM, HPF/INSERT BYPASS × 3).
-Per-channel MCU GPIO button inputs: **5** (CHANNEL SOURCE, ACTIVE/MUTE, SOLO, REC ARM,
-HPF/INSERT BYPASS).
+Per-channel LED total: **14** (2 relay-contact + 6 MCU GPIO + 6 mech-switch).
+Per-channel MCU GPIO LED outputs: **6** (ACTIVE, SOLO, REC, FX-FOLLOW × 3).
+Per-channel MCU GPIO button inputs: **5** (SOURCE, ACTIVE, SOLO, REC,
+FX-FOLLOW).
 
 (Additional switches with LEDs encountered later will be added here.)
 
